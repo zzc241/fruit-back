@@ -87,7 +87,6 @@ CREATE TABLE fruit_tree (
     img VARCHAR(500) COMMENT '果树图片',
     area_id INT NOT NULL COMMENT '区域ID',
     area_name VARCHAR(100) COMMENT '区域名称',
-    typen VARCHAR(100) COMMENT '类型名称',
     
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'

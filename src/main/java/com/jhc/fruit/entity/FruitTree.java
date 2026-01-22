@@ -13,7 +13,7 @@ import lombok.Data;
 @TableName("fruit_tree")
 public class FruitTree {
     private Long id;
-    private Long type;
+    private Long typeId;
     @TableField("count_num")
     private int countNum;
     @TableField("ripe_num")
@@ -24,5 +24,5 @@ public class FruitTree {
     private int areaId;
 
     private String areaName;
-    private String typen;
+
 }

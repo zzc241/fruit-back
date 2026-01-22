@@ -70,7 +70,7 @@ public class FruitTreeController {
     @ApiOperation("添加果树方法")
     public R<String> save(@RequestBody FruitTree fruitTree){
         //1.获取添加果树的种类，判断是否符合种在对应区块
-        Long type = fruitTree.getType();
+        Long type = fruitTree.getTypeId();
         int areaId = fruitTree.getAreaId();
         //获取对应区块种植的蔬菜
         Long typeId = fruitTreeServiceImpl.getTypeId(areaId);

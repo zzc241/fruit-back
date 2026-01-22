@@ -8,7 +8,7 @@
         <result column="ripe_num" property="ripeNum" jdbcType="INTEGER" />
         <result column="img" property="img" jdbcType="VARCHAR" />
         <result column="name" property="areaName" jdbcType="VARCHAR" />
-        <result column="type" property="typen" jdbcType="VARCHAR"/>
+        <result column="type" property="typeId" jdbcType="INTEGER"/>
         <result column="area_id" property="areaId" jdbcType="INTEGER"/>
     </resultMap>
     <update id = "updateById" parameterType="com.jhc.fruit.entity.FruitTree">
