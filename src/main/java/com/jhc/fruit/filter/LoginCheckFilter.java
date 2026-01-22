@@ -76,6 +76,8 @@ public class LoginCheckFilter implements Filter {
         // 修改后的代码：
         R<String> result = R.error("用户未登录");
         String jsonString = JSON.toJSONString(result);
+        // 重定向到首页
+        response.sendRedirect("/index.html");
 
         // 设置响应头，指定编码
         response.setContentType("application/json;charset=UTF-8");
