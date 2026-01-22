@@ -178,7 +178,8 @@ public class EmployeeController {
         //存入该员工的openId
         employee.setOpenId(openId);
         //防止重复登录，账号状态禁用
-        employee.setStatus(0);
+        //TODO:测试阶段，用户状态先注释掉
+        // employee.setStatus(0);
         //更新用户信息
         employeeService.updateById(employee);
         return R.success(employee,request);
