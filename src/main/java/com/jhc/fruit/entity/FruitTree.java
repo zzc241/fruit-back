@@ -22,7 +22,4 @@ public class FruitTree {
     private String img;
     @TableField("area_id")
     private int areaId;
-
-    private String areaName;
-
 }
