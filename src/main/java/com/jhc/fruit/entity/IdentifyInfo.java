@@ -3,6 +3,8 @@ package com.jhc.fruit.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -33,15 +35,17 @@ public class IdentifyInfo {
     private int treeRipePercent;
 
     @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty("创建时间")
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建者")
     private Long createUser;
 
+    @ApiModelProperty(value = "创建时间(自动填充)")
+    @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime createTime;
+
+    @ApiModelProperty(value = "更新时间(自动填充)")
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty("修改时间")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime updateTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
