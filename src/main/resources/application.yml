@@ -18,9 +18,12 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://36.134.4.166:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+      url: jdbc:mysql://127.0.0.1:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
       username: root
-      password: root
+      password: 123456
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSS
+    time-zone: GMT+8
 #  web:
 #    resources:
 #      static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
