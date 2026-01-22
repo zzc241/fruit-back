@@ -10,7 +10,7 @@
 
 - vpn
 
-![](README.assets/屏幕截图 2026-01-22 142718.png)
+![](README.assets/vpn.png)
 
 - navicat连接
 
@@ -24,7 +24,7 @@ Enter password: *
 ```mysql
 --这是给所有人root权限
 --1. 创建/修改root@%用户密码
-CREATE USER IF NOT EXISTS 'root'@%' IDENTIFIED BY '123456';
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY '123456';
 
 -- 2. 授权所有权限
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
@@ -47,7 +47,7 @@ FLUSH PRIVILEGES;
 
 
 
-![](README.assets/屏幕截图 2026-01-22 144414.png)
+![](README.assets/navicat.png)
 
 ##### 2.github互联
 
@@ -55,7 +55,7 @@ FLUSH PRIVILEGES;
 
 先创建仓库（创建仓库随便找视频看），再将合作人加入仓库
 
-![](README.assets/屏幕截图 2026-01-22 145827.png)
+![](README.assets/git1.png)
 
 
 
@@ -73,7 +73,7 @@ git pull origin main//拉取代码
 git push origin main//上传代码
 ```
 
-![](README.assets/屏幕截图 2026-01-22 145221.png)
+![](README.assets/git2.png)
 
 
 
