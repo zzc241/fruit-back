@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.EmpGroupDao">
+    <parameterMap id="parameterMap" type="com.jhc.fruit.entity.EmpGroup" >
+        <!-- property对应实体类的属性名称，column为数据库字段名 -->
+        <parameter property="groupId" jdbcType="BIGINT" />
+        <parameter property="empId" jdbcType="BIGINT" />
+        <parameter property="content" jdbcType="VARCHAR" />
+        <parameter property="infoId" jdbcType="BIGINT" />
+    </parameterMap>
+
+    <resultMap id="resultMap" type="com.jhc.fruit.entity.EmpGroup" >
+        <!-- property对应实体类的属性名称，column为数据库字段名 -->
+        <result column="group_id" property="groupId" jdbcType="BIGINT" />
+        <result column = "emp_id" property="empId" jdbcType="BIGINT" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="info_id" property="infoId" jdbcType="BIGINT" />
+    </resultMap>
+
+
+    <select id="getEmpId" resultType="Long">
+        SELECT emp_id from emp_group where group_id = #{groupId}
+    </select>
+    <delete id="deleteGroup" parameterType="Long">
+        DELETE from emp_group where group_id = #{id}
+    </delete>
+<!--    <select id="getGroupByContentEmp" resultType="java.util.Map">-->
+<!--        SELECT group_id AS groupId,content,GROUP_CONCAT(emp_id) AS empId , GROUP_CONCAT(info_id) AS infoId FROM emp_group WHERE emp_id = #{empId} GROUP BY content ;-->
+<!--    </select>-->
+    <select id="getGroupByContent" resultType="java.util.Map">
+        SELECT group_id AS groupId,content,GROUP_CONCAT(emp_id) AS empId , GROUP_CONCAT(info_id) AS infoId FROM emp_group WHERE group_id = #{groupId} GROUP BY content ;
+    </select>
+    <insert id ="save" parameterMap="parameterMap">
+        insert into emp_group(group_id,emp_id,content,info_id) values #{groupId},#{empId},#{content},#{infoId}
+    </insert>
+<!--    去重，防止重复获取组-->
+    <select id="getGroupsByEmp" resultMap = "resultMap">
+        select DISTINCT group_id,content from emp_group where emp_id = #{empId}
+    </select>
+    <select id = "getGroupsByContentEmp" parameterMap="parameterMap" resultMap="resultMap">
+        select * from emp_group where group_id = #{groupId} and content = #{content}
+    </select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.AreaDao">
+
+    <resultMap id="ResultMap" type="com.jhc.fruit.entity.Area" >
+        <!-- property对应实体类的属性名称，column为数据库字段名 -->
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="size" property="size" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="VARCHAR" />
+        <result column="type_id" property="typeId" jdbcType="BIGINT" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="DATE" />
+        <result column="emp_id" property="empId" jdbcType="BIGINT" />
+    </resultMap>
+    <update id="updateById" parameterType="com.jhc.fruit.entity.Area">
+        UPDATE area_info  SET name=#{name}, size=#{size}, type_id=#{typeId},  update_time=#{updateTime}, description=#{description},  update_user=#{updateUser}, emp_id=#{empId}  WHERE id= #{id}
+    </update>
+    <select id="getPageInfo" resultMap="ResultMap">
+        SELECT area_info.`id`,area_info.`name`,area_info.`size`,fruit_type.`type`,area_info.`type_id`,area_info.`description`,area_info.`update_time`,area_info.`emp_id`
+            FROM area_info,fruit_type
+            WHERE area_info.`type_id` = fruit_type.`id`
+            <if test = "name != null">
+                AND area_info.`name` like #{name}
+            </if>
+            order by area_info.`create_time` desc
+    </select>
+    <select id="getTypeById" resultType="String">
+        SELECT TYPE FROM fruit_type WHERE id IN (SELECT type_id FROM area_info);
+    </select>
+    <select id="getIdByType" resultType="Long">
+        SELECT id FROM fruit_type WHERE type = #{type};
+    </select>
+    <select id="getAreaByType" resultType="com.jhc.fruit.entity.Area">
+        select * from area_info where type_id = (select id from fruit_type where type = #{type});
+    </select>
+    <select id="getId" resultType="Integer">
+        select id from area_info order by id asc ;
+    </select>
+    <select id = "getById" resultType = "com.jhc.fruit.entity.Area">
+        select * from area_info where id = #{id}
+    </select>
+</mapper>
