@@ -1,0 +1,180 @@
+DROP DATABASE IF EXISTS fruit;
+CREATE DATABASE fruit DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE fruit;
+
+CREATE TABLE area_info (
+    id INT PRIMARY KEY AUTO_INCREMENT COMMENT '地区id',
+    name VARCHAR(255) NOT NULL COMMENT '地区名称',
+    size INT DEFAULT 0 COMMENT '地区面积/大小',
+    type VARCHAR(100) COMMENT '地区类型',
+    type_id BIGINT COMMENT '类型关联ID',
+    description TEXT COMMENT '描述',
+    emp_id BIGINT COMMENT '关联员工ID',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    create_user BIGINT COMMENT '创建人',
+    update_user BIGINT COMMENT '修改人'
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='地区信息表';
+
+
+CREATE TABLE camera (
+    id INT PRIMARY KEY AUTO_INCREMENT COMMENT '摄像头id，唯一id',
+    area_id INT NOT NULL COMMENT '区id，标识摄像头属于哪一块',
+    url VARCHAR(500) COMMENT '摄像头URL地址',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建的时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改的时间',
+    create_user BIGINT COMMENT '创建人员的id',
+    update_user BIGINT COMMENT '修改人员的id'
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='摄像头信息表';
+
+
+CREATE TABLE emp_group (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+    group_id BIGINT NOT NULL COMMENT '分组ID',
+    emp_id BIGINT NOT NULL COMMENT '员工ID',
+    info_id BIGINT COMMENT '关联信息ID',
+    content TEXT COMMENT '内容/备注',
+    is_finish TINYINT DEFAULT 0 COMMENT '是否完成：0-未完成，1-已完成',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='员工分组关联表';
+
+
+CREATE TABLE employee (
+    id BIGINT PRIMARY KEY COMMENT '员工id',
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '账号',
+    name VARCHAR(50) NOT NULL COMMENT '姓名',
+    password VARCHAR(255) NOT NULL COMMENT '密码',
+    phone VARCHAR(20) COMMENT '手机号',
+    sex VARCHAR(10) COMMENT '性别',
+    status TINYINT DEFAULT 1 COMMENT '员工状态(可用：1，禁用：0)',
+    head_img VARCHAR(500) COMMENT '头像',
+    is_admin TINYINT DEFAULT 0 COMMENT '是否管理员：0-否，1-是',
+    open_id VARCHAR(100) COMMENT '微信开放ID',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    create_user BIGINT COMMENT '创建者',
+    update_user BIGINT COMMENT '更新者'
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='员工表';
+
+
+CREATE TABLE fruit_grow (
+    tree_id BIGINT PRIMARY KEY COMMENT '果树ID（关联果树表）',
+    first_term TEXT COMMENT '第一期生长情况/描述',
+    second_term TEXT COMMENT '第二期生长情况/描述',
+    third_term TEXT COMMENT '第三期生长情况/描述',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='果树生长过程表';
+
+
+
+CREATE TABLE fruit_tree (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '果树ID',
+    type BIGINT NOT NULL COMMENT '果树类型ID',
+    count_num INT DEFAULT 0 COMMENT '总数量',
+    ripe_num INT DEFAULT 0 COMMENT '成熟数量',
+    img VARCHAR(500) COMMENT '果树图片',
+    area_id INT NOT NULL COMMENT '区域ID',
+    area_name VARCHAR(100) COMMENT '区域名称',
+    typen VARCHAR(100) COMMENT '类型名称',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='果树信息表';
+
+
+
+CREATE TABLE fruit_type (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '水果类型ID',
+    type VARCHAR(100) NOT NULL UNIQUE COMMENT '水果类型名称',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='水果类型表';
+
+
+CREATE TABLE identify_info (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '识别信息ID',
+    fruit_num INT NOT NULL DEFAULT 0 COMMENT '果蔬总数量',
+    fruit_name VARCHAR(100) COMMENT '水果名称',
+    img_count VARCHAR(500) COMMENT '处理后水果定位图片URL',
+    img_ripe VARCHAR(500) COMMENT '成熟水果识别图片URL',
+    ripe_num INT NOT NULL DEFAULT 0 COMMENT '成熟水果数量',
+    tree_id BIGINT NOT NULL COMMENT '果树ID',
+    tree_ripe_percent INT COMMENT '果树成熟百分比（0-100）',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    create_user BIGINT COMMENT '创建者',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    update_user BIGINT COMMENT '修改者'
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='识别信息表';
+
+
+CREATE TABLE news (
+    id BIGINT PRIMARY KEY COMMENT '新闻ID（雪花算法）',
+    title VARCHAR(200) NOT NULL COMMENT '新闻标题',
+    content TEXT COMMENT '新闻内容',
+    url VARCHAR(500) COMMENT '原文链接',
+    img_url VARCHAR(500) COMMENT '新闻图片URL',
+    agreement INT DEFAULT 0 COMMENT '点赞/赞同数',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='新闻资讯表';
+
+
+
+CREATE TABLE news_img (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '图片ID',
+    news_id BIGINT NOT NULL COMMENT '新闻ID',
+    img_url VARCHAR(500) NOT NULL COMMENT '图片URL',
+    img_order INT DEFAULT 0 COMMENT '图片排序（0最小最前）',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='新闻图片表';
+
+
+CREATE TABLE pick_info (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '通知ID',
+    title VARCHAR(200) NOT NULL COMMENT '通知标题',
+    content TEXT COMMENT '通知内容',
+    emp_id BIGINT NOT NULL COMMENT '接收用户ID',
+    emp_name VARCHAR(100) COMMENT '接收用户姓名',
+    is_read TINYINT DEFAULT 0 COMMENT '是否已读：0-未读，1-已读',
+    is_finish TINYINT DEFAULT 0 COMMENT '是否完成：0-未完成，1-已完成',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    create_user BIGINT COMMENT '创建人',
+    update_user BIGINT COMMENT '更新人'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='采摘通知信息表';
+
+CREATE TABLE weather (
+    id INT PRIMARY KEY AUTO_INCREMENT COMMENT '天气ID',
+    date VARCHAR(20) NOT NULL COMMENT '日期（如：2022-05-17）',
+    week VARCHAR(10) COMMENT '星期（如：星期一）',
+    location VARCHAR(50) NOT NULL COMMENT '城市/地区名称',
+    type VARCHAR(20) COMMENT '天气类型（晴、阴、雨等）',
+    high_temp VARCHAR(10) COMMENT '最高温度（带单位）',
+    low_temp VARCHAR(10) COMMENT '最低温度（带单位）',
+    fx VARCHAR(20) COMMENT '风向',
+    wind VARCHAR(20) COMMENT '风力',
+    
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='天气信息表';
+
