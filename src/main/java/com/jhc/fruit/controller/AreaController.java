@@ -7,6 +7,7 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Camera;
 import com.jhc.fruit.entity.FruitType;
+import com.jhc.fruit.entity.vo.AreaVo;
 import com.jhc.fruit.service.impl.AreaServiceImpl;
 import com.jhc.fruit.service.impl.CameraServiceImpl;
 import com.jhc.fruit.service.impl.FruitTypeServiceImpl;
@@ -14,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,15 +43,22 @@ public class AreaController {
 
     @PostMapping
     @ApiOperation("后：地区增加方法")
-    public R<String> save(@RequestBody Area area){
-        String type = area.getType();
+    public R<String> save(@RequestBody AreaVo areaVo){
+        //获取新增区域的类型
+        String type = areaVo.getType();
+        //通过前端新增区域里的类型查找对应类型在后端的id
         Long typeId = areaServiceImpl.getIdByType(type);
         System.out.println(typeId);
+        //如果该类型不存在
         if(typeId == null){
             return R.error("找不到当前的种类");
         }
-        area.setType(null);
+        //如果该类型存在
+        Area area = new Area();
+        //将获取到的id赋予给area表
         area.setTypeId(typeId);
+        BeanUtils.copyProperties(areaVo, area);
+        //保存
         areaServiceImpl.save(area);
         return R.success("新增地区成功");
     }
@@ -84,15 +93,15 @@ public class AreaController {
     })
     public R<Page> page(int page, int pageSize,String name){
         //创建分页构造器
-        Page<Area> pageInfo = new Page(page,pageSize);
-        Page<Area> page1 = new Page(page,pageSize);
+        Page<AreaVo> pageInfo = new Page(page,pageSize);
+        Page<AreaVo> page1 = new Page(page,pageSize);
         //模糊查询,添加符号
         if(name != null){
             name += "%";
         }
         pageInfo.setTotal(areaServiceImpl.page(page1).getTotal());
         pageInfo.setPages(areaServiceImpl.page(page1).getPages());
-        List<Area> result = areaServiceImpl.getPageInfo(pageInfo, name);
+        List<AreaVo> result = areaServiceImpl.getPageInfo(pageInfo, name);
         //进行分页查询
         pageInfo.setRecords(result);
         return R.success(pageInfo);

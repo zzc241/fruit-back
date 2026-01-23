@@ -13,7 +13,8 @@ import lombok.Data;
 @TableName("fruit_tree")
 public class FruitTree {
     private Long id;
-    private Long typeId;
+    @TableField("type")
+    private Long type;
     @TableField("count_num")
     private int countNum;
     @TableField("ripe_num")

@@ -2,18 +2,8 @@ package com.jhc.fruit;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.jupiter.api.Test;
 
-
-import org.opencv.core.*;
-import org.opencv.highgui.HighGui;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.videoio.VideoCapture;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
-import sun.applet.Main;
-import sun.security.pkcs11.Secmod;
-
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
