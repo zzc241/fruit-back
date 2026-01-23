@@ -27,7 +27,6 @@ public class Area {
 
     private int size;
 
-    private String type;
     private Long typeId;
     @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)

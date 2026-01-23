@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.PickInfo;
+import com.jhc.fruit.entity.vo.AreaVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -15,9 +16,9 @@ public interface AreaDao extends BaseMapper<Area> {
     public  Long getIdByType(String type);
     public List<Integer> getId();
     public List<Area> getAreaByType(String type);
-    public List<Area> getPageInfo(Page pageInfo, String name);
+    public List<AreaVo> getPageInfo(Page pageInfo, String name);
     public Area getById(Integer id);
     public int updateById(Area area);
     @Select("SELECT id,name,size,type_id,create_time,update_time,description,create_user,update_user,emp_id  FROM area_info")
-    public Page<Area> page(Page<Area> page);
+    public Page<AreaVo> page(Page<AreaVo> page);
 }

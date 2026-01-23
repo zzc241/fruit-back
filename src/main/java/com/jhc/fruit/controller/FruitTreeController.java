@@ -8,12 +8,15 @@ import com.jhc.fruit.common.QRCodeUtil;
 import com.jhc.fruit.common.QiniuUtils;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.*;
+import com.jhc.fruit.entity.vo.FruitTreeVo;
+import com.jhc.fruit.service.impl.AreaServiceImpl;
 import com.jhc.fruit.service.impl.FruitGrowServiceImpl;
 import com.jhc.fruit.service.impl.FruitTreeServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +40,9 @@ public class FruitTreeController {
     @Autowired
     private FruitGrowServiceImpl fruitGrowService;
 
+    @Autowired
+    private AreaServiceImpl areaServiceImpl;
+
 
 
     @GetMapping
@@ -50,11 +56,11 @@ public class FruitTreeController {
         if(type != null){
             type += "%";
         }
-        Page<FruitTree> pageInfo = new Page(page,pageSize);
+        Page<FruitTreeVo> pageInfo = new Page(page,pageSize);
         Page<FruitTree> page1 = new Page(page,pageSize);
         pageInfo.setTotal(fruitTreeServiceImpl.page(page1).getTotal());
         pageInfo.setPages(fruitTreeServiceImpl.page(page1).getPages());
-        List<FruitTree> result = fruitTreeServiceImpl.pageSelect(pageInfo, type);
+        List<FruitTreeVo> result = fruitTreeServiceImpl.pageSelect(pageInfo, type);
         pageInfo.setRecords(result);
 
         System.out.println(pageInfo.getRecords());
@@ -70,15 +76,21 @@ public class FruitTreeController {
     @ApiOperation("添加果树方法")
     public R<String> save(@RequestBody FruitTree fruitTree){
         //1.获取添加果树的种类，判断是否符合种在对应区块
-        Long type = fruitTree.getTypeId();
-        int areaId = fruitTree.getAreaId();
+        Long typeId = fruitTree.getType();
+        //获取区号
+        Long areaId = (long) fruitTree.getAreaId();
         //获取对应区块种植的蔬菜
-        Long typeId = fruitTreeServiceImpl.getTypeId(areaId);
-        if(type != typeId){
+        Long trueTypeId = fruitTreeServiceImpl.getTypeId(areaId);
+        //判断添加的果树与对应区块种植的果树的类型是否相同
+        //如果果树类型不同
+        if(!typeId.equals(trueTypeId)){
             return R.error("当前区块不能添加种植此类型作物");
         }
+        //如果类型相同
+        FruitTree fruitTreeSave = new FruitTree();
+        BeanUtils.copyProperties(fruitTree, fruitTreeSave);
         //添加果蔬
-        boolean treeSave = fruitTreeServiceImpl.save(fruitTree);
+        boolean treeSave = fruitTreeServiceImpl.save(fruitTreeSave);
         if(!treeSave){
            return R.error("新增失败");
         }
@@ -186,8 +198,8 @@ public class FruitTreeController {
     @GetMapping("/select/sortByCount/{areaId}")
     @ApiOperation("根据区号展示果树完后按果实数量降序")
     @ApiImplicitParam(name="areaId",value ="区块id")
-    public R<List<FruitTree>> sortByCount(@PathVariable int areaId){
-        List<FruitTree> fruitTreeList = fruitTreeServiceImpl.sortByCount(areaId);
+    public R<List<FruitTreeVo>> sortByCount(@PathVariable Long areaId){
+        List<FruitTreeVo> fruitTreeList = fruitTreeServiceImpl.sortByCount(areaId);
         if(fruitTreeList == null && fruitTreeList.size() == 0){
             return R.error("查找失败");
         }
@@ -197,8 +209,8 @@ public class FruitTreeController {
     @GetMapping("/select/sortByRipeCount/{areaId}")
     @ApiOperation("根据区号展示果树完后成熟果实实数量降序")
     @ApiImplicitParam(name="areaId",value ="区块id")
-    public R<List<FruitTree>> sortByRipeCount(@PathVariable int areaId){
-        List<FruitTree> fruitTreeList = fruitTreeServiceImpl.sortByRipeCount(areaId);
+    public R<List<FruitTreeVo>> sortByRipeCount(@PathVariable int areaId){
+        List<FruitTreeVo> fruitTreeList = fruitTreeServiceImpl.sortByRipeCount(areaId);
         if(fruitTreeList == null && fruitTreeList.size() == 0){
             return R.error("查找失败");
         }
