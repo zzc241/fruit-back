@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.PickInfo;
+import com.jhc.fruit.entity.vo.AreaVo;
 import com.jhc.fruit.service.AreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,8 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
     private AreaDao areaDao;
 
     @Override
-    public Page<Area> page(Page<Area> page) {
-        Page<Area> pageInfo = areaDao.page(page);
+    public Page<AreaVo> page(Page<AreaVo> page) {
+        Page<AreaVo> pageInfo = areaDao.page(page);
         return pageInfo;
     }
 
@@ -38,8 +39,8 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
     }
 
     @Override
-    public List<Area> getPageInfo(Page pageInfo, String name) {
-        List<Area> areaInfo = areaDao.getPageInfo(pageInfo, name);
+    public List<AreaVo> getPageInfo(Page pageInfo, String name) {
+        List<AreaVo> areaInfo = areaDao.getPageInfo(pageInfo, name);
         return areaInfo;
     }
 
@@ -67,6 +68,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
         return area;
     }
 
+//    在fruitType表通过id查找type品类
     @Override
     public Long getIdByType(String type) {
         Long typeId = areaDao.getIdByType(type);

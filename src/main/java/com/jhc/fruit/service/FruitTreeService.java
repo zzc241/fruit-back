@@ -5,18 +5,19 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.PickInfo;
+import com.jhc.fruit.entity.vo.FruitTreeVo;
 
 import java.util.List;
 
 public interface FruitTreeService extends IService<FruitTree> {
-    public List<FruitTree> pageSelect(Page<FruitTree> page,String type);
-    public Long getTypeId(int areaId);
+    public List<FruitTreeVo> pageSelect(Page<FruitTreeVo> page,String type);
+    public Long getTypeId(Long areaId);
     public List<FruitType> showType();
     public FruitTree getById(Long id);
     public List<FruitTree> selectByAreaId(int areaId);
-    public List<FruitTree> sortByRipeCount(int areaId);
-    public List<FruitTree> sortByCount(int areaId);
+    public List<FruitTreeVo> sortByRipeCount(int areaId);
+    public List<FruitTreeVo> sortByCount(Long areaId);
     public FruitTree selectBy2Id(Long id);
     public boolean updateById(FruitTree fruitTree);
-    public Page<FruitTree> page(Page<FruitTree> page);
+    public Page<FruitTreeVo> page(Page<FruitTreeVo> page);
 }

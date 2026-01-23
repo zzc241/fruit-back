@@ -5,13 +5,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.FruitTreeDao;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
-import com.jhc.fruit.entity.PickInfo;
+import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.service.FruitTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author ：lcy
@@ -25,8 +24,8 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     private FruitTreeDao fruitTreeDao;
 
     @Override
-    public Page<FruitTree> page(Page<FruitTree> page) {
-        Page<FruitTree> pageInfo = fruitTreeDao.page(page);
+    public Page<FruitTreeVo> page(Page<FruitTreeVo> page) {
+        Page<FruitTreeVo> pageInfo = fruitTreeDao.page(page);
         return pageInfo;
     }
 
@@ -46,13 +45,13 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     }
 
     @Override
-    public List<FruitTree> pageSelect(Page<FruitTree> pageInfo,String type) {
-        List<FruitTree> page = fruitTreeDao.pageSelect(pageInfo,type);
+    public List<FruitTreeVo> pageSelect(Page<FruitTreeVo> pageInfo,String type) {
+        List<FruitTreeVo> page = fruitTreeDao.pageSelect(pageInfo,type);
         return page;
     }
 
     @Override
-    public Long getTypeId(int areaId) {
+    public Long getTypeId(Long areaId) {
         Long typeId = fruitTreeDao.getTypeId(areaId);
         return typeId;
     }
@@ -76,14 +75,14 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     }
 
     @Override
-    public List<FruitTree> sortByRipeCount(int areaId) {
-        List<FruitTree> fruitTrees = fruitTreeDao.sortByRipeCount(areaId);
+    public List<FruitTreeVo> sortByRipeCount(int areaId) {
+        List<FruitTreeVo> fruitTrees = fruitTreeDao.sortByRipeCount(areaId);
         return fruitTrees;
     }
 
     @Override
-    public List<FruitTree> sortByCount(int areaId) {
-        List<FruitTree> fruitTrees = fruitTreeDao.sortByCount(areaId);
+    public List<FruitTreeVo> sortByCount(Long areaId) {
+        List<FruitTreeVo> fruitTrees = fruitTreeDao.sortByCount(areaId);
         return fruitTrees;
     }
 }
