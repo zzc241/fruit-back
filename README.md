@@ -75,9 +75,67 @@ git push origin main//上传代码
 
 ![](README.assets/git2.png)
 
+```
+27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
+$ git fetch origin zyr
+From github.com:zzc241/-1.0
+
+ * branch            zyr        -> FETCH_HEAD
+
+27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
+$ git branch -r
+  origin/main
+  origin/zyr
+
+27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
+$ git checkout -b zyr origin/zyr
+branch 'zyr' set up to track 'origin/zyr'.
+Switched to a new branch 'zyr'
+
+27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (zyr)
+$ git branch -v
+  main d795273 [origin/main] 1.22(readme与时间+‘z’)
+
+* zyr  6e36039 [origin/zyr] 修改：删除了多余属性typen
+
+27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (zyr)
+$ git pull origin zyr
+remote: Enumerating objects: 52, done.
+remote: Counting objects: 100% (52/52), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 24 (delta 12), reused 24 (delta 12), pack-reused 0 (from 0)
+Unpacking objects: 100% (24/24), 1.67 KiB | 30.00 KiB/s, done.
+From github.com:zzc241/-1.0
+
+ * branch            zyr        -> FETCH_HEAD
+   6e36039..16bd946  zyr        -> origin/zyr
+   Updating 6e36039..16bd946
+   Fast-forward
+    ...\346\210\252\345\233\276 2026-01-22 142718.png" | Bin 0 -> 242454 bytes
+
+27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (zyr)
+$ git checkout main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+
+27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
+$ git merge zyr
+Updating d795273..16bd946
+Fast-forward
+
+27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
+$ git push origin main
+Total 0 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To github.com:zzc241/-1.0.git
+   d795273..16bd946  main -> main
+
+```
+
 
 
 ##### 3.需求分析
+
+
 
 ### 2.寒假时
 
