@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.FruitTypeDao">
+    <resultMap id="ResultMap" type="com.jhc.fruit.entity.FruitType" >
+        <!-- property对应实体类的属性名称，column为数据库字段名 -->
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getTypeById" parameterType="com.jhc.fruit.entity.FruitType" resultType="String">
+        SELECT fruit_type.type FROM fruit_type WHERE id = #{id}
+    </select>
+</mapper>
+
+
+

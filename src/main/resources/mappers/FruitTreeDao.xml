@@ -33,8 +33,8 @@
             AND fruit_type.`type` like #{type}
         </if>
     </select>
-    <select id="getById" parameterType="LONG" resultMap="TreeVo">
-        SELECT fruit_tree.`id`,fruit_type.`type`,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,area_info.`name`,fruit_tree.`area_id`
+    <select id="getById" parameterType="LONG" resultMap="ResultMap">
+        SELECT fruit_tree.`id`,fruit_tree.`type`,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,fruit_tree.`area_id`
         FROM fruit_tree,area_info,fruit_type
         WHERE fruit_tree.`area_id` = area_info.`id` AND fruit_tree.`type` = fruit_type.`id` AND fruit_tree.`id` = #{id}
     </select>

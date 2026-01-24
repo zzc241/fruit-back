@@ -3,6 +3,7 @@ package com.jhc.fruit.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jhc.fruit.aop.Log;
 import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.QRCodeUtil;
 import com.jhc.fruit.common.QiniuUtils;
@@ -12,6 +13,7 @@ import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.service.impl.AreaServiceImpl;
 import com.jhc.fruit.service.impl.FruitGrowServiceImpl;
 import com.jhc.fruit.service.impl.FruitTreeServiceImpl;
+import com.jhc.fruit.service.impl.FruitTypeServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,7 +43,7 @@ public class FruitTreeController {
     private FruitGrowServiceImpl fruitGrowService;
 
     @Autowired
-    private AreaServiceImpl areaServiceImpl;
+    private FruitTypeServiceImpl fruitTypeServiceImpl;
 
 
 
@@ -72,6 +74,7 @@ public class FruitTreeController {
      * @param fruitTree
      * @return
      */
+    @Log
     @PostMapping
     @ApiOperation("添加果树方法")
     public R<String> save(@RequestBody FruitTree fruitTree){
@@ -108,10 +111,13 @@ public class FruitTreeController {
      */
     @GetMapping("/{id}")
     @ApiOperation("根据id查询果树信息，用于修改果树时回溯信息")
-    public R<FruitTree> getById(@PathVariable Long id){
+    public R<FruitTreeVo> getById(@PathVariable Long id){
         FruitTree fruitTree = fruitTreeServiceImpl.getById(id);
-        if(fruitTree != null){
-            return R.success(fruitTree);
+        FruitTreeVo fruitTreeVo = new FruitTreeVo();
+        BeanUtils.copyProperties(fruitTree, fruitTreeVo);
+        fruitTreeVo.setTypen(fruitTypeServiceImpl.getTypeById(fruitTree.getType()));
+        if(fruitTreeVo != null){
+            return R.success(fruitTreeVo);
         }
         return R.error("没有查询到对应果树信息");
     }
@@ -121,6 +127,7 @@ public class FruitTreeController {
      * @param fruitTree
      * @return
      */
+    @Log
     @PutMapping
     @ApiOperation("修改果蔬信息")
     @ApiImplicitParams({
@@ -144,6 +151,7 @@ public class FruitTreeController {
      * @param id
      * @return
      */
+    @Log
     @DeleteMapping("/{id}")
     @ApiOperation("根据id删除果树")
     @ApiImplicitParam(name="id",value ="要删除果树的对应id")
@@ -155,6 +163,7 @@ public class FruitTreeController {
         //删除对应图片
         QiniuUtils.deleteFileFromQiniu(fruitTree.getImg());
         FruitGrow fruitGrow = fruitGrowService.getById(id);
+ /*     原逻辑下需要关联果树生长表才能删除，暂时先注释掉
         if(fruitGrow != null){
             String firstTerm = fruitGrow.getFirstTerm();
 
@@ -173,7 +182,8 @@ public class FruitTreeController {
             //删除对应生长过程
             fruitGrowService.removeById(fruitGrow.getTreeId());
         fruitTreeServiceImpl.removeById(id);
-        }
+        }*/
+        fruitTreeServiceImpl.removeById(id);
         return R.success("删除成功");
     }
 

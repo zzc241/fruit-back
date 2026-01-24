@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.OperationLogDao">
+    <resultMap id="ResultMap" type="com.jhc.fruit.entity.OperationLog" >
+        <!-- property对应实体类的属性名称，column为数据库字段名 -->
+        <result column="log_id" property="logId" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="operation_content" property="operationContent" jdbcType="VARCHAR" />
+        <result column="operation_time" property="operationTime" jdbcType="DATETIMEOFFSET" />
+        <result column="operation_ip" property="operationIp" jdbcType="VARCHAR" />
+        <result column="operation_result" property="operationResult" jdbcType="VARCHAR" />
+    </resultMap>
+</mapper>
+
+
+

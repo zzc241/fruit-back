@@ -6,4 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface FruitTypeDao extends BaseMapper<FruitType> {
+
+    public String getTypeById(Long id);
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.FruitTypeDao;
 import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.service.FruitTypeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,4 +14,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class FruitTypeServiceImpl extends ServiceImpl<FruitTypeDao, FruitType> implements FruitTypeService {
+
+    @Autowired
+    private FruitTypeDao fruitTypeDao;
+
+    public String getTypeById(Long id){
+        fruitTypeDao.getTypeById(id);
+        return fruitTypeDao.getTypeById(id);
+    }
 }

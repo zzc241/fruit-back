@@ -2,6 +2,7 @@ package com.jhc.fruit.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jhc.fruit.aop.Log;
 import com.jhc.fruit.common.QiniuUtils;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Area;
@@ -41,6 +42,7 @@ public class AreaController {
     private FruitTypeServiceImpl fruitTypeServiceImpl;
 
 
+    @Log
     @PostMapping
     @ApiOperation("后：地区增加方法")
     public R<String> save(@RequestBody AreaVo areaVo){
@@ -63,6 +65,7 @@ public class AreaController {
         return R.success("新增地区成功");
     }
 
+    @Log
     @DeleteMapping("/{id}")
     @ApiOperation("后：地区删除方法")
     @ApiImplicitParam(name = "id",value = "地区id")
@@ -120,6 +123,7 @@ public class AreaController {
         return R.success(area);
     }
 
+    @Log
     @PutMapping
     @ApiOperation("后：修改地区信息")
     public R<String> update(@RequestBody Area area){
