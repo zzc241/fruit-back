@@ -5,14 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.entity.PickInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
-
 @Mapper
+/**
+ * @author ：zzc
+ * @description：impl已经全部变成mybatis plus的通用方法，所以这个接口基本全部方法都不需要重写
+ * @date ：2026/1/23
+ */
 public interface PickInfoDao extends BaseMapper<PickInfo> {
-    public List<PickInfo> getMine(Long empId);
-    public Boolean getIsFinish(Long infoId);
-    public PickInfo getById(Long id);
-    @Select("SELECT id,title,content,create_time,update_time,create_user,update_user,emp_id,is_read,is_finish FROM pick_info ")
-    public Page<PickInfo> page(Page<PickInfo> page);
 }

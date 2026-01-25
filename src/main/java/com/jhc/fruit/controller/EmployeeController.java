@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.aop.Log;
 import com.jhc.fruit.common.*;
 import com.jhc.fruit.entity.Employee;
+import com.jhc.fruit.entity.vo.loginEmployeeVo;
+import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.impl.EmployeeServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -45,19 +47,14 @@ import java.util.UUID;
 public class EmployeeController {
     private String openId;
     @Autowired
-    private EmployeeServiceImpl employeeService;
+    private EmployeeService employeeService;
 
     @GetMapping("/getWorkers")
     @ApiOperation("获取所有临时工")
     //获取所有临时工的方法
-    public R<List<Employee>> getWorker(){
-        LambdaQueryWrapper<Employee> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(Employee::getIsAdmin,2);
-        List<Employee> workers = employeeService.list(wrapper);
-        if(workers != null){
-            return R.success(workers);
-        }
-        return null;
+    public R<List<Employee>> getWorkers(){
+        List<Employee> workers = employeeService.getWorkers();
+        return R.success(workers);
     }
 
     /**
@@ -145,13 +142,10 @@ public class EmployeeController {
     @Log
     @PostMapping("/login")
     @ApiOperation(value="用户登录方法")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "map" , value = "JSON格式，当中存放用户输入的账号，密码"),
-    })
-    public R<Employee> login(@RequestBody Map<String,String> loginMap, HttpServletRequest request){
+    public R<Employee> login(@RequestBody loginEmployeeVo loginEmployeeVo , HttpServletRequest request){
         //获取前端提交的数据
-        String userName = loginMap.get("username");
-        String password = loginMap.get("password");
+        String userName = loginEmployeeVo.getUsername();
+        String password = loginEmployeeVo.getPassword();
 
         //1.将提交的密码进行md5处理
          password = DigestUtils.md5DigestAsHex(password.getBytes());
