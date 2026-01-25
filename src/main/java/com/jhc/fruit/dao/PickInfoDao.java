@@ -10,8 +10,6 @@ import java.util.List;
 
 @Mapper
 public interface PickInfoDao extends BaseMapper<PickInfo> {
-    public List<PickInfo> getFinish(Page pageInfo, String title, Long empId);
-    public List<PickInfo> getNoFinish(Page pageInfo, String title, Long empId);
     public List<PickInfo> getMine(Long empId);
     public Boolean getIsFinish(Long infoId);
     public PickInfo getById(Long id);

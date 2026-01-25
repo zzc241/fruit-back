@@ -1,23 +1,17 @@
 package com.jhc.fruit.controller;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.common.R;
-import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.PickInfo;
-import com.jhc.fruit.service.impl.EmployeeServiceImpl;
+import com.jhc.fruit.service.PickInfoService;
 import com.jhc.fruit.service.impl.PickInfoServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author ：lcy
@@ -31,43 +25,29 @@ public class PickInfoController {
     @Autowired
     private PickInfoServiceImpl pickInfoServiceImpl;
 
+    @Autowired
+    private PickInfoService pickInfoService;
+
     @GetMapping("/getFinish")
     @ApiOperation("后台：查看全部完成通知")
-    public R<Page> getFinishInfo(int page,int pageSize,String title,Long empId){
-        //新建分页对象
-        Page<PickInfo> page1 = new Page<>(page,pageSize);
-        Page<PickInfo> pageInfo = new Page<>(page,pageSize);
-        //模糊查询格式
-        if(title != null){
-            title += "%";
-        }
-        pageInfo.setTotal(pickInfoServiceImpl.page(page1).getTotal());
-        pageInfo.setPages(pickInfoServiceImpl.page(page1).getPages());
-        //分页查询
-        List<PickInfo> finishInfo = pickInfoServiceImpl.getFinish(pageInfo, title, empId);
-        System.out.println("完成采摘信息返回结果:" + finishInfo);
-        //将查询数据赋值分页对象
-        pageInfo.setRecords(finishInfo);
-
+    public R<Page<PickInfo>> getFinishInfo(
+        @RequestParam(value = "page", defaultValue = "1") Integer page,
+        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+        @RequestParam(required = false) String title,
+        @RequestParam(required = false) Long empId){
+        Page<PickInfo> pageInfo = pickInfoService.getFinish(page, pageSize, title, empId);
         return R.success(pageInfo);
     }
 
     @GetMapping("/getNoFinish")
     @ApiOperation("后台：查看全部未完成通知")
-    public R<Page> getNoFinishInfo(int page,int pageSize,String title,Long empId){
-        //新建分页对象
-        Page<PickInfo> pageInfo = new Page<>(page,pageSize);
-        Page<PickInfo> page1 = new Page<>(page,pageSize);
-        //模糊查询格式
-        if(title != null){
-            title += "%";
-        }
-        pageInfo.setTotal(pickInfoServiceImpl.page(page1).getTotal());
-        pageInfo.setPages(pickInfoServiceImpl.page(page1).getPages());
-        //分页查询
-        List<PickInfo> noFinishInfo = pickInfoServiceImpl.getNoFinish(pageInfo, title, empId);
-        //将查询数据赋值分页对象
-        pageInfo.setRecords(noFinishInfo);
+    public R<Page<PickInfo>> getNoFinishInfo(
+        @RequestParam(value = "page", defaultValue = "1") Integer page,
+        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+        @RequestParam(required = false) String title,
+        @RequestParam(required = false) Long empId){
+        //进行分页查询
+        Page<PickInfo> pageInfo = pickInfoService.getNoFinish(page, pageSize, title, empId);
         return R.success(pageInfo);
     }
 
@@ -125,15 +105,15 @@ public class PickInfoController {
 //        }
 //        //进行分页查询
 //        pageInfo.setRecords(pickInfoServiceImpl.getAll(pageInfo, empId, title));
-//
+
 //        System.out.println("通知的全部的pageInfo的getRecords：" + pageInfo.getRecords());
 //        //对分页数据进行处理
 //        List<PickInfo> records = pageInfo.getRecords();
-//
+
 //        List<List<PickInfo>> pickInfoRecords = new ArrayList<>();
 //        List<PickInfo> finishRecords = new ArrayList<>();
 //        List<PickInfo> nfinishRecords = new ArrayList<>();
-//
+
 //        for(PickInfo pickInfo : records){
 //            //判断采摘通知信息是否完成
 //            if(pickInfo.getIsFinish()){

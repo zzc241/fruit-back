@@ -12,8 +12,8 @@ import java.util.List;
  * @date ：2022/5/30 0030 10:04
  */
 public interface PickInfoService extends IService<PickInfo> {
-    public List<PickInfo> getFinish(Page pageInfo, String title, Long empId);
-    public List<PickInfo> getNoFinish(Page pageInfo, String title, Long empId);
+    public Page<PickInfo> getNoFinish(int page, int pageSize, String title, Long empId);
+    public Page<PickInfo> getFinish(int page, int pageSize, String title, Long empId);
     public List<PickInfo> getMine(Long empId);
     public Boolean getIsFinish(Long infoId);
     public PickInfo getById(Long id);

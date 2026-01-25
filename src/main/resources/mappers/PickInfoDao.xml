@@ -37,32 +37,6 @@
     <select id = "getMine" resultMap="originMap">
         SELECT * from pick_info where emp_id = #{empId} or emp_id = 1
     </select>
-<!--    后台查看完成任务信息-->
-    <select id="getFinish"  resultMap="resultMap">
-        SELECT pick_info.`id`,pick_info.`title`,pick_info.`content`,pick_info.`create_time`,pick_info.`update_time`,pick_info.`create_user`,pick_info.`update_user`,employee.`name`,pick_info.`is_read`,pick_info.`is_finish`
-        FROM pick_info,employee
-        WHERE pick_info.`emp_id` = employee.`id` AND pick_info.`is_finish` = 1
-        <if test = "empId != null">
-            AND pick_info.`emp_id`  = #{empId}
-        </if>
-        <if test = "title != null">
-            AND pick_info.`title` like #{title}
-        </if>
-        order by pick_info.`create_time` desc
-    </select>
-
-    <select id="getNoFinish"  resultMap="resultMap">
-        SELECT pick_info.`id`,pick_info.`title`,pick_info.`content`,pick_info.`create_time`,pick_info.`update_time`,pick_info.`create_user`,pick_info.`update_user`,employee.`name`,pick_info.`is_read`,pick_info.`is_finish`
-        FROM pick_info,employee
-        WHERE pick_info.`emp_id` = employee.`id` AND pick_info.`is_finish` = 0
-        <if test = "empId != null">
-            AND pick_info.`emp_id`  = #{empId}
-        </if>
-        <if test = "title != null">
-            AND pick_info.`title` like #{title}
-        </if>
-        order by pick_info.`create_time` desc
-    </select>
 
     <select id = "getIsFinish" resultType = "java.lang.Boolean">
         select is_finish from pick_info where id = #{infoId}
