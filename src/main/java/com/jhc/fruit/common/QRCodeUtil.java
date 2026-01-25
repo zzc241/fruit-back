@@ -6,10 +6,15 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 
@@ -21,12 +26,12 @@ import java.util.HashMap;
 public class QRCodeUtil {
 
     //生成二维码方法
-    public static void createQRCode(Long id){
+    public static MultipartFile createQRCode(Long id){
         //1.定义二维码属性
         int width = 300;    //定义图片宽度
         int height = 300;   //定义图片高度
         String format = "png";  //定义图片格式
-        String content = "http://192.168.72.150:8080/fruitTree/" + id; //定义二维码内容，也可以是图片或者字符串
+        String content = "https://127.0.0.1:3388/fruitTree/" + id; //定义二维码内容，也可以是图片或者字符串
 
         //2.定义二维码中参数
         HashMap hashMap = new HashMap<>();
@@ -35,14 +40,27 @@ public class QRCodeUtil {
         hashMap.put(EncodeHintType.MARGIN,2);   //设置边距
 
         //3.生成二维码图片
-        try{
+        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
             //生成矩阵                                          存入二维码的内容    格式              宽     高
             BitMatrix bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE,width,height,hashMap);
-            Path file = new File("E:/QRCodeImage/fruitTree" + id + ".png").toPath(); //设置路径
-            //输出图像
-            MatrixToImageWriter.writeToPath(bitMatrix,format,file);
-        }catch (Exception e){
-            e.printStackTrace();
+            //将二维码写入字节输出流
+            MatrixToImageWriter.writeToStream(bitMatrix, format, outputStream);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            // 构建 MockMultipartFile（参数：字段名、文件名、文件类型、输入流）
+            MultipartFile multipartFile = new MockMultipartFile(
+                    "QRPath",                // 请求中的字段名（可自定义）
+                    "fruitTree_" + id + ".png", // 文件名
+                    "image/png",             // 文件MIME类型
+                    inputStream              // 二维码字节输入流
+            );
+
+            return multipartFile;
+        } catch (WriterException e) {
+            throw new RuntimeException("二维码生成失败：" + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new RuntimeException("字节流处理失败：" + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("二维码生成异常：" + e.getMessage(), e);
         }
     }
 

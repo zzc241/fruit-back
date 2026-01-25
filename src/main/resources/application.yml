@@ -41,5 +41,10 @@ mybatis-plus:
     db-config:
       id-type: ASSIGN_ID
   mapper-locations: mappers/*.xml
-
+#Minio配置
+minio:
+  endpoint: http://192.168.123.92:9000
+  access-key: X7HDRb4DBwMdMbtjDDPB
+  secret-key: ej3CttgQgUHzfw5Zu1oomsETaCjWdR4N5S9IeHG9
+  bucket-name: test-qr
 
