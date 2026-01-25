@@ -10,10 +10,7 @@ import com.jhc.fruit.common.QiniuUtils;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
-import com.jhc.fruit.service.impl.AreaServiceImpl;
-import com.jhc.fruit.service.impl.FruitGrowServiceImpl;
-import com.jhc.fruit.service.impl.FruitTreeServiceImpl;
-import com.jhc.fruit.service.impl.FruitTypeServiceImpl;
+import com.jhc.fruit.service.impl.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.reflect.generics.tree.Tree;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -44,6 +42,9 @@ public class FruitTreeController {
 
     @Autowired
     private FruitTypeServiceImpl fruitTypeServiceImpl;
+
+    @Autowired
+    private FileServiceImpl fileServiceImpl;
 
 
 
@@ -225,5 +226,26 @@ public class FruitTreeController {
             return R.error("查找失败");
         }
         return R.success(fruitTreeList);
+    }
+    /**
+     * 生成二维码后生成到minio上，
+     * 返回图片的存储路径 MinIO服务地址/桶名称/目录/文件名.扩展名
+     * @param id
+     * @return R.success(QRPat
+     * */
+    @GetMapping("/createQR/{id}")
+    @ApiOperation("生成展示果树详情消息的二维码")
+    @ApiImplicitParam(name = "id", value = "果树id")
+    public R<String> createQR(@PathVariable Long id){
+        //先判断该id对应的果树是否存在
+        FruitTree fruitTree = fruitTreeServiceImpl.getById(id);
+        if (fruitTree == null) {
+            return  R.error("目标果树不存在");
+        }
+        //如果果树存在
+        //上传二维码并上传到minio
+        String QRPath = fileServiceImpl.upload(QRCodeUtil.createQRCode(id));
+        //返回图片在minio上的路径
+        return R.success(QRPath);
     }
 }
