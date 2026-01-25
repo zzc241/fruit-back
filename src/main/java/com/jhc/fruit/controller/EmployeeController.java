@@ -285,38 +285,46 @@ public class EmployeeController {
     @PutMapping("/reset")
     @ApiOperation("修改密码")
     public R<String> updatePassword(@RequestParam("oldPassword") String oldPassword,@RequestParam("newPassword") String newPassword){
-        //获取当前已经登录用户的id
         Long id = BaseContext.getId();
-        System.out.println(id);
+        
+        // 查询用户
         Employee emp = employeeService.getById(id);
-        //将用户输入的新旧密码统一进行md5加密处理
-        oldPassword = DigestUtils.md5DigestAsHex(oldPassword.getBytes());
-        String password = emp.getPassword();
-        newPassword = DigestUtils.md5DigestAsHex(newPassword.getBytes());
-        if((!newPassword.equals(password)) && (!password.equals(oldPassword))){
-            //生成更改内容对象
-            Employee  employee = new Employee();
-            employee.setId(id);
-            employee.setPassword(newPassword);
-            //创建条件构造器
-            LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            lambdaQueryWrapper.eq(Employee::getId,id).eq(Employee::getPassword,oldPassword);
-
-            //修改密码
-            employeeService.updateById(employee);
-            return R.success("成功修改密码");
+        if (emp == null) {
+            return R.error("用户不存在");
         }
-        return R.error("输入的原密码不匹配或新密码与原密码相同");
-
+        
+        // 加密处理
+        String oldPasswordMd5 = DigestUtils.md5DigestAsHex(oldPassword.getBytes());
+        String newPasswordMd5 = DigestUtils.md5DigestAsHex(newPassword.getBytes());
+        
+        // 验证旧密码
+        if (!emp.getPassword().equals(oldPasswordMd5)) {
+            return R.error("原密码不正确");
+        }
+        
+        // 验证新旧密码是否相同
+        if (emp.getPassword().equals(newPasswordMd5)) {
+            return R.error("新密码不能与原密码相同");
+        }
+        
+        // 更新密码
+        Employee updateEmp = new Employee();
+        updateEmp.setId(id);
+        updateEmp.setPassword(newPasswordMd5);
+        
+        // updateById 会根据id更新
+        employeeService.updateById(updateEmp);
+        
+        return R.success("成功修改密码");
     }
 
     @ApiOperation("个人信息展示方法")
     @GetMapping("/getPeople")
     public R<Employee> getPeople(){
         Long id = BaseContext.getId();
-        System.out.println("个人信息展示获取的id：" + BaseContext.getId());
+        System.out.println("个人信息展示获取的id：" + id);
         //1.获取员工id
-        Long employeeId = BaseContext.getId();
+        Long employeeId = id;
         //2.根据员工id查询员工个人信息
         Employee employee = employeeService.getById(employeeId);
         return R.success(employee);
@@ -349,6 +357,11 @@ public class EmployeeController {
     @ApiOperation("根据id删除员工信息")
     @ApiImplicitParam(name = "id", value = "要删除员工对应的id")
     public R<String> delete(@PathVariable Long id){
+        Long currentUserId = BaseContext.getId();
+        Employee currentUser = employeeService.getById(currentUserId);
+        if (currentUser.getIsAdmin() != 1) {
+            return R.error("只有超级管理员才能删除员工");
+        }
         log.info("根据id删除员工信息");
         Employee emp = employeeService.getById(id);
         if(emp == null){
@@ -376,13 +389,13 @@ public class EmployeeController {
     public R<String> updateHead(@RequestParam("imgFile") MultipartFile imgFile,@PathVariable Long id){
         System.out.println(id);
         Employee emp = employeeService.getById(id);
+        if(emp == null){
+            return R.error("找不到用户");
+        }
         String headImg = emp.getHeadImg();
         if(headImg != null){
             //删除用户原有的头像避免内存浪费
             QiniuUtils.deleteFileFromQiniu(headImg);
-        }
-        if(emp == null){
-            return R.error("找不到用户");
         }
         String fileName = QiniuUtils.formatUpload(imgFile);
         emp.setHeadImg(fileName);
