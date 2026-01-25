@@ -19,12 +19,12 @@ public class Employee{
     @ApiModelProperty(value = "员工id")
     private Long id;
 
-    @ApiModelProperty(value = "账号")
+    @ApiModelProperty(value = "账号" , example = "zzc")
     private String username;
 
     @ApiModelProperty(value = "姓名")
     private String name;
-    @ApiModelProperty(value = "密码")
+    @ApiModelProperty(value = "密码", example = "123456")
     private String password;
     @ApiModelProperty(value = "手机号")
     private String phone;
@@ -50,6 +50,7 @@ public class Employee{
     private Long updateUser;
 
     private String headImg;
+    @ApiModelProperty(value = "1:超级管理员 ， 2 ： 果园管理员 ， 3 ： 农户 ， 4 ： 消费者")
     @TableField("is_admin")  // 改为下划线
     private Integer isAdmin; 
 

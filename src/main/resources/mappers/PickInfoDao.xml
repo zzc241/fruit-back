@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jhc.fruit.dao.PickInfoDao">
-<!--    原始映射类-->
-    <resultMap id="originMap" type="com.jhc.fruit.entity.PickInfo" >
-        <!-- property对应实体类的属性名称，column为数据库字段名 -->
-        <result column="id" property="id" jdbcType="BIGINT" />
-        <result column="title" property="title" jdbcType="VARCHAR" />
-        <result column="content" property="content" jdbcType="VARCHAR" />
-        <result column="emp_id" property="empId" jdbcType="BIGINT" />
-        <result column="is_read" property="isRead" jdbcType="BOOLEAN" />
-        <result column="is_finish" property="isFinish" jdbcType="BOOLEAN" />
-        <result column="create_user" property="createUser" jdbcType="BIGINT" />
-        <result column="update_user" property="updateUser" jdbcType="BIGINT" />
-        <result column="create_time" property="createTime" jdbcType="DATE" />
-        <result column="update_time" property="updateTime" jdbcType="DATE" />
-    </resultMap>
 <!--    将接收用户的用户id转换为用户姓名的映射类-->
     <resultMap id="resultMap" type="com.jhc.fruit.entity.PickInfo" >
         <!-- property对应实体类的属性名称，column为数据库字段名 -->
@@ -29,17 +15,4 @@
         <result column="create_time" property="createTime" jdbcType="DATE" />
         <result column="update_time" property="updateTime" jdbcType="DATE" />
     </resultMap>
-    <select id = "getById" resultMap = "originMap">
-        select * from pick_info where id = #{id}
-    </select>
-
-<!--    查看用户个人接收到的消息通知-->
-    <select id = "getMine" resultMap="originMap">
-        SELECT * from pick_info where emp_id = #{empId} or emp_id = 1
-    </select>
-
-    <select id = "getIsFinish" resultType = "java.lang.Boolean">
-        select is_finish from pick_info where id = #{infoId}
-    </select>
-
 </mapper>

@@ -92,7 +92,12 @@ public class EmpGroupController {
                 empGroup.setGroupId(gId);
                 empGroup.setContent(content);
                 empGroup.setInfoId(Long.parseLong(splitInfo[j]));
-                empGroup.setIsFinish(pickInfoServiceImpl.getIsFinish(Long.parseLong(splitInfo[j])));
+                // 替代pickInfoServiceImpl.getIsFinish()的逻辑
+                Long currentInfoId = Long.parseLong(splitInfo[j]);
+                PickInfo pickInfo = pickInfoServiceImpl.getById(currentInfoId);
+                Boolean isFinish = pickInfo != null ? pickInfo.getIsFinish() : false;
+                empGroup.setIsFinish(isFinish);
+                // empGroup.setIsFinish(pickInfoServiceImpl.getIsFinish(Long.parseLong(splitInfo[j])));
                 empGroup.setEmpId(Long.parseLong(splitEmp[j]));
                 empGroup.setEmployee(employeeService.getById(Long.parseLong(splitEmp[j])));
                 //将临时工添加到列表中
