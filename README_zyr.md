@@ -22,3 +22,12 @@
 
 2.增加了FruitType的查询方法getTypeById（Long id）；修改了FruitTreeController的删除方法。修改了FruitTreeDao.xml里的方法getTreeById（原：select fruit_type.type... -> 现在：select fruit_tree.type)
 
+
+
+## 2026.1.25
+
+1.添加Minio上传方法、预览图片方法
+
+2.添加创建二维码功能
+
+3.暂时去除系统日志功能

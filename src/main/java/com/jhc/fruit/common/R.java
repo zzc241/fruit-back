@@ -19,6 +19,15 @@ public class R<T> {
 
     private Map map = new HashMap(); //动态数据
 
+    public static <T> R<T> success() {
+        R<T> r = new R<T>();
+        r.code = 1;
+        r.msg = "success";
+        r.token = String.valueOf(BaseContext.getId());
+        r.data = null;
+        return r;
+    }
+
     public static <T> R<T> success(T object) {
         R<T> r = new R<T>();
         r.data = object;
