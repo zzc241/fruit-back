@@ -114,7 +114,6 @@ public class EmployeeController {
     /**
      * 用户通过openId登录
      */
-    @Log
     @GetMapping("/unBind")
     @ApiOperation("用户登录时获取openId方法")
     @ApiImplicitParams({
@@ -135,11 +134,10 @@ public class EmployeeController {
 
     /**
      * 员工登录
-     * @param loginMap
+     * @param request
      * @return
      */
     //将登录的用户存入session中，通过HttpServletRequest中来操作session
-    @Log
     @PostMapping("/login")
     @ApiOperation(value="用户登录方法")
     public R<Employee> login(@RequestBody loginEmployeeVo loginEmployeeVo , HttpServletRequest request){
@@ -186,7 +184,6 @@ public class EmployeeController {
      * 员工退出
      * @return
      */
-    @Log
     @PostMapping("/logout")
     @ApiOperation("用户登出方法")
     public R<String> logout(HttpServletRequest request){
@@ -209,7 +206,6 @@ public class EmployeeController {
      * @param employee
      * @return
      */
-    @Log
     @PostMapping
     @ApiOperation("后：新增用户方法")
     public R<String> save(@RequestBody Employee employee,HttpServletRequest request){
@@ -275,7 +271,6 @@ public class EmployeeController {
         return R.success("员工信息修改成功");
     }
 
-    @Log
     @PutMapping("/reset")
     @ApiOperation("修改密码")
     public R<String> updatePassword(@RequestParam("oldPassword") String oldPassword,@RequestParam("newPassword") String newPassword){
@@ -346,7 +341,6 @@ public class EmployeeController {
      * @param id
      * @return
      */
-    @Log
     @DeleteMapping("/{id}")
     @ApiOperation("根据id删除员工信息")
     @ApiImplicitParam(name = "id", value = "要删除员工对应的id")
