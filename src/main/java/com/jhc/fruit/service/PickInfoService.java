@@ -3,7 +3,7 @@ package com.jhc.fruit.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.entity.PickInfo;
-import com.jhc.fruit.entity.vo.getPickInfoVo;
+import com.jhc.fruit.entity.vo.PickInfoVo;
 
 import java.util.List;
 
@@ -24,6 +24,10 @@ public interface PickInfoService extends IService<PickInfo> {
 
 
 
-    public Page<PickInfo> getPageInfo(getPickInfoVo getPickInfoVo);
+    public Page<PickInfo> getPageInfo(PickInfoVo pickInfoVo);
     public List<PickInfo> getInfo(String title, Long empId , Boolean isFinish , Boolean isRead);
+    public Boolean changeInfo(PickInfoVo pickInfoVo);
+    public Boolean updateReadInfo(Long id);
+    public Boolean updateFinishInfo(Long id);
+    public Boolean saveDeployInfo(PickInfoVo pickInfoVo);
 }

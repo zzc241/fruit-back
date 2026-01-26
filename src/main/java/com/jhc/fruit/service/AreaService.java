@@ -3,9 +3,7 @@ package com.jhc.fruit.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.entity.Area;
-import com.jhc.fruit.entity.PickInfo;
 import com.jhc.fruit.entity.vo.AreaVo;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -18,4 +16,8 @@ public interface AreaService extends IService<Area> {
     public  Long getIdByType(String type);
     public boolean updateById(Area area);
     public Page<AreaVo> page(Page<AreaVo> page);
+
+
+    public String getAreaNameById(Long areaId);
+    public Long getAreaIdByName(String areaName);
 }

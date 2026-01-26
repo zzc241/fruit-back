@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.PickInfoDao;
 import com.jhc.fruit.entity.PickInfo;
-import com.jhc.fruit.entity.vo.getPickInfoVo;
+import com.jhc.fruit.entity.vo.PickInfoVo;
+import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.PickInfoService;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +28,10 @@ import java.util.List;
  */
 @Service
 public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> implements PickInfoService {
+    // @Autowired
+    // private PickInfoDao pickInfoDao;
     @Autowired
-    private PickInfoDao pickInfoDao;
+    private EmployeeService employee;
 
     @Override
     public Page<PickInfo> getNoFinish(int page, int pageSize, String title, Long empId) {
@@ -75,26 +79,26 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
 
 
     @Override
-    public Page<PickInfo> getPageInfo(getPickInfoVo getPickInfoVo) { 
-        Page<PickInfo> pageInfo = new Page<>(getPickInfoVo.getPage(), getPickInfoVo.getPageSize());
+    public Page<PickInfo> getPageInfo(PickInfoVo pickInfoVo) { 
+        Page<PickInfo> pageInfo = new Page<>(pickInfoVo.getPage(), pickInfoVo.getPageSize());
         LambdaQueryWrapper<PickInfo> queryWrapper = new LambdaQueryWrapper<>();
 
-        if (StringUtils.isNotBlank(getPickInfoVo.getTitle())) {
-            queryWrapper.like(PickInfo::getTitle, getPickInfoVo.getTitle());
+        if (StringUtils.isNotBlank(pickInfoVo.getTitle())) {
+            queryWrapper.like(PickInfo::getTitle, pickInfoVo.getTitle());
         }
 
-        if (getPickInfoVo.getEmpId() != null) {
-            queryWrapper.eq(PickInfo::getEmpId, getPickInfoVo.getEmpId());
+        if (pickInfoVo.getEmpId() != null) {
+            queryWrapper.eq(PickInfo::getEmpId, pickInfoVo.getEmpId());
         }
 
-        if (getPickInfoVo.getIsFinish() != null) {
+        if (pickInfoVo.getIsFinish() != null) {
             //如果isFinish为true是已完成1，否则为未完成0
-            Integer isFinishInt = getPickInfoVo.getIsFinish() ? 1 : 0;
+            Integer isFinishInt = pickInfoVo.getIsFinish() ? 1 : 0;
             queryWrapper.eq(PickInfo::getIsFinish, isFinishInt);
         }
-        if(getPickInfoVo.getIsRead() != null){
+        if(pickInfoVo.getIsRead() != null){
             //如果isRead为true是已读1，否则为未读0
-            Integer isReadInt = getPickInfoVo.getIsRead() ? 1 : 0;
+            Integer isReadInt = pickInfoVo.getIsRead() ? 1 : 0;
             queryWrapper.eq(PickInfo::getIsRead, isReadInt);
         }
         // 按时间倒序排列
@@ -132,5 +136,29 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
         // 限制最多返回500条，避免数据过大
         queryWrapper.last("LIMIT 500");
         return this.list(queryWrapper);
+    }
+
+    public Boolean changeInfo(PickInfoVo pickInfoVo){
+        PickInfo pickInfo = new PickInfo();
+        BeanUtils.copyProperties(pickInfoVo, pickInfo);
+        String empName = employee.getById(pickInfoVo.getEmpId()).getName();
+        pickInfoVo.setEmpName(empName);
+        return this.updateById(pickInfo);
+    }
+
+    public Boolean updateReadInfo(Long id){
+        PickInfo info = this.getById(id);
+        info.setIsRead(true);
+        return this.updateById(info);
+    }
+    public Boolean updateFinishInfo(Long id){
+        PickInfo info = this.getById(id);
+        info.setIsFinish(true);
+        return this.updateById(info);
+    }
+    public Boolean saveDeployInfo(PickInfoVo pickInfoVo){
+        PickInfo pickInfo = new PickInfo();
+        BeanUtils.copyProperties(pickInfoVo, pickInfo);
+        return this.save(pickInfo);
     }
 }

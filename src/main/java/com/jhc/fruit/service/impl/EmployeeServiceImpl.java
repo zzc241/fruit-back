@@ -28,4 +28,21 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         }
         return null;
     }
+
+    @Override
+    public String getEmpNameById(Long empId){
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Employee::getId, empId);
+        Employee employee = getOne(queryWrapper);
+        String empName = employee.getName();
+        return empName;
+    }
+    @Override
+    public Long getEmpIdByName(String empName){
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Employee::getName, empName);
+        Employee employee = getOne(queryWrapper);
+        Long empId = employee.getId();
+        return empId;
+    }
 }

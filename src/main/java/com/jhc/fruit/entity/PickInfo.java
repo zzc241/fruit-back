@@ -34,7 +34,7 @@ public class PickInfo {
     private Long updateUser;
     //接收通知信息的用户id
     private Long empId;
-    private String empName;
+    private Long orchardId;
     //判断用户是否已读（默认false：未读）
     private Boolean isRead;
     //判断任务是否完成（默认false：未完成）

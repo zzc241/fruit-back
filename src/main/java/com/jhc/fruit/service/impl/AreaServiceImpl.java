@@ -1,5 +1,6 @@
 package com.jhc.fruit.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.AreaDao;
@@ -7,6 +8,9 @@ import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.PickInfo;
 import com.jhc.fruit.entity.vo.AreaVo;
 import com.jhc.fruit.service.AreaService;
+
+import kotlin.jvm.internal.Lambda;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,5 +77,21 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
     public Long getIdByType(String type) {
         Long typeId = areaDao.getIdByType(type);
         return typeId;
+    }
+
+    @Override
+    public String getAreaNameById(Long areaId){
+        LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Area::getId, areaId);
+        Area area = areaDao.selectOne(queryWrapper);
+        String areaName = area.getName();
+        return areaName;
+    }
+    public Long getAreaIdByName(String areaName){
+        LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Area::getName, areaName);
+        Area area = areaDao.selectOne(queryWrapper);
+        Long areaId = area.getId();
+        return areaId;
     }
 }

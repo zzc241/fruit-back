@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class Area {
     @ApiModelProperty("地区id")
     @TableId(type = IdType.AUTO)
-    private int id;
+    private Long id;
     @ApiModelProperty("地区名称")
     private String name;
 

@@ -4,13 +4,10 @@ import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.PickInfo;
 import com.jhc.fruit.entity.vo.PickInfoVo;
-import com.jhc.fruit.entity.vo.getPickInfoVo;
 import com.jhc.fruit.service.PickInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,25 +61,24 @@ public class PickInfoController {
 
     @PostMapping("/list")
     @ApiOperation("后台：查看全部通知")
-    public R<Page<PickInfo>> getInfo(
-        @RequestBody getPickInfoVo getPickInfoVo){
-        Page<PickInfo> pageInfo = pickInfoService.getPageInfo(getPickInfoVo);
+    public R<Page<PickInfo>> getInfo(@RequestBody PickInfoVo pickInfoVo){
+        Page<PickInfo> pageInfo = pickInfoService.getPageInfo(pickInfoVo);
         return R.success(pageInfo);
     }
     //其中getPickInfoVo类中只需要传title，isFinish，isRead三个参数，empId从登录信息获取
     @PostMapping("/employee/my-list")
     @ApiOperation("员工-查询我的通知")
-    public R<List<PickInfo>> myList(@RequestBody getPickInfoVo getPickInfoVo) {
+    public R<List<PickInfo>> myList(@RequestBody PickInfoVo pickInfoVo) {
         Long currentEmpId = BaseContext.getId(); // 从登录信息获取
         if(currentEmpId == null) {
             return R.error("未获取到当前登录用户信息");
         }
         // 固定查询当前员工的通知
         List<PickInfo> result = pickInfoService.getInfo(
-            getPickInfoVo.getTitle(), 
+            pickInfoVo.getTitle(), 
             currentEmpId, 
-            getPickInfoVo.getIsFinish(), 
-            getPickInfoVo.getIsRead()
+            pickInfoVo.getIsFinish(), 
+            pickInfoVo.getIsRead()
         );
         
         return R.success(result);
@@ -92,9 +88,7 @@ public class PickInfoController {
     @PostMapping("/publish")
     @ApiOperation("发布通知")
     public R<Boolean> deployInfo(@RequestBody PickInfoVo pickInfoVo){
-        PickInfo pickInfo = new PickInfo();
-        BeanUtils.copyProperties(pickInfoVo, pickInfo);
-        Boolean result = pickInfoService.save(pickInfo);
+        Boolean result = pickInfoService.saveDeployInfo(pickInfoVo);
         return R.success(result);
     }
 
@@ -106,27 +100,47 @@ public class PickInfoController {
     @PutMapping("/read/{id}")
     @ApiOperation("已读通知方法")
     @ApiImplicitParam(name = "id",value = "通知对应的id")
-    public R<PickInfo> readInfo(@PathVariable Long id){
-        PickInfo info = pickInfoService.getById(id);
-        info.setIsRead(true);
-        pickInfoService.updateById(info);
-        return R.success(info);
+    public R<Boolean> readInfo(@PathVariable Long id){
+        Boolean result = pickInfoService.updateReadInfo(id);
+        return R.success(result);
     }
-    @PostMapping("/change/{id}")
+    @PutMapping("/finish/{id}")
+    @ApiOperation("完成通知方法")
+    @ApiImplicitParam(name = "id",value = "通知对应的id")
+    public R<Boolean> finishInfo(@PathVariable Long id){
+        Boolean result = pickInfoService.updateFinishInfo(id);
+        return R.success(result);
+    }
+    @PostMapping("/change")
     @ApiOperation("修改通知内容方法")
-    public R<PickInfo> changeInfo(@RequestBody PickInfoVo pickInfoVo){
-        PickInfo pickInfo = new PickInfo();
-        BeanUtils.copyProperties(pickInfoVo, pickInfo);
-        pickInfoService.updateById(pickInfo);
-        return R.success(pickInfo);
+    public R<Boolean> changeInfo(@RequestBody PickInfoVo pickInfoVo) {
+        // 校验主键和核心参数
+        if (pickInfoVo.getId() == null || pickInfoVo.getId() <= 0) {
+            return R.error("通知ID不能为空且必须为正数");
+        }
+        try {
+            Boolean result = pickInfoService.changeInfo(pickInfoVo);
+            return result ? R.success(true) : R.error("修改通知失败，通知ID不存在");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error("修改通知异常：" + e.getMessage());
+        }
     }
-
     @DeleteMapping("/{id}")
     @ApiOperation("删除通知方法")
-    @ApiImplicitParam(name = "id",value = "通知对应的id")
-    public R<String> deleteInfo(@PathVariable Long id){
-        pickInfoService.removeById(id);
-        return R.success("删除成功");
+    @ApiImplicitParam(name = "id", value = "通知对应的id", required = true)
+    public R<String> deleteInfo(@PathVariable Long id) {
+        try {
+            boolean deleteSuccess = pickInfoService.removeById(id);
+            if (deleteSuccess) {
+                return R.success("删除成功");
+            } else {
+                return R.error("删除失败，通知ID不存在");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error("删除通知异常：" + e.getMessage());
+        }
     }
 
 }
