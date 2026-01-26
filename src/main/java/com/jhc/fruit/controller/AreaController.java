@@ -3,11 +3,9 @@ package com.jhc.fruit.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.aop.Log;
-import com.jhc.fruit.common.QiniuUtils;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Camera;
-import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.vo.AreaVo;
 import com.jhc.fruit.service.impl.AreaServiceImpl;
 import com.jhc.fruit.service.impl.CameraServiceImpl;
@@ -19,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,7 +39,6 @@ public class AreaController {
     private FruitTypeServiceImpl fruitTypeServiceImpl;
 
 
-    @Log
     @PostMapping
     @ApiOperation("后：地区增加方法")
     public R<String> save(@RequestBody AreaVo areaVo){
@@ -65,7 +61,6 @@ public class AreaController {
         return R.success("新增地区成功");
     }
 
-    @Log
     @DeleteMapping("/{id}")
     @ApiOperation("后：地区删除方法")
     @ApiImplicitParam(name = "id",value = "地区id")
@@ -123,7 +118,6 @@ public class AreaController {
         return R.success(area);
     }
 
-    @Log
     @PutMapping
     @ApiOperation("后：修改地区信息")
     public R<String> update(@RequestBody Area area){

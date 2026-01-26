@@ -18,8 +18,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import sun.reflect.generics.tree.Tree;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -75,7 +73,6 @@ public class FruitTreeController {
      * @param fruitTree
      * @return
      */
-    @Log
     @PostMapping
     @ApiOperation("添加果树方法")
     public R<String> save(@RequestBody FruitTree fruitTree){
@@ -128,7 +125,6 @@ public class FruitTreeController {
      * @param fruitTree
      * @return
      */
-    @Log
     @PutMapping
     @ApiOperation("修改果蔬信息")
     @ApiImplicitParams({
@@ -152,7 +148,6 @@ public class FruitTreeController {
      * @param id
      * @return
      */
-    @Log
     @DeleteMapping("/{id}")
     @ApiOperation("根据id删除果树")
     @ApiImplicitParam(name="id",value ="要删除果树的对应id")
