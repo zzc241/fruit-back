@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author :zyr
  * @Date : 2026/1/25
- * 用于minio的文件上传下载
+ * @description ：minio文件上传下载
  * */
 
 @Slf4j

@@ -159,9 +159,8 @@ public class FruitTreeController {
         //删除对应图片
         QiniuUtils.deleteFileFromQiniu(fruitTree.getImg());
         FruitGrow fruitGrow = fruitGrowService.getById(id);
- /*     原逻辑下需要关联果树生长表才能删除，暂时先注释掉
         if(fruitGrow != null){
-            String firstTerm = fruitGrow.getFirstTerm();
+/*            String firstTerm = fruitGrow.getFirstTerm();
 
             //删除服务器上的图片
             if(firstTerm != null){
@@ -174,12 +173,12 @@ public class FruitTreeController {
                         QiniuUtils.deleteFileFromQiniu(thirdTerm);
                     }
                 }
-            }
+            }*/
             //删除对应生长过程
             fruitGrowService.removeById(fruitGrow.getTreeId());
-        fruitTreeServiceImpl.removeById(id);
-        }*/
-        fruitTreeServiceImpl.removeById(id);
+            fruitTreeServiceImpl.removeById(id);
+        }
+//        fruitTreeServiceImpl.removeById(id);
         return R.success("删除成功");
     }
 
