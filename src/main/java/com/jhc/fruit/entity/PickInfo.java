@@ -1,7 +1,9 @@
 package com.jhc.fruit.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
  */
 @Data
 public class PickInfo {
+    // ALTER TABLE pick_info AUTO_INCREMENT = 21;设置自增起始值
+    @TableId(type = IdType.AUTO)
     private Long id;
     private String title;
     private String content;
@@ -35,6 +39,11 @@ public class PickInfo {
     //接收通知信息的用户id
     private Long empId;
     private Long orchardId;
+    //发送通知信息的用户id
+    @ApiModelProperty("发送通知信息的用户id")
+    private Long senderId;
+    @ApiModelProperty("关联的组id")
+    private Long groupId;
     //判断用户是否已读（默认false：未读）
     private Boolean isRead;
     //判断任务是否完成（默认false：未完成）

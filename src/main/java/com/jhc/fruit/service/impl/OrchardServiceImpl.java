@@ -300,4 +300,8 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implem
         this.updateById(orchard);
         return "修改成功";
     }
+
+    public String getOrchardNameById(Long orchardId){
+        return this.getById(orchardId).getName();
+    }
 }

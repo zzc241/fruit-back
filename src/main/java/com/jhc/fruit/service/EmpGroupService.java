@@ -5,6 +5,7 @@ import com.jhc.fruit.entity.EmpGroup;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface EmpGroupService extends IService<EmpGroup> {
     List<Long> getEmpId(Long groupId);
@@ -14,4 +15,9 @@ public interface EmpGroupService extends IService<EmpGroup> {
     public List<EmpGroup> getGroupsByEmp(Long empId);
 //    public List<Map<String,String>> getGroupByContentEmp(Long empId);
     public List<EmpGroup> getGroupsByContentEmp(EmpGroup empGroup);
+
+    public String getGroupNameById(Long groupId);
+    public Long getGroupIdByName(String groupName);
+
+    public Map<Long, String> getGroupNameMapByIds(Set<Long> groupIds);
 }

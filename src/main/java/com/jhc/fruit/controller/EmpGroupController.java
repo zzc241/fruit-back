@@ -99,7 +99,7 @@ public class EmpGroupController {
                 empGroup.setIsFinish(isFinish);
                 // empGroup.setIsFinish(pickInfoServiceImpl.getIsFinish(Long.parseLong(splitInfo[j])));
                 empGroup.setEmpId(Long.parseLong(splitEmp[j]));
-                empGroup.setEmployee(employeeService.getById(Long.parseLong(splitEmp[j])));
+                // empGroup.setEmployee(employeeService.getById(Long.parseLong(splitEmp[j])));
                 //将临时工添加到列表中
                 empGroups.add(empGroup);
 
