@@ -63,15 +63,15 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implem
             queryWrapper.like(Orchard::getName, orchardVo.getName());
         }
         //根据areaId查询果园
-        String areaName = orchardVo.getAreaName();
+        // String areaName = orchardVo.getAreaName();
         //根据area名称查询areaId
-        if (orchardVo.getAreaId() != null) {
-            queryWrapper.eq(Orchard::getAreaId, orchardVo.getAreaId());
-        }
-        else if(StringUtils.isNotBlank(areaName)) {
-            Long areaId = areaService.getAreaIdByName(areaName);
-            queryWrapper.eq(Orchard::getAreaId, areaId);
-        }
+        // if (orchardVo.getAreaId() != null) {
+        //     queryWrapper.eq(Orchard::getAreaId, orchardVo.getAreaId());
+        // }
+        // else if(StringUtils.isNotBlank(areaName)) {
+        //     Long areaId = areaService.getAreaIdByName(areaName);
+        //     queryWrapper.eq(Orchard::getAreaId, areaId);
+        // }
         //根据果园大小查询果园
         Long size = orchardVo.getSize();
         if(size != null){
@@ -115,10 +115,10 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implem
                 BeanUtils.copyProperties(orchard, vo);
                 
                 // 设置关联的名称信息
-                if (orchard.getAreaId() != null) {
-                    String areaNameTemp = areaService.getAreaNameById(orchard.getAreaId());
-                    vo.setAreaName(areaNameTemp);
-                }
+                // if (orchard.getAreaId() != null) {
+                //     String areaNameTemp = areaService.getAreaNameById(orchard.getAreaId());
+                //     vo.setAreaName(areaNameTemp);
+                // }
                 
                 if (orchard.getEmpId() != null) {
                     // 假设有employeeService可以获取员工姓名
@@ -162,15 +162,15 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implem
             queryWrapper.like(Orchard::getName, orchardVo.getName());
         }
         //根据areaId查询果园
-        String areaName = orchardVo.getAreaName();
+        // String areaName = orchardVo.getAreaName();
         //根据area名称查询areaId
-        if (orchardVo.getAreaId() != null) {
-            queryWrapper.eq(Orchard::getAreaId, orchardVo.getAreaId());
-        }
-        else if(StringUtils.isNotBlank(areaName)) {
-            Long areaId = areaService.getAreaIdByName(areaName);
-            queryWrapper.eq(Orchard::getAreaId, areaId);
-        }
+        // if (orchardVo.getAreaId() != null) {
+        //     queryWrapper.eq(Orchard::getAreaId, orchardVo.getAreaId());
+        // }
+        // else if(StringUtils.isNotBlank(areaName)) {
+        //     Long areaId = areaService.getAreaIdByName(areaName);
+        //     queryWrapper.eq(Orchard::getAreaId, areaId);
+        // }
         //根据果园大小查询果园
         Long size = orchardVo.getSize();
         if(size != null){
@@ -191,10 +191,10 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implem
         return orchards.stream().map(orchard -> {
             OrchardVo orchardVoResult = new OrchardVo();
             BeanUtils.copyProperties(orchard, orchardVoResult);
-            if (orchard.getAreaId() != null) {
-                String areaNameCur = areaService.getAreaNameById(orchard.getAreaId());
-                orchardVoResult.setAreaName(areaNameCur);
-            }
+            // if (orchard.getAreaId() != null) {
+            //     String areaNameCur = areaService.getAreaNameById(orchard.getAreaId());
+            //     orchardVoResult.setAreaName(areaNameCur);
+            // }
             if (orchard.getEmpId() != null) {
                 String empNameCur = employeeService.getEmpNameById(orchard.getEmpId());
                 orchardVoResult.setEmpName(empNameCur);
