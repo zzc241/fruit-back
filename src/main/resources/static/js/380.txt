@@ -1,0 +1,3869 @@
+webpackJsonp([1], {
+    "/Uwa": function(e, t) {},
+    "7xIN": function(e, t) {},
+    FGHX: function(e, t) {},
+    NHnr: function(e, t, a) {
+        "use strict";
+        Object.defineProperty(t, "__esModule", {
+            value: !0
+        });
+        var i = {};
+        a.d(i, "timestampToTime", function() {
+            return F
+        }), a.d(i, "setStore", function() {
+            return k
+        }), a.d(i, "getStore", function() {
+            return S
+        }), a.d(i, "removeStore", function() {
+            return x
+        }), a.d(i, "setCookie", function() {
+            return w
+        }), a.d(i, "getCookie", function() {
+            return $
+        }), a.d(i, "delCookie", function() {
+            return L
+        });
+        var r = a("fZjL"),
+            n = a.n(r),
+            o = a("7+uW"),
+            s = a("zL8q"),
+            l = a.n(s),
+            c = (a("tvR6"), {
+                render: function() {
+                    var e = this.$createElement,
+                        t = this._self._c || e;
+                    return t("div", {
+                        attrs: {
+                            id: "app"
+                        }
+                    }, [this.isShow ? t("router-view") : this._e()], 1)
+                },
+                staticRenderFns: []
+            });
+        var u = a("VU/8")({
+                name: "App",
+                provide: function() {
+                    return {
+                        reload: this.reload
+                    }
+                },
+                data: function() {
+                    return {
+                        isShow: !0
+                    }
+                },
+                methods: {
+                    reload: function() {
+                        this.isShow = !1, this.$nextTick(function() {
+                            this.isShow = !0
+                        })
+                    }
+                }
+            }, c, !1, function(e) {
+                a("XQa9")
+            }, null, null).exports,
+            m = a("/ocq"),
+            d = a("Xxa5"),
+            g = a.n(d),
+            p = a("mvHQ"),
+            f = a.n(p),
+            h = a("exGp"),
+            v = a.n(h),
+            b = a("mtWM"),
+            y = a.n(b),
+            _ = function(e, t, a) {
+                return y()({
+                    method: e,
+                    url: t,
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        token: localStorage.getItem("logintoken")
+                    },
+                    data: a,
+                    traditional: !0,
+                    transformRequest: [function(e) {
+                        var t = "";
+                        for (var a in e) t += encodeURIComponent(a) + "=" + encodeURIComponent(e[a]) + "&";
+                        return t
+                    }]
+                }).then(function(e) {
+                    return e.data
+                })
+            },
+            F = function(e) {
+                var t = new Date(e);
+                return t.getFullYear() + "-" + ((t.getMonth() + 1 < 10 ? "0" + (t.getMonth() + 1) : t.getMonth() + 1) + "-") + ((t.getDate() < 10 ? "0" + t.getDate() : t.getDate()) + " ") + ((t.getHours() < 10 ? "0" + t.getHours() : t.getHours()) + ":") + ((t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes()) + ":") + (t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds())
+            },
+            k = function(e, t) {
+                e && ("string" != typeof t && (t = f()(t)), window.localStorage.setItem(e, t))
+            },
+            S = function(e) {
+                if (e) return window.localStorage.getItem(e)
+            },
+            x = function(e) {
+                e && window.localStorage.removeItem(e)
+            };
+
+        function w(e, t, a) {
+            var i = new Date;
+            i.setDate(i.getDate() + a), document.cookie = e + "=" + t + ";expires=" + i
+        }
+
+        function $(e) {
+            var t = RegExp(e + "=([^;]+)"),
+                a = document.cookie.match(t);
+            return a ? a[1] : ""
+        }
+
+        function L(e) {
+            w(e, null, -1)
+        }
+        var A = {
+                name: "login",
+                data: function() {
+                    return {
+                        logining: !1,
+                        rememberpwd: !1,
+                        ruleForm: {
+                            username: "",
+                            password: ""
+                        },
+                        rules: {
+                            username: [{
+                                required: !0,
+                                message: "请输入账号",
+                                trigger: "blur"
+                            }],
+                            password: [{
+                                required: !0,
+                                message: "请输入密码",
+                                trigger: "blur"
+                            }]
+                        },
+                        userToken: ""
+                    }
+                },
+                created: function() {
+                    this.$message({
+                        message: "账号密码不为空",
+                        type: "success"
+                    }), this.getuserpwd()
+                },
+                mounted: function() {
+                    window.addEventListener("keydown", this.keyDown)
+                },
+                destroyed: function() {
+                    window.removeEventListener("keydown", this.keyDown, !1)
+                },
+                methods: {
+                    getuserpwd: function() {
+                        "" != $("user") && "" != $("pwd") && (this.ruleForm.username = $("user"), this.ruleForm.password = $("pwd"), this.rememberpwd = !0)
+                    },
+                    submitForm: function() {
+                        var e = this;
+                        return v()(g.a.mark(function t() {
+                            return g.a.wrap(function(t) {
+                                for (;;) switch (t.prev = t.next) {
+                                    case 0:
+                                        e.$refs.ruleForm.validate(function() {
+                                            var t = v()(g.a.mark(function t(a) {
+                                                return g.a.wrap(function(t) {
+                                                    for (;;) switch (t.prev = t.next) {
+                                                        case 0:
+                                                            a && (e.logining = !0, (i = e.ruleForm, y.a.post("/employee/login", i)).then(function(t) {
+                                                                if (console.log(t), 1 != t.data.code || 1 != parseInt(t.data.data.isAdmin)) return e.$message.error(t.data.msg), e.logining = !1, !1;
+                                                                e.rememberpwd ? (w("user", e.ruleForm.username, 7), w("pwd", e.ruleForm.password, 7)) : (L("user"), L("pwd")), setTimeout(function() {
+                                                                    e.logining = !1, localStorage.setItem("logintoken", t.data.token), localStorage.setItem("userdata", f()(t.data.data)), e.$store.commit("login", "true"), e.$router.push({
+                                                                        path: "/camera/index"
+                                                                    })
+                                                                }, 1)
+                                                            }).catch(function(t) {
+                                                                return e.$message({
+                                                                    type: "error",
+                                                                    message: "服务器出错，请联系管理员"
+                                                                }), e.logining = !1, !1
+                                                            }));
+                                                        case 1:
+                                                        case "end":
+                                                            return t.stop()
+                                                    }
+                                                    var i
+                                                }, t, e)
+                                            }));
+                                            return function(e) {
+                                                return t.apply(this, arguments)
+                                            }
+                                        }());
+                                    case 1:
+                                    case "end":
+                                        return t.stop()
+                                }
+                            }, t, e)
+                        }))()
+                    },
+                    keyDown: function(e) {
+                        13 == e.keyCode && this.submitForm()
+                    }
+                }
+            },
+            z = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("div", {
+                        staticClass: "login-wrap"
+                    }, [a("el-form", {
+                        ref: "ruleForm",
+                        staticClass: "demo-ruleForm login-container",
+                        attrs: {
+                            "label-position": "left",
+                            model: e.ruleForm,
+                            rules: e.rules,
+                            "label-width": "0px"
+                        }
+                    }, [a("h3", {
+                        staticClass: "title"
+                    }, [e._v("果蔬识别后台管理系统")]), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            prop: "username"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            type: "text",
+                            "auto-complete": "off",
+                            placeholder: "账号"
+                        },
+                        model: {
+                            value: e.ruleForm.username,
+                            callback: function(t) {
+                                e.$set(e.ruleForm, "username", t)
+                            },
+                            expression: "ruleForm.username"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            prop: "password"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            type: "password",
+                            "auto-complete": "off",
+                            placeholder: "密码"
+                        },
+                        model: {
+                            value: e.ruleForm.password,
+                            callback: function(t) {
+                                e.$set(e.ruleForm, "password", t)
+                            },
+                            expression: "ruleForm.password"
+                        }
+                    })], 1), e._v(" "), a("el-checkbox", {
+                        staticClass: "remember",
+                        model: {
+                            value: e.rememberpwd,
+                            callback: function(t) {
+                                e.rememberpwd = t
+                            },
+                            expression: "rememberpwd"
+                        }
+                    }, [e._v("记住密码")]), e._v(" "), a("el-form-item", {
+                        staticStyle: {
+                            width: "100%"
+                        }
+                    }, [a("el-button", {
+                        staticStyle: {
+                            width: "100%"
+                        },
+                        attrs: {
+                            type: "primary",
+                            loading: e.logining
+                        },
+                        on: {
+                            click: function(t) {
+                                return e.submitForm("ruleForm")
+                            },
+                            keyup: function(t) {
+                                return !t.type.indexOf("key") && e._k(t.keyCode, "enter", 13, t.key, "Enter") ? null : e.keyDown(e.e)
+                            }
+                        }
+                    }, [e._v("登录")])], 1)], 1)], 1)
+                },
+                staticRenderFns: []
+            };
+        var C = a("VU/8")(A, z, !1, function(e) {
+                a("S7q4")
+            }, "data-v-1bac473b", null).exports,
+            I = {
+                name: "navcon",
+                data: function() {
+                    return {
+                        collapsed: !0,
+                        imgshow: a("gQKk"),
+                        imgsq: a("rWRm"),
+                        user: {}
+                    }
+                },
+                created: function() {
+                    this.user = JSON.parse(localStorage.getItem("userdata"))
+                },
+                methods: {
+                    exit: function() {
+                        var e = this;
+                        this.$confirm("退出登录, 是否继续?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(function() {
+                            setTimeout(function() {
+                                y.a.post("/employee/logout").then(function(t) {
+                                    console.log(t), 1 == t.data.code ? (localStorage.removeItem("userInfo"), localStorage.removeItem("logintoken"), e.$store.commit("logout", "false"), e.$router.push({
+                                        path: "/login"
+                                    }), e.$message({
+                                        type: "success",
+                                        message: "已退出登录!"
+                                    })) : e.$message({
+                                        type: "error",
+                                        message: t.data.msg
+                                    })
+                                })
+                            }, 1e3)
+                        }).catch(function() {
+                            e.$message({
+                                type: "info",
+                                message: "已取消"
+                            })
+                        })
+                    },
+                    toggle: function(e) {
+                        this.collapsed = !e, this.$root.Bus.$emit("toggle", this.collapsed)
+                    }
+                }
+            },
+            T = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("el-menu", {
+                        staticClass: "el-menu-demo",
+                        attrs: {
+                            mode: "horizontal",
+                            "background-color": "rgba(41,189,217,.1)",
+                            "text-color": "#000",
+                            "active-text-color": "#000"
+                        }
+                    }, [a("el-button", {
+                        staticClass: "buttonimg"
+                    }, [a("img", {
+                        staticClass: "showimg",
+                        attrs: {
+                            src: e.collapsed ? e.imgsq : e.imgshow
+                        },
+                        on: {
+                            click: function(t) {
+                                return e.toggle(e.collapsed)
+                            }
+                        }
+                    })]), e._v(" "), a("el-submenu", {
+                        staticClass: "submenu",
+                        attrs: {
+                            index: "2"
+                        }
+                    }, [a("template", {
+                        slot: "title"
+                    }, [e._v(e._s(e.user.name) + "\n      "), a("img", {
+                        staticClass: "logoimg",
+                        attrs: {
+                            src: e.user.headImg,
+                            alt: ""
+                        }
+                    })]), e._v(" "), a("el-menu-item", {
+                        attrs: {
+                            index: "2-3"
+                        },
+                        on: {
+                            click: function(t) {
+                                return e.exit()
+                            }
+                        }
+                    }, [e._v("退出")])], 2)], 1)
+                },
+                staticRenderFns: []
+            };
+        var U = {
+            render: function() {
+                var e = this,
+                    t = e.$createElement,
+                    i = e._self._c || t;
+                return i("el-menu", {
+                    staticClass: "el-menu-vertical-demo",
+                    attrs: {
+                        "default-active": "2",
+                        collapse: e.collapsed,
+                        "collapse-transition": "",
+                        router: "",
+                        "default-active": e.$route.path,
+                        "unique-opened": "",
+                        "background-color": "rgba(0,0,0,0.5)",
+                        "text-color": "#cde6c7",
+                        "active-text-color": "#7fb80e"
+                    }
+                }, [i("div", {
+                    staticClass: "logobox"
+                }, [i("img", {
+                    staticClass: "logoimg",
+                    attrs: {
+                        src: a("dLd/"),
+                        alt: ""
+                    }
+                })]), e._v(" "), e._l(e.allmenu, function(t) {
+                    return i("el-submenu", {
+                        key: t.menuid,
+                        attrs: {
+                            index: t.menuname
+                        }
+                    }, [i("template", {
+                        slot: "title"
+                    }, [i("i", {
+                        staticClass: "iconfont",
+                        class: t.icon
+                    }), e._v(" "), i("span", [e._v(e._s(t.menuname))])]), e._v(" "), i("el-menu-item-group", e._l(t.menus, function(t) {
+                        return i("el-menu-item", {
+                            key: t.menuid,
+                            attrs: {
+                                index: "/" + t.url
+                            }
+                        }, [i("i", {
+                            staticClass: "iconfont",
+                            class: t.icon
+                        }), e._v(" "), i("span", [e._v(e._s(t.menuname))])])
+                    }), 1)], 2)
+                })], 2)
+            },
+            staticRenderFns: []
+        };
+        var N = {
+                name: "index",
+                data: function() {
+                    return {
+                        showclass: "asideshow",
+                        showtype: !1,
+                        user: ""
+                    }
+                },
+                components: {
+                    navcon: a("VU/8")(I, T, !1, function(e) {
+                        a("kPal")
+                    }, "data-v-1773a08a", null).exports,
+                    leftnav: a("VU/8")({
+                        name: "leftnav",
+                        data: function() {
+                            return {
+                                collapsed: !1,
+                                allmenu: []
+                            }
+                        },
+                        created: function() {
+                            var e = this;
+                            this.allmenu = [{
+                                menuid: 1,
+                                icon: "li-icon-xiangmuguanli",
+                                menuname: "摄像机管理",
+                                hasThird: null,
+                                url: null,
+                                menus: [{
+                                    menuid: 2,
+                                    icon: null,
+                                    menuname: "摄像机管理",
+                                    hasThird: "N",
+                                    url: "camera/index",
+                                    menus: [null]
+                                }]
+                            }, {
+                                menuid: 3,
+                                icon: "icon-order-manage",
+                                menuname: "识别信息管理",
+                                hasThird: null,
+                                url: null,
+                                menus: [{
+                                    menuid: 4,
+                                    icon: null,
+                                    menuname: "识别信息管理",
+                                    hasThird: "N",
+                                    url: "identify/index",
+                                    menus: [null]
+                                }]
+                            }, {
+                                menuid: 5,
+                                icon: "li-icon-xitongguanli",
+                                menuname: "区块果蔬信息管理",
+                                hasThird: null,
+                                url: null,
+                                menus: [{
+                                    menuid: 6,
+                                    icon: null,
+                                    menuname: "区管理",
+                                    hasThird: "N",
+                                    url: "blocks/area/index",
+                                    menus: [null]
+                                }, {
+                                    menuid: 7,
+                                    icon: null,
+                                    menuname: "果蔬管理",
+                                    hasThird: "N",
+                                    url: "blocks/piece/index",
+                                    menus: [null]
+                                }]
+                            }, {
+                                menuid: 10,
+                                icon: "icon-cs-manage",
+                                menuname: "采摘信息管理",
+                                hasThird: null,
+                                url: null,
+                                menus: [{
+                                    menuid: 11,
+                                    icon: null,
+                                    menuname: "采摘完成信息",
+                                    hasThird: "N",
+                                    url: "dopick/pick/index",
+                                    menus: [null]
+                                }, {
+                                    menuid: 12,
+                                    icon: null,
+                                    menuname: "预采摘信息",
+                                    hasThird: "N",
+                                    url: "dopick/nopick/index",
+                                    menus: [null]
+                                }]
+                            }, {
+                                menuid: 8,
+                                icon: "icon-cus-manage",
+                                menuname: "人员信息管理",
+                                hasThird: null,
+                                url: null,
+                                menus: [{
+                                    menuid: 9,
+                                    icon: null,
+                                    menuname: "人员信息管理",
+                                    hasThird: "N",
+                                    url: "employee/index",
+                                    menus: [null]
+                                }]
+                            }], this.$root.Bus.$on("toggle", function(t) {
+                                e.collapsed = !t
+                            })
+                        }
+                    }, U, !1, function(e) {
+                        a("hTcu")
+                    }, null, null).exports
+                },
+                methods: {},
+                created: function() {
+                    var e = this;
+                    this.$root.Bus.$on("toggle", function(t) {
+                        t ? e.showclass = "asideshow" : setTimeout(function() {
+                            e.showclass = "aside"
+                        }, 500)
+                    })
+                },
+                beforeUpdate: function() {},
+                beforeMount: function() {
+                    this.user = JSON.parse(localStorage.getItem("userdata"))
+                }
+            },
+            P = {
+                render: function() {
+                    var e = this.$createElement,
+                        t = this._self._c || e;
+                    return t("el-container", {
+                        staticClass: "index-con"
+                    }, [t("el-aside", {
+                        class: this.showclass
+                    }, [t("leftnav")], 1), this._v(" "), t("el-container", {
+                        staticClass: "main-con"
+                    }, [t("el-header", {
+                        staticClass: "index-header"
+                    }, [t("navcon")], 1), this._v(" "), t("el-main", {
+                        attrs: {
+                            clss: "index-main"
+                        }
+                    }, [t("router-view")], 1)], 1)], 1)
+                },
+                staticRenderFns: []
+            };
+        var V = a("VU/8")(N, P, !1, function(e) {
+                a("aF8Q")
+            }, null, null).exports,
+            E = a("Dd8w"),
+            q = a.n(E),
+            R = function(e, t) {
+                return _("get", "/employee/page?page=" + e + "&pageSize=" + t)
+            },
+            B = function(e) {
+                return _("get", "/employee/getAdmin", e)
+            },
+            D = function(e, t) {
+                return _("get", "/area?page=" + e + "&pageSize=" + t)
+            },
+            O = {
+                inject: ["reload"],
+                name: "camera",
+                data: function() {
+                    return {
+                        page: 1,
+                        pageSize: 10,
+                        total: 0,
+                        list: [],
+                        userList: [],
+                        treeList: [],
+                        areaList: [],
+                        multipleSelection: [],
+                        dialogFormVisible: !1,
+                        dialogFormVisible2: !1,
+                        selectName: "",
+                        Form: {
+                            id: "",
+                            areaId: "",
+                            createUser: "",
+                            updateUser: ""
+                        },
+                        tForm: {
+                            treeId: "",
+                            img: ""
+                        },
+                        rules: {
+                            areaId: [{
+                                required: !0,
+                                message: "请输入对应区的id",
+                                trigger: "blur"
+                            }, {
+                                validator: function(e, t, a) {
+                                    t.length < 1 || t.length > 10 ? a(new Error("请输入正确的区号:1-10位")) : a()
+                                },
+                                trigger: "change"
+                            }]
+                        },
+                        trules: {
+                            id: [{
+                                required: !0,
+                                message: "请选择对应果蔬的id",
+                                trigger: "change"
+                            }],
+                            img: [{
+                                required: !0,
+                                message: "请选择上传图片",
+                                trigger: "change"
+                            }]
+                        }
+                    }
+                },
+                mounted: function() {
+                    this.getUserList(), this.getAreaList(), this.getPageList(), window.addEventListener("keydown", this.keyDown)
+                },
+                destroyed: function() {
+                    window.removeEventListener("keydown", this.keyDown, !1)
+                },
+                methods: {
+                    getPageList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1;
+                        this.page = t,
+                            function(e, t) {
+                                return _("get", "/camera?page=" + e + "&pageSize=" + t)
+                            }(this.page, this.pageSize).then(function(t) {
+                                if (1 == t.code) {
+                                    e.list = t.data.records, e.total = t.data.total;
+                                    for (var a = 0; a < e.list.length; a++) {
+                                        for (var i = 0; i < e.userList.length; i++) e.list[a].updateUser == e.userList[i].id && (e.list[a].updateUser = e.userList[i].name), e.list[a].createUser == e.userList[i].id && (e.list[a].createUser = e.userList[i].name);
+                                        for (var r = 0; r < e.areaList.length; r++) e.list[a].areaId == e.areaList[r].id && (e.list[a].areaId = e.areaList[r].name + "：" + e.list[a].areaId)
+                                    }
+                                } else e.$message({
+                                    type: "info",
+                                    message: t.msg
+                                })
+                            }).catch(function(t) {
+                                e.$message.error("加载失败，请稍后重试")
+                            })
+                    },
+                    handleSizeChange: function(e) {
+                        this.pageSize = e, this.getPageList()
+                    },
+                    showDialog: function() {
+                        this.dialogFormVisible = !0, this.Form = {
+                            areaId: ""
+                        }
+                    },
+                    updateCamera: function(e) {
+                        this.dialogFormVisible = !0, this.Form = q()({}, e)
+                    },
+                    addOrUpdateCamera: function() {
+                        var e = this;
+                        this.$refs.ruleForm.validate(function(t) {
+                            for (var a = 0; a < e.userList.length; a++) e.Form.updateUser == e.userList[a].name && (e.Form.updateUser = e.userList[a].id), e.Form.createUser == e.userList[a].name ? e.Form.createUser = e.userList[a].id : e.Form.createUser = "";
+                            if (!t) return console.log("error submit!!"), !1;
+                            var i;
+                            e.dialogFormVisible = !1, (i = e.Form, i.id ? y.a.put("/camera", i) : y.a.post("/camera", i)).then(function(t) {
+                                200 == t.status ? (e.$message({
+                                    type: "success",
+                                    message: e.Form.id ? "修改摄像机信息成功" : "添加摄像机信息成功"
+                                }), e.getPageList(e.Form.id ? e.page : 1)) : e.$message({
+                                    type: "warning",
+                                    message: t.data.msg
+                                })
+                            })
+                        })
+                    },
+                    deleteCamera: function(e) {
+                        var t = this;
+                        this.$confirm("确定删除 摄像机" + e.id + "?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(function() {
+                            var a;
+                            (a = e.id, y.a.delete("/camera/" + a).then(function(e) {
+                                return e.data
+                            })).then(function(e) {
+                                1 == e.code ? (t.$message({
+                                    type: "success",
+                                    message: "摄像机信息已删除!"
+                                }), t.getPageList(t.list.length > 1 ? t.page : t.page - 1)) : t.$message({
+                                    type: "info",
+                                    message: "删除有误"
+                                })
+                            }).catch(function(e) {
+                                t.loading = !1, t.$message.error("摄像机信息删除失败，请稍后再试！")
+                            })
+                        }).catch(function() {
+                            t.$message({
+                                type: "info",
+                                message: "已取消删除"
+                            })
+                        })
+                    },
+                    getSelect: function() {
+                        var e, t, a, i = this;
+                        this.selectName ? (e = this.selectName, t = 1, a = 999, y.a.get("/camera?id=" + e + "&page=" + t + "&pageSize=" + a).then(function(e) {
+                            return e.data
+                        })).then(function(e) {
+                            if (1 == e.code) {
+                                0 == e.data.total && i.$message({
+                                    type: "error",
+                                    message: "未找到此信息"
+                                }), i.list = e.data.records, i.total = e.data.total;
+                                for (var t = 0; t < i.list.length; t++) {
+                                    for (var a = 0; a < i.userList.length; a++) i.list[t].updateUser == i.userList[a].id && (i.list[t].updateUser = i.userList[a].name), i.list[t].createUser == i.userList[a].id && (i.list[t].createUser = i.userList[a].name);
+                                    for (var r = 0; r < i.areaList.length; r++) i.list[t].areaId == i.areaList[r].id && (i.list[t].areaId = i.areaList[r].name + "：" + i.list[t].areaId)
+                                }
+                            } else i.$message({
+                                type: "info",
+                                message: e.data
+                            })
+                        }) : this.getPageList()
+                    },
+                    takePhoto: function() {
+                        window.open("http://172.16.1.121/web/admin.html")
+                    },
+                    cameraUpload: function(e) {
+                        this.tForm = {
+                            id: "",
+                            img: ""
+                        }, this.dialogFormVisible2 = !0, this.getTreeid(e)
+                    },
+                    toggleSelection: function(e) {
+                        var t = this;
+                        e ? e.forEach(function(e) {
+                            t.$refs.multipleTable.toggleRowSelection(e)
+                        }) : this.$refs.multipleTable.clearSelection()
+                    },
+                    handleSelectionChange: function(e) {
+                        this.multipleSelection = e
+                    },
+                    getUserList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1,
+                            a = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 999;
+                        R(t, a).then(function(t) {
+                            0 == t.success ? e.$message({
+                                type: "info",
+                                message: t.data
+                            }) : e.userList = t.data.records
+                        })
+                    },
+                    handleAvatarSuccess: function(e, t) {
+                        this.tForm.img = e.data
+                    },
+                    beforeAvatarUpload: function(e) {
+                        var t = "image/jpeg" === e.type || "image/png" === e.type;
+                        return t || this.$message.error("上传图片只能是 JPG/PNG 格式!"), t
+                    },
+                    Upload: function() {
+                        var e = this;
+                        this.$refs.tRuleForm.validate(function(t) {
+                            if (!t) return console.log("error submit!!"), !1;
+                            var a, i = e.$loading({
+                                lock: !0,
+                                text: "图片上传中",
+                                spinner: "el-icon-loading",
+                                background: "rgba(0, 0, 0, 0.7)"
+                            });
+                            e.dialogFormVisible2 = !1, (a = e.tForm, y.a.post("/identify/urlIdentify", a)).then(function(t) {
+                                1 == t.data.code ? (i.close(), e.$message({
+                                    type: "success",
+                                    message: "图片上传成功"
+                                }), e.getPageList()) : e.$message({
+                                    type: "warning",
+                                    message: "上传失败，请联系相关人员"
+                                })
+                            })
+                        })
+                    },
+                    getTreeid: function(e) {
+                        var t, a = this;
+                        (t = e.id, _("get", "/camera/getTreeIdByArea?cid=" + t)).then(function(e) {
+                            1 == e.code && (a.treeList = e.data)
+                        })
+                    },
+                    getAreaList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1,
+                            a = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 999;
+                        D(t, a).then(function(t) {
+                            0 == t.success ? e.$message({
+                                type: "info",
+                                message: t.data
+                            }) : (e.areaList = t.data.records, e.areaTotal = t.data.total)
+                        })
+                    },
+                    keyDown: function(e) {
+                        13 == e.keyCode && this.addOrUpdateCamera()
+                    }
+                }
+            },
+            M = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("div", [a("el-breadcrumb", {
+                        staticStyle: {
+                            "padding-bottom": "20px"
+                        },
+                        attrs: {
+                            "separator-class": "el-icon-arrow-right"
+                        }
+                    }, [a("el-breadcrumb-item", {
+                        attrs: {
+                            to: {
+                                path: "/"
+                            }
+                        }
+                    }, [e._v("登录页\n    ")]), e._v(" "), a("el-breadcrumb-item", [a("div", {
+                        staticStyle: {
+                            color: "#fff"
+                        }
+                    }, [e._v("摄像机管理")])])], 1), e._v(" "), a("el-card", {
+                        staticStyle: {
+                            height: "80px"
+                        }
+                    }, [a("el-form", {
+                        staticClass: "demo-form-inline",
+                        attrs: {
+                            inline: !0
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "摄像机编号"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            placeholder: "输入摄像机编号"
+                        },
+                        model: {
+                            value: e.selectName,
+                            callback: function(t) {
+                                e.selectName = t
+                            },
+                            expression: "selectName"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.getSelect
+                        }
+                    }, [e._v("查询")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.reload
+                        }
+                    }, [e._v("刷新页面")])], 1), e._v(" "), a("el-button", {
+                        staticStyle: {
+                            float: "right"
+                        },
+                        attrs: {
+                            type: "primary",
+                            icon: "el-icon-plus"
+                        },
+                        on: {
+                            click: e.showDialog
+                        }
+                    }, [e._v("添加摄像头")])], 1)], 1), e._v(" "), a("el-table", {
+                        ref: "multipleTable",
+                        attrs: {
+                            data: e.list,
+                            border: "",
+                            lazy: ""
+                        },
+                        on: {
+                            "selection-change": e.handleSelectionChange
+                        }
+                    }, [a("el-table-column", {
+                        attrs: {
+                            prop: "id",
+                            label: "摄像头编号"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "areaId",
+                            label: "对应区以及id"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "updateTime",
+                            label: "最近一次更新时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "createUser",
+                            label: "创建者"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "updateUser",
+                            label: "修改者"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "摄相机抓拍"
+                        }
+                    }, [a("el-button", {
+                        attrs: {
+                            type: "warning",
+                            size: "mini"
+                        },
+                        on: {
+                            click: e.takePhoto
+                        }
+                    }, [e._v("点击抓拍")])], 1), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "抓拍图片上传"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.cameraUpload(i)
+                                        }
+                                    }
+                                }, [e._v("图片上传")])]
+                            }
+                        }])
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "操作"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        icon: "el-icon-edit"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.updateCamera(i)
+                                        }
+                                    }
+                                }, [e._v("修改")]), e._v(" "), a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        type: "danger",
+                                        icon: "el-icon-delete"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.deleteCamera(i)
+                                        }
+                                    }
+                                }, [e._v("删除")])]
+                            }
+                        }])
+                    })], 1), e._v(" "), a("el-pagination", {
+                        staticStyle: {
+                            "margin-top": "20px",
+                            textalign: "center"
+                        },
+                        attrs: {
+                            "current-page": e.page,
+                            "page-sizes": [5, 10, 15],
+                            "page-size": e.pageSize,
+                            total: e.total,
+                            layout: "prev, pager, next, jumper,->, sizes, total"
+                        },
+                        on: {
+                            "current-change": e.getPageList,
+                            "size-change": e.handleSizeChange
+                        }
+                    }), e._v(" "), a("el-dialog", {
+                        attrs: {
+                            title: e.Form.id ? "修改摄像头信息" : "添加摄像头信息",
+                            visible: e.dialogFormVisible
+                        },
+                        on: {
+                            "update:visible": function(t) {
+                                e.dialogFormVisible = t
+                            }
+                        }
+                    }, [a("el-form", {
+                        ref: "ruleForm",
+                        staticStyle: {
+                            width: "80%"
+                        },
+                        attrs: {
+                            model: e.Form,
+                            rules: e.rules
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "对应区的id",
+                            prop: "areaId"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.areaId,
+                            callback: function(t) {
+                                e.$set(e.Form, "areaId", t)
+                            },
+                            expression: "Form.areaId"
+                        }
+                    })], 1)], 1), e._v(" "), a("div", {
+                        staticClass: "dialog-footer",
+                        attrs: {
+                            slot: "footer"
+                        },
+                        slot: "footer"
+                    }, [a("el-button", {
+                        on: {
+                            click: function(t) {
+                                e.dialogFormVisible = !1
+                            }
+                        }
+                    }, [e._v("取 消")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.addOrUpdateCamera,
+                            keyup: function(t) {
+                                return !t.type.indexOf("key") && e._k(t.keyCode, "enter", 13, t.key, "Enter") ? null : e.keyDown(e.e)
+                            }
+                        }
+                    }, [e._v("确 定")])], 1)], 1), e._v(" "), a("el-dialog", {
+                        attrs: {
+                            title: "抓拍图片上传",
+                            visible: e.dialogFormVisible2
+                        },
+                        on: {
+                            "update:visible": function(t) {
+                                e.dialogFormVisible2 = t
+                            }
+                        }
+                    }, [a("el-form", {
+                        ref: "tRuleForm",
+                        staticStyle: {
+                            width: "80%"
+                        },
+                        attrs: {
+                            model: e.tForm,
+                            rules: e.trules
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "果蔬编号",
+                            prop: "id"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择果蔬编号"
+                        },
+                        model: {
+                            value: e.tForm.id,
+                            callback: function(t) {
+                                e.$set(e.tForm, "id", t)
+                            },
+                            expression: "tForm.id"
+                        }
+                    }, e._l(e.treeList, function(e, t) {
+                        return a("el-option", {
+                            key: t,
+                            attrs: {
+                                label: e,
+                                value: e
+                            }
+                        })
+                    }), 1)], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "图片上传",
+                            prop: "img"
+                        }
+                    }, [a("el-upload", {
+                        staticClass: "avatar-uploader",
+                        attrs: {
+                            action: "/identify/img2url",
+                            "show-file-list": !1,
+                            "on-success": e.handleAvatarSuccess,
+                            "before-upload": e.beforeAvatarUpload
+                        }
+                    }, [e.tForm.img ? a("img", {
+                        staticClass: "avatar",
+                        attrs: {
+                            src: e.tForm.img
+                        }
+                    }) : a("i", {
+                        staticClass: "el-icon-plus avatar-uploader-icon"
+                    })])], 1)], 1), e._v(" "), a("div", {
+                        staticClass: "dialog-footer",
+                        attrs: {
+                            slot: "footer"
+                        },
+                        slot: "footer"
+                    }, [a("el-button", {
+                        on: {
+                            click: function(t) {
+                                e.dialogFormVisible2 = !1
+                            }
+                        }
+                    }, [e._v("取 消")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.Upload
+                        }
+                    }, [e._v("确 定")])], 1)], 1)], 1)
+                },
+                staticRenderFns: []
+            };
+        var j = a("VU/8")(O, M, !1, function(e) {
+                a("Qxnm")
+            }, null, null).exports,
+            H = {
+                inject: ["reload"],
+                name: "identify",
+                data: function() {
+                    return {
+                        srcList: [],
+                        srcList2: [],
+                        page: 1,
+                        pageSize: 5,
+                        total: 0,
+                        list: []
+                    }
+                },
+                mounted: function() {
+                    this.getPageList()
+                },
+                methods: {
+                    getPageList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1;
+                        this.page = t,
+                            function(e, t) {
+                                return _("get", "/identify?page=" + e + "&pageSize=" + t)
+                            }(this.page, this.pageSize).then(function(t) {
+                                console.log("list", t), console.log("图片", t.data.records.imgCount), console.log("图片", t.data.records.imgRipe), 1 == t.code ? (e.list = t.data.records, e.total = t.data.total) : e.$message({
+                                    type: "info",
+                                    message: t.data
+                                })
+                            }).catch(function(t) {
+                                e.$message.error("加载失败，请稍后重试")
+                            })
+                    },
+                    handleSizeChange: function(e) {
+                        this.pageSize = e, this.getPageList()
+                    },
+                    deleteIdentify: function(e) {
+                        var t = this;
+                        this.$confirm("确定删除信息" + e.id + "?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(function() {
+                            var a;
+                            (a = e.id, y.a.delete("/identify/" + a).then(function(e) {
+                                return e.data
+                            })).then(function(e) {
+                                1 == e.code ? (t.$message({
+                                    type: "success",
+                                    message: "识别信息已删除!"
+                                }), t.getPageList(t.list.length > 1 ? t.page : t.page - 1)) : t.$message({
+                                    type: "info",
+                                    message: e.msg
+                                })
+                            }).catch(function(e) {
+                                t.loading = !1, t.$message.error("识别信息删除失败，请稍后再试！")
+                            })
+                        }).catch(function() {
+                            t.$message({
+                                type: "info",
+                                message: "已取消删除"
+                            })
+                        })
+                    }
+                }
+            },
+            K = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("div", [a("el-breadcrumb", {
+                        staticStyle: {
+                            "padding-bottom": "20px"
+                        },
+                        attrs: {
+                            "separator-class": "el-icon-arrow-right"
+                        }
+                    }, [a("el-breadcrumb-item", {
+                        attrs: {
+                            to: {
+                                path: "/"
+                            }
+                        }
+                    }, [e._v("登录页\n    ")]), e._v(" "), a("el-breadcrumb-item", [a("div", {
+                        staticStyle: {
+                            color: "#fff"
+                        }
+                    }, [e._v("识别信息管理")])])], 1), e._v(" "), a("el-card", {
+                        staticStyle: {
+                            height: "80px"
+                        }
+                    }, [a("el-form", {
+                        staticClass: "demo-form-inline",
+                        staticStyle: {
+                            height: "50px"
+                        },
+                        attrs: {
+                            inline: !0
+                        }
+                    }, [a("el-form-item", {
+                        staticStyle: {
+                            float: "right"
+                        }
+                    }, [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.reload
+                        }
+                    }, [e._v("刷新页面")])], 1)], 1)], 1), e._v(" "), a("el-card", [a("el-table", {
+                        staticStyle: {
+                            width: "100%"
+                        },
+                        attrs: {
+                            data: e.list,
+                            border: ""
+                        }
+                    }, [a("el-table-column", {
+                        attrs: {
+                            prop: "id",
+                            label: "信息id"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "fruitName",
+                            label: "果实名称"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "fruitNum",
+                            label: "果实数量"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "imgCount",
+                            label: "识别处理后的图片"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-image", {
+                                    staticStyle: {
+                                        width: "100px",
+                                        height: "100px"
+                                    },
+                                    attrs: {
+                                        src: i.imgCount,
+                                        "preview-src-list": e.srcList
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.srcList.push(i.imgCount)
+                                        }
+                                    }
+                                })]
+                            }
+                        }])
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "ripeNum",
+                            label: "果实成熟数量"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "imgRipe",
+                            label: "成熟果实的图片"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-image", {
+                                    staticStyle: {
+                                        width: "100px",
+                                        height: "100px"
+                                    },
+                                    attrs: {
+                                        src: i.imgRipe,
+                                        "preview-src-list": e.srcList2
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.srcList2.push(i.imgRipe)
+                                        }
+                                    }
+                                })]
+                            }
+                        }])
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "createTime",
+                            label: "操作时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "操作"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        type: "danger",
+                                        icon: "el-icon-delete"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.deleteIdentify(i)
+                                        }
+                                    }
+                                }, [e._v("删除")])]
+                            }
+                        }])
+                    })], 1), e._v(" "), a("el-pagination", {
+                        staticStyle: {
+                            "margin-top": "20px",
+                            textalign: "center"
+                        },
+                        attrs: {
+                            "current-page": e.page,
+                            "page-sizes": [5, 10, 15],
+                            "page-size": e.pageSize,
+                            total: e.total,
+                            layout: "prev, pager, next, jumper,->, sizes, total"
+                        },
+                        on: {
+                            "current-change": e.getPageList,
+                            "size-change": e.handleSizeChange
+                        }
+                    })], 1)], 1)
+                },
+                staticRenderFns: []
+            };
+        var Q = a("VU/8")(H, K, !1, function(e) {
+                a("T+0F")
+            }, null, null).exports,
+            G = {
+                inject: ["reload"],
+                name: "area",
+                data: function() {
+                    return {
+                        page: 1,
+                        pageSize: 10,
+                        total: 0,
+                        list: [],
+                        adminList: [],
+                        dialogFormVisible: !1,
+                        selectName: "",
+                        Form: {
+                            name: "",
+                            type: "",
+                            size: "",
+                            description: "",
+                            empId: ""
+                        },
+                        rules: {
+                            name: [{
+                                required: !0,
+                                message: "请输入对应区",
+                                trigger: "blur"
+                            }, {
+                                validator: function(e, t, a) {
+                                    t.length < 2 || t.length > 6 ? a(new Error("请输入正确的区名:2-6位")) : a()
+                                },
+                                trigger: "change"
+                            }],
+                            type: [{
+                                required: !0,
+                                message: "请输入果蔬类型",
+                                trigger: "blur"
+                            }],
+                            size: [{
+                                required: !0,
+                                message: "请输入区块大小",
+                                trigger: "blur"
+                            }],
+                            empId: [{
+                                required: !0,
+                                message: "请选择负责人",
+                                trigger: "change"
+                            }]
+                        }
+                    }
+                },
+                mounted: function() {
+                    this.getAdmin(), this.getPageList()
+                },
+                methods: {
+                    getPageList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1;
+                        this.page = t;
+                        var a = this.page,
+                            i = this.pageSize;
+                        D(a, i).then(function(t) {
+                            0 == t.success ? e.$message({
+                                type: "info",
+                                message: t.data.msg
+                            }) : (e.list = t.data.records, e.total = t.data.total)
+                        }).catch(function(t) {
+                            e.$message.error("加载失败，请稍后重试")
+                        })
+                    },
+                    handleSizeChange: function(e) {
+                        this.pageSize = e, this.getPageList()
+                    },
+                    showDialog: function() {
+                        this.dialogFormVisible = !0, this.Form = {
+                            name: "",
+                            description: ""
+                        }
+                    },
+                    updateArea: function(e) {
+                        this.dialogFormVisible = !0, this.Form = q()({}, e)
+                    },
+                    addOrUpdateArea: function() {
+                        var e = this;
+                        this.$refs.ruleForm.validate(function(t) {
+                            if (!t) return console.log("error submit!!"), !1;
+                            var a;
+                            (a = e.Form, a.id ? y.a.put("/area", a) : y.a.post("/area", a)).then(function(t) {
+                                e.dialogFormVisible = !1, 1 == t.data.code ? (e.$message({
+                                    type: "success",
+                                    message: e.Form.id ? "修改区信息成功" : "添加区信息成功"
+                                }), e.getPageList(e.Form.id ? e.page : 1)) : e.$message({
+                                    type: "info",
+                                    message: t.data.msg
+                                })
+                            })
+                        })
+                    },
+                    deleteArea: function(e) {
+                        var t = this;
+                        this.$confirm("确定删除 " + e.name + ":" + e.id + "?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(function() {
+                            var a;
+                            (a = e.id, y.a.delete("/area/" + a).then(function(e) {
+                                return e.data
+                            })).then(function(e) {
+                                1 == e.code ? (t.$message({
+                                    type: "success",
+                                    message: "区信息已删除!"
+                                }), t.getPageList(t.list.length > 1 ? t.page : t.page - 1)) : t.$message({
+                                    type: "info",
+                                    message: "删除有误"
+                                })
+                            }).catch(function(e) {
+                                t.loading = !1, t.$message.error("区信息删除失败，请稍后再试！")
+                            })
+                        }).catch(function() {
+                            t.$message({
+                                type: "info",
+                                message: "已取消删除"
+                            })
+                        })
+                    },
+                    getSelect: function() {
+                        var e, t, a, i = this;
+                        this.selectName ? (e = this.selectName, t = 1, a = 999, y.a.get("/area?page=" + t + "&pageSize=" + a + "&name=" + e).then(function(e) {
+                            return e.data
+                        })).then(function(e) {
+                            1 == e.code ? (0 == e.data.total && i.$message({
+                                type: "error",
+                                message: "未找到此信息"
+                            }), i.list = e.data.records, i.total = e.data.total) : i.$message({
+                                type: "info",
+                                message: e.data.msg
+                            })
+                        }) : this.getPageList()
+                    },
+                    getAdmin: function() {
+                        var e = this;
+                        B().then(function(t) {
+                            1 == t.code && (e.adminList = t.data)
+                        })
+                    }
+                }
+            },
+            W = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("div", [a("el-breadcrumb", {
+                        staticStyle: {
+                            "padding-bottom": "20px"
+                        },
+                        attrs: {
+                            "separator-class": "el-icon-arrow-right"
+                        }
+                    }, [a("el-breadcrumb-item", {
+                        attrs: {
+                            to: {
+                                path: "/"
+                            }
+                        }
+                    }, [e._v("登录页\n    ")]), e._v(" "), a("el-breadcrumb-item", [a("div", {
+                        staticStyle: {
+                            color: "#fff"
+                        }
+                    }, [e._v("区管理")])])], 1), e._v(" "), a("el-card", {
+                        staticStyle: {
+                            height: "80px"
+                        }
+                    }, [a("el-form", {
+                        staticClass: "demo-form-inline",
+                        attrs: {
+                            inline: !0
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "区名"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            placeholder: "输入区名"
+                        },
+                        model: {
+                            value: e.selectName,
+                            callback: function(t) {
+                                e.selectName = t
+                            },
+                            expression: "selectName"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.getSelect
+                        }
+                    }, [e._v("查询")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.reload
+                        }
+                    }, [e._v("刷新页面")])], 1), e._v(" "), a("el-button", {
+                        staticStyle: {
+                            float: "right"
+                        },
+                        attrs: {
+                            type: "primary",
+                            icon: "el-icon-plus"
+                        },
+                        on: {
+                            click: e.showDialog
+                        }
+                    }, [e._v("添加区")])], 1)], 1), e._v(" "), a("el-table", {
+                        attrs: {
+                            data: e.list,
+                            border: ""
+                        }
+                    }, [a("el-table-column", {
+                        attrs: {
+                            prop: "id",
+                            label: "区号"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "name",
+                            label: "区名"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "size",
+                            label: "区块大小(m²)"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "description",
+                            label: "描述"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "updateTime",
+                            label: "最近一次操作时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "操作"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        icon: "el-icon-edit"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.updateArea(i)
+                                        }
+                                    }
+                                }, [e._v("修改")]), e._v(" "), a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        type: "danger",
+                                        icon: "el-icon-delete"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.deleteArea(i)
+                                        }
+                                    }
+                                }, [e._v("删除")])]
+                            }
+                        }])
+                    })], 1), e._v(" "), a("el-pagination", {
+                        staticStyle: {
+                            "margin-top": "20px",
+                            textalign: "center"
+                        },
+                        attrs: {
+                            "current-page": e.page,
+                            "page-sizes": [5, 10, 15],
+                            "page-size": e.pageSize,
+                            total: e.total,
+                            layout: "prev, pager, next, jumper,->, sizes, total"
+                        },
+                        on: {
+                            "current-change": e.getPageList,
+                            "size-change": e.handleSizeChange
+                        }
+                    }), e._v(" "), a("el-dialog", {
+                        attrs: {
+                            title: e.Form.id ? "修改区信息" : "添加区信息",
+                            visible: e.dialogFormVisible
+                        },
+                        on: {
+                            "update:visible": function(t) {
+                                e.dialogFormVisible = t
+                            }
+                        }
+                    }, [a("el-form", {
+                        ref: "ruleForm",
+                        staticStyle: {
+                            width: "80%"
+                        },
+                        attrs: {
+                            model: e.Form,
+                            rules: e.rules
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "区名",
+                            prop: "name"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.name,
+                            callback: function(t) {
+                                e.$set(e.Form, "name", t)
+                            },
+                            expression: "Form.name"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "类型",
+                            prop: "type"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.type,
+                            callback: function(t) {
+                                e.$set(e.Form, "type", t)
+                            },
+                            expression: "Form.type"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "区块大小",
+                            prop: "size"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.size,
+                            callback: function(t) {
+                                e.$set(e.Form, "size", t)
+                            },
+                            expression: "Form.size"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "负责人",
+                            prop: "empId"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择"
+                        },
+                        model: {
+                            value: e.Form.empId,
+                            callback: function(t) {
+                                e.$set(e.Form, "empId", t)
+                            },
+                            expression: "Form.empId"
+                        }
+                    }, e._l(e.adminList, function(e, t) {
+                        return a("el-option", {
+                            key: t,
+                            attrs: {
+                                label: e.name,
+                                value: e.id
+                            }
+                        })
+                    }), 1)], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "区块描述"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            type: "textarea",
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.description,
+                            callback: function(t) {
+                                e.$set(e.Form, "description", t)
+                            },
+                            expression: "Form.description"
+                        }
+                    })], 1)], 1), e._v(" "), a("div", {
+                        staticClass: "dialog-footer",
+                        attrs: {
+                            slot: "footer"
+                        },
+                        slot: "footer"
+                    }, [a("el-button", {
+                        on: {
+                            click: function(t) {
+                                e.dialogFormVisible = !1
+                            }
+                        }
+                    }, [e._v("取 消")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.addOrUpdateArea
+                        }
+                    }, [e._v("确 定")])], 1)], 1)], 1)
+                },
+                staticRenderFns: []
+            };
+        var J = a("VU/8")(G, W, !1, function(e) {
+                a("/Uwa")
+            }, null, null).exports,
+            Y = a("MJLE"),
+            X = a.n(Y),
+            Z = {
+                inject: ["reload"],
+                name: "piece",
+                data: function() {
+                    return {
+                        srcList: [],
+                        page: 1,
+                        pageSize: 5,
+                        total: 0,
+                        list: [],
+                        selectList: [],
+                        codeId: "",
+                        dialogFormVisible: !1,
+                        codeDialog: !1,
+                        selectName: "",
+                        Form: {
+                            areaId: "",
+                            type: ""
+                        },
+                        rules: {
+                            areaId: [{
+                                required: !0,
+                                message: "请输入区号",
+                                trigger: "blur"
+                            }, {
+                                validator: function(e, t, a) {
+                                    t.length < 1 || t.length > 10 ? a(new Error("请输入正确的号码:1-10位")) : a()
+                                },
+                                trigger: "change"
+                            }],
+                            type: [{
+                                required: !0,
+                                message: "请选择果蔬类型",
+                                trigger: "change"
+                            }]
+                        }
+                    }
+                },
+                mounted: function() {
+                    this.getTypeList(), this.getPageList()
+                },
+                methods: {
+                    getPageList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1;
+                        this.page = t,
+                            function(e, t) {
+                                return _("get", "/fruitTree?page=" + e + "&pageSize=" + t)
+                            }(this.page, this.pageSize).then(function(t) {
+                                0 == t.success ? e.$message({
+                                    type: "info",
+                                    message: t.data
+                                }) : (e.list = t.data.records, e.total = t.data.total, e.srcList = t.data.records)
+                            }).catch(function(t) {
+                                e.$message.error("加载失败，请稍后重试")
+                            })
+                    },
+                    handleSizeChange: function(e) {
+                        this.pageSize = e, this.getPageList()
+                    },
+                    showDialog: function() {
+                        this.dialogFormVisible = !0, this.Form = {
+                            areaId: "",
+                            type: ""
+                        }
+                    },
+                    updatePiece: function(e) {
+                        this.dialogFormVisible = !0, this.Form = q()({}, e)
+                    },
+                    addOrUpdatePiece: function() {
+                        var e = this;
+                        this.$refs.ruleForm.validate(function(t) {
+                            if (!t) return console.log("error submit!!"), !1;
+                            var a;
+                            (a = e.Form, a.id ? y.a.put("/fruitTree", a) : y.a.post("/fruitTree", a)).then(function(t) {
+                                e.dialogFormVisible = !1, 1 == t.data.code ? (e.$message({
+                                    type: "success",
+                                    message: e.Form.id ? "修改果蔬信息成功" : "添加果蔬信息成功"
+                                }), e.getPageList(e.Form.id ? e.page : 1)) : e.$message({
+                                    type: "warning",
+                                    message: t.data.msg
+                                })
+                            })
+                        })
+                    },
+                    deletePiece: function(e) {
+                        var t = this;
+                        this.$confirm("确定删除 " + e.areaName + ":" + e.typen + "?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(function() {
+                            var a;
+                            (a = e.id, y.a.delete("/fruitTree/" + a).then(function(e) {
+                                return e.data
+                            })).then(function(e) {
+                                1 == e.code ? (t.$message({
+                                    type: "success",
+                                    message: "果蔬信息已删除!"
+                                }), t.getPageList(t.list.length > 1 ? t.page : t.page - 1)) : t.$message({
+                                    type: "info",
+                                    message: e.msg
+                                })
+                            }).catch(function(e) {
+                                t.loading = !1, t.$message.error("果蔬信息删除失败，请稍后再试！")
+                            })
+                        }).catch(function() {
+                            t.$message({
+                                type: "info",
+                                message: "已取消删除"
+                            })
+                        })
+                    },
+                    getSelect: function() {
+                        var e, t, a, i = this;
+                        this.selectName ? (e = this.selectName, t = 1, a = 999, y.a.get("/fruitTree?page=" + t + "&pageSize=" + a + "&type=" + e).then(function(e) {
+                            return e.data
+                        })).then(function(e) {
+                            1 == e.code ? (0 == e.data.total && i.$message({
+                                type: "error",
+                                message: "未找到此信息"
+                            }), i.list = e.data.records, i.total = e.data.total) : i.$message({
+                                type: "info",
+                                message: e.data
+                            })
+                        }) : this.getPageList()
+                    },
+                    SelectOn: function() {
+                        this.reload()
+                    },
+                    getTypeList: function() {
+                        var e = this;
+                        _("get", "/fruitTree/showType").then(function(e) {
+                            return e.data
+                        }).then(function(t) {
+                            t.length > 0 && (e.selectList = t)
+                        })
+                    },
+                    createCode: function(e) {
+                        this.$refs.qrCodeUrl.innerHTML = "";
+                        new X.a(this.$refs.qrCodeUrl, {
+                            text: e,
+                            width: 200,
+                            height: 200,
+                            render: "canvas",
+                            correctLevel: X.a.CorrectLevel.H
+                        })
+                    },
+                    getCode: function(e) {
+                        this.codeDialog = !0, this.codeId = e.id
+                    },
+                    showCode: function() {
+                        this.createCode(this.codeId)
+                    }
+                }
+            },
+            ee = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("div", [a("el-breadcrumb", {
+                        staticStyle: {
+                            "padding-bottom": "20px"
+                        },
+                        attrs: {
+                            "separator-class": "el-icon-arrow-right"
+                        }
+                    }, [a("el-breadcrumb-item", {
+                        attrs: {
+                            to: {
+                                path: "/"
+                            }
+                        }
+                    }, [e._v("登录页\n    ")]), e._v(" "), a("el-breadcrumb-item", [a("div", {
+                        staticStyle: {
+                            color: "#fff"
+                        }
+                    }, [e._v("果蔬信息管理")])])], 1), e._v(" "), a("el-card", {
+                        staticStyle: {
+                            height: "80px"
+                        }
+                    }, [a("el-form", {
+                        staticClass: "demo-form-inline",
+                        attrs: {
+                            inline: !0
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "果蔬类型"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            placeholder: "输入果蔬名称"
+                        },
+                        model: {
+                            value: e.selectName,
+                            callback: function(t) {
+                                e.selectName = t
+                            },
+                            expression: "selectName"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.getSelect
+                        }
+                    }, [e._v("查询")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.reload
+                        }
+                    }, [e._v("刷新页面")])], 1), e._v(" "), a("el-button", {
+                        staticStyle: {
+                            float: "right"
+                        },
+                        attrs: {
+                            type: "primary",
+                            icon: "el-icon-plus"
+                        },
+                        on: {
+                            click: e.showDialog
+                        }
+                    }, [e._v("添加果蔬")])], 1)], 1), e._v(" "), a("el-table", {
+                        staticStyle: {
+                            width: "100%"
+                        },
+                        attrs: {
+                            data: e.list,
+                            border: ""
+                        }
+                    }, [a("el-table-column", {
+                        attrs: {
+                            prop: "areaName",
+                            label: "区名"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "id",
+                            label: "果蔬id"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "typen",
+                            label: "果蔬类型"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "countNum",
+                            label: "果实数"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "ripeNum",
+                            label: "果实成熟数"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "img",
+                            label: "图片"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-image", {
+                                    staticStyle: {
+                                        width: "100px",
+                                        height: "100px"
+                                    },
+                                    attrs: {
+                                        src: i.img,
+                                        "preview-src-list": e.srcList
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.srcList.push(i.img)
+                                        }
+                                    }
+                                })]
+                            }
+                        }])
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "code",
+                            label: "二维码"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.getCode(i)
+                                        }
+                                    }
+                                }, [e._v("生成二维码")])]
+                            }
+                        }])
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "操作"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        icon: "el-icon-edit"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.updatePiece(i)
+                                        }
+                                    }
+                                }, [e._v("修改")]), e._v(" "), a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        type: "danger",
+                                        icon: "el-icon-delete"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.deletePiece(i)
+                                        }
+                                    }
+                                }, [e._v("删除")])]
+                            }
+                        }])
+                    })], 1), e._v(" "), a("el-pagination", {
+                        staticStyle: {
+                            "margin-top": "20px",
+                            textalign: "center"
+                        },
+                        attrs: {
+                            "current-page": e.page,
+                            "page-sizes": [5, 10, 15],
+                            "page-size": e.pageSize,
+                            total: e.total,
+                            layout: "prev, pager, next, jumper,->, sizes, total"
+                        },
+                        on: {
+                            "current-change": e.getPageList,
+                            "size-change": e.handleSizeChange
+                        }
+                    }), e._v(" "), a("el-dialog", {
+                        attrs: {
+                            title: e.Form.id ? "修改果蔬信息" : "添加果蔬信息",
+                            visible: e.dialogFormVisible
+                        },
+                        on: {
+                            "update:visible": function(t) {
+                                e.dialogFormVisible = t
+                            }
+                        }
+                    }, [a("el-form", {
+                        ref: "ruleForm",
+                        staticStyle: {
+                            width: "80%"
+                        },
+                        attrs: {
+                            model: e.Form,
+                            rules: e.rules
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "区号",
+                            prop: "areaId"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.areaId,
+                            callback: function(t) {
+                                e.$set(e.Form, "areaId", t)
+                            },
+                            expression: "Form.areaId"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "果蔬类型",
+                            prop: "type"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择果蔬类型"
+                        },
+                        model: {
+                            value: e.Form.type,
+                            callback: function(t) {
+                                e.$set(e.Form, "type", t)
+                            },
+                            expression: "Form.type"
+                        }
+                    }, e._l(e.selectList, function(e, t) {
+                        return a("el-option", {
+                            key: t,
+                            attrs: {
+                                label: e.type,
+                                value: e.id
+                            }
+                        })
+                    }), 1)], 1)], 1), e._v(" "), a("div", {
+                        staticClass: "dialog-footer",
+                        attrs: {
+                            slot: "footer"
+                        },
+                        slot: "footer"
+                    }, [a("el-button", {
+                        on: {
+                            click: function(t) {
+                                e.dialogFormVisible = !1
+                            }
+                        }
+                    }, [e._v("取 消")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.addOrUpdatePiece
+                        }
+                    }, [e._v("确 定")])], 1)], 1), e._v(" "), a("el-dialog", {
+                        attrs: {
+                            title: "二维码",
+                            visible: e.codeDialog
+                        },
+                        on: {
+                            "update:visible": function(t) {
+                                e.codeDialog = t
+                            },
+                            opened: e.showCode
+                        }
+                    }, [a("div", {
+                        ref: "qrCodeUrl",
+                        staticClass: "qrcode"
+                    }), e._v(" "), a("div", {
+                        staticClass: "dialog-footer",
+                        attrs: {
+                            slot: "footer"
+                        },
+                        slot: "footer"
+                    }, [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: function(t) {
+                                e.codeDialog = !1
+                            }
+                        }
+                    }, [e._v("确 定")])], 1)])], 1)
+                },
+                staticRenderFns: []
+            };
+        var te = a("VU/8")(Z, ee, !1, function(e) {
+                a("RSvX")
+            }, null, null).exports,
+            ae = {
+                inject: ["reload"],
+                name: "employee",
+                data: function() {
+                    var e = function(e, t, a) {
+                        t.length < 2 || t.length > 10 ? a(new Error("请输入正确的名称:2-10位")) : a()
+                    };
+                    return {
+                        page: 1,
+                        pageSize: 10,
+                        total: 0,
+                        list: [],
+                        dialogFormVisible: !1,
+                        dialogFormVisible2: !1,
+                        Form: {
+                            name: "",
+                            username: "",
+                            phone: "",
+                            sex: "",
+                            status: "",
+                            isAdmin: ""
+                        },
+                        uForm: {
+                            name: "",
+                            password: "",
+                            phone: "",
+                            sex: "",
+                            status: "",
+                            isAdmin: ""
+                        },
+                        rules: {
+                            name: [{
+                                required: !0,
+                                message: "请输入用户名称",
+                                trigger: "blur"
+                            }, {
+                                validator: e,
+                                trigger: "change"
+                            }],
+                            username: [{
+                                required: !0,
+                                message: "请输入账号",
+                                trigger: "blur"
+                            }, {
+                                validator: function(e, t, a) {
+                                    t.length < 3 || t.length > 16 ? a(new Error("请输入正确的账号:3-16位")) : a()
+                                },
+                                trigger: "change"
+                            }],
+                            phone: [{
+                                required: !0,
+                                message: "请输入手机号",
+                                trigger: "blur"
+                            }],
+                            sex: [{
+                                required: !0,
+                                message: "请选择性别",
+                                trigger: "blur"
+                            }],
+                            status: [{
+                                required: !0,
+                                message: "请选择状态",
+                                trigger: "blur"
+                            }],
+                            isAdmin: [{
+                                required: !0,
+                                message: "请选择身份",
+                                trigger: "blur"
+                            }]
+                        },
+                        rules2: {
+                            name: [{
+                                required: !0,
+                                message: "请输入用户名称",
+                                trigger: "blur"
+                            }, {
+                                validator: e,
+                                trigger: "change"
+                            }],
+                            phone: [{
+                                required: !0,
+                                message: "请输入手机号",
+                                trigger: "blur"
+                            }],
+                            sex: [{
+                                required: !0,
+                                message: "请选择性别",
+                                trigger: "blur"
+                            }],
+                            status: [{
+                                required: !0,
+                                message: "请选择状态",
+                                trigger: "blur"
+                            }],
+                            isAdmin: [{
+                                required: !0,
+                                message: "请选择身份",
+                                trigger: "blur"
+                            }]
+                        },
+                        selectName: ""
+                    }
+                },
+                mounted: function() {
+                    this.getPageList()
+                },
+                methods: {
+                    getPageList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1;
+                        this.page = t;
+                        var a = this.page,
+                            i = this.pageSize;
+                        R(a, i).then(function(t) {
+                            if (0 == t.success) e.$message({
+                                type: "info",
+                                message: t.data
+                            });
+                            else {
+                                e.list = t.data.records, e.total = t.data.total;
+                                for (var a = 0; a < e.list.length; a++) "1" == e.list[a].sex ? e.list[a].sex = "男" : e.list[a].sex = "女", 1 === e.list[a].status ? e.list[a].status = "可用" : e.list[a].status = "禁用"
+                            }
+                        })
+                    },
+                    handleSizeChange: function(e) {
+                        this.pageSize = e, this.getPageList()
+                    },
+                    showDialog: function() {
+                        this.dialogFormVisible = !0, this.Form = {
+                            name: "",
+                            username: "",
+                            phone: "",
+                            sex: "",
+                            status: "",
+                            isAdmin: ""
+                        }
+                    },
+                    updateEmployee: function(e) {
+                        this.dialogFormVisible2 = !0, this.uForm = q()({}, e)
+                    },
+                    AddEmployee: function() {
+                        var e = this;
+                        this.$refs.ruleForm.validate(function(t) {
+                            if (!t) return console.log("error submit!!"), !1;
+                            var a;
+                            e.dialogFormVisible = !1, (a = e.Form, y.a.post("/employee", a)).then(function(t) {
+                                1 == t.data.code ? (e.$message({
+                                    type: "success",
+                                    message: "添加人员信息成功"
+                                }), e.getPageList()) : e.$message({
+                                    type: "warning",
+                                    message: t.data.msg
+                                })
+                            })
+                        })
+                    },
+                    UpdateEmployee: function() {
+                        var e = this;
+                        this.$refs.ruleForm2.validate(function(t) {
+                            if (!t) return console.log("error submit!!"), !1;
+                            var a;
+                            e.dialogFormVisible2 = !1, (a = e.uForm, y.a.put("/employee", a)).then(function(t) {
+                                1 == t.data.code ? (e.$message({
+                                    type: "success",
+                                    message: "修改人员信息成功"
+                                }), e.getPageList(e.page)) : e.$message({
+                                    type: "warning",
+                                    message: t.data.msg
+                                })
+                            })
+                        })
+                    },
+                    deleteEmployee: function(e) {
+                        var t = this;
+                        this.$confirm("确定删除" + e.name + "?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(function() {
+                            var a;
+                            (a = e.id, y.a.delete("/employee/" + a).then(function(e) {
+                                return e.data
+                            })).then(function(e) {
+                                1 == e.code ? (t.$message({
+                                    type: "success",
+                                    message: "人员信息已删除!"
+                                }), t.getPageList(t.list.length > 1 ? t.page : t.page - 1)) : t.$message({
+                                    type: "info",
+                                    message: e.msg
+                                })
+                            }).catch(function(e) {
+                                t.loading = !1, t.$message.error("人员信息删除失败，请稍后再试！")
+                            })
+                        })
+                    },
+                    getSelect: function() {
+                        var e, t, a, i = this;
+                        (e = this.selectName, t = 1, a = 999, y.a.get("/employee/page?name=" + e + "&page=" + t + "&pageSize=" + a).then(function(e) {
+                            return e.data
+                        })).then(function(e) {
+                            if (0 == e.success) i.$message({
+                                type: "info",
+                                message: e.data
+                            });
+                            else {
+                                0 == e.data.total && i.$message({
+                                    type: "error",
+                                    message: "未找到此信息"
+                                }), i.list = e.data.records, i.total = e.data.total;
+                                for (var t = 0; t < i.list.length; t++) "1" == i.list[t].sex ? i.list[t].sex = "男" : i.list[t].sex = "女", 1 === i.list[t].status ? i.list[t].status = "可用" : i.list[t].status = "禁用"
+                            }
+                        })
+                    },
+                    SelectOn: function() {
+                        this.reload()
+                    },
+                    tableRowClassName: function(e) {
+                        var t = e.row;
+                        e.rowIndex;
+                        if ("禁用" == t.status) return "warning-row"
+                    }
+                }
+            },
+            ie = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("div", [a("el-breadcrumb", {
+                        staticStyle: {
+                            "padding-bottom": "20px"
+                        },
+                        attrs: {
+                            "separator-class": "el-icon-arrow-right"
+                        }
+                    }, [a("el-breadcrumb-item", {
+                        attrs: {
+                            to: {
+                                path: "/"
+                            }
+                        }
+                    }, [e._v("登录页\n    ")]), e._v(" "), a("el-breadcrumb-item", [a("div", {
+                        staticStyle: {
+                            color: "#fff"
+                        }
+                    }, [e._v("人员信息管理")])])], 1), e._v(" "), a("el-card", {
+                        staticStyle: {
+                            height: "80px"
+                        }
+                    }, [a("el-form", {
+                        staticClass: "demo-form-inline",
+                        attrs: {
+                            inline: !0
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "用户名称"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            placeholder: "输入用户名称"
+                        },
+                        model: {
+                            value: e.selectName,
+                            callback: function(t) {
+                                e.selectName = t
+                            },
+                            expression: "selectName"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.getSelect
+                        }
+                    }, [e._v("查询")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.reload
+                        }
+                    }, [e._v("刷新页面")])], 1), e._v(" "), a("el-button", {
+                        staticStyle: {
+                            float: "right"
+                        },
+                        attrs: {
+                            type: "primary",
+                            icon: "el-icon-plus"
+                        },
+                        on: {
+                            click: e.showDialog
+                        }
+                    }, [e._v("添加人员")])], 1)], 1), e._v(" "), a("el-table", {
+                        staticStyle: {
+                            width: "100%"
+                        },
+                        attrs: {
+                            data: e.list,
+                            border: "",
+                            "row-class-name": e.tableRowClassName
+                        }
+                    }, [a("el-table-column", {
+                        attrs: {
+                            prop: "id",
+                            label: "用户id"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "name",
+                            label: "用户名称"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "username",
+                            label: "账号"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "phone",
+                            label: "手机号"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "sex",
+                            label: "性别"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "status",
+                            label: "状态"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "createTime",
+                            label: "创建时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "updateTime",
+                            label: "操作时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "操作"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        disabled: 1 == i.id
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.updateEmployee(i)
+                                        }
+                                    }
+                                }, [e._v("修改")]), e._v(" "), a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        type: "danger",
+                                        disabled: 1 == i.id
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.deleteEmployee(i)
+                                        }
+                                    }
+                                }, [e._v("删除")])]
+                            }
+                        }])
+                    })], 1), e._v(" "), a("el-pagination", {
+                        staticStyle: {
+                            "margin-top": "20px",
+                            textalign: "center"
+                        },
+                        attrs: {
+                            "current-page": e.page,
+                            "page-sizes": [5, 10, 15],
+                            "page-size": e.pageSize,
+                            total: e.total,
+                            layout: "prev, pager, next, jumper,->, sizes, total"
+                        },
+                        on: {
+                            "current-change": e.getPageList,
+                            "size-change": e.handleSizeChange
+                        }
+                    }), e._v(" "), a("el-dialog", {
+                        attrs: {
+                            title: "添加人员信息",
+                            visible: e.dialogFormVisible
+                        },
+                        on: {
+                            "update:visible": function(t) {
+                                e.dialogFormVisible = t
+                            }
+                        }
+                    }, [a("el-form", {
+                        ref: "ruleForm",
+                        staticStyle: {
+                            width: "80%"
+                        },
+                        attrs: {
+                            model: e.Form,
+                            rules: e.rules
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "用户名称",
+                            prop: "name"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.name,
+                            callback: function(t) {
+                                e.$set(e.Form, "name", t)
+                            },
+                            expression: "Form.name"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "账号",
+                            prop: "username"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.username,
+                            callback: function(t) {
+                                e.$set(e.Form, "username", t)
+                            },
+                            expression: "Form.username"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "手机号",
+                            prop: "phone"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.phone,
+                            callback: function(t) {
+                                e.$set(e.Form, "phone", t)
+                            },
+                            expression: "Form.phone"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "身份",
+                            prop: "isAdmin"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择"
+                        },
+                        model: {
+                            value: e.Form.isAdmin,
+                            callback: function(t) {
+                                e.$set(e.Form, "isAdmin", t)
+                            },
+                            expression: "Form.isAdmin"
+                        }
+                    }, [a("el-option", {
+                        attrs: {
+                            label: "园区负责人",
+                            value: "0"
+                        }
+                    }), e._v(" "), a("el-option", {
+                        attrs: {
+                            label: "采摘人员",
+                            value: "2"
+                        }
+                    })], 1)], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "性别",
+                            prop: "sex"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择"
+                        },
+                        model: {
+                            value: e.Form.sex,
+                            callback: function(t) {
+                                e.$set(e.Form, "sex", t)
+                            },
+                            expression: "Form.sex"
+                        }
+                    }, [a("el-option", {
+                        attrs: {
+                            label: "男",
+                            value: "1"
+                        }
+                    }), e._v(" "), a("el-option", {
+                        attrs: {
+                            label: "女",
+                            value: "0"
+                        }
+                    })], 1)], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "状态",
+                            prop: "status"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择"
+                        },
+                        model: {
+                            value: e.Form.status,
+                            callback: function(t) {
+                                e.$set(e.Form, "status", t)
+                            },
+                            expression: "Form.status"
+                        }
+                    }, [a("el-option", {
+                        attrs: {
+                            label: "可用",
+                            value: "1"
+                        }
+                    }), e._v(" "), a("el-option", {
+                        attrs: {
+                            label: "禁用",
+                            value: "0"
+                        }
+                    })], 1)], 1)], 1), e._v(" "), a("div", {
+                        staticClass: "dialog-footer",
+                        attrs: {
+                            slot: "footer"
+                        },
+                        slot: "footer"
+                    }, [a("el-button", {
+                        on: {
+                            click: function(t) {
+                                e.dialogFormVisible = !1
+                            }
+                        }
+                    }, [e._v("取 消")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.AddEmployee
+                        }
+                    }, [e._v("确 定")])], 1)], 1), e._v(" "), a("el-dialog", {
+                        attrs: {
+                            title: "修改人员信息",
+                            visible: e.dialogFormVisible2
+                        },
+                        on: {
+                            "update:visible": function(t) {
+                                e.dialogFormVisible2 = t
+                            }
+                        }
+                    }, [a("el-form", {
+                        ref: "ruleForm2",
+                        staticStyle: {
+                            width: "80%"
+                        },
+                        attrs: {
+                            model: e.uForm,
+                            rules: e.rules2
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "用户名称",
+                            prop: "name"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.uForm.name,
+                            callback: function(t) {
+                                e.$set(e.uForm, "name", t)
+                            },
+                            expression: "uForm.name"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "手机号",
+                            prop: "phone"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.uForm.phone,
+                            callback: function(t) {
+                                e.$set(e.uForm, "phone", t)
+                            },
+                            expression: "uForm.phone"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "身份",
+                            prop: "isAdmin"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择"
+                        },
+                        model: {
+                            value: e.Form.isAdmin,
+                            callback: function(t) {
+                                e.$set(e.Form, "isAdmin", t)
+                            },
+                            expression: "Form.isAdmin"
+                        }
+                    }, [a("el-option", {
+                        attrs: {
+                            label: "园区负责人",
+                            value: "0"
+                        }
+                    }), e._v(" "), a("el-option", {
+                        attrs: {
+                            label: "采摘人员",
+                            value: "2"
+                        }
+                    })], 1)], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "性别",
+                            prop: "sex"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择"
+                        },
+                        model: {
+                            value: e.uForm.sex,
+                            callback: function(t) {
+                                e.$set(e.uForm, "sex", t)
+                            },
+                            expression: "uForm.sex"
+                        }
+                    }, [a("el-option", {
+                        attrs: {
+                            label: "男",
+                            value: "1"
+                        }
+                    }), e._v(" "), a("el-option", {
+                        attrs: {
+                            label: "女",
+                            value: "0"
+                        }
+                    })], 1)], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "状态",
+                            prop: "status"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择"
+                        },
+                        model: {
+                            value: e.uForm.status,
+                            callback: function(t) {
+                                e.$set(e.uForm, "status", t)
+                            },
+                            expression: "uForm.status"
+                        }
+                    }, [a("el-option", {
+                        attrs: {
+                            label: "可用",
+                            value: "1"
+                        }
+                    }), e._v(" "), a("el-option", {
+                        attrs: {
+                            label: "禁用",
+                            value: "0"
+                        }
+                    })], 1)], 1)], 1), e._v(" "), a("div", {
+                        staticClass: "dialog-footer",
+                        attrs: {
+                            slot: "footer"
+                        },
+                        slot: "footer"
+                    }, [a("el-button", {
+                        on: {
+                            click: function(t) {
+                                e.dialogFormVisible2 = !1
+                            }
+                        }
+                    }, [e._v("取 消")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.UpdateEmployee
+                        }
+                    }, [e._v("确 定")])], 1)], 1)], 1)
+                },
+                staticRenderFns: []
+            };
+        var re = a("VU/8")(ae, ie, !1, function(e) {
+                a("fYjA")
+            }, null, null).exports,
+            ne = function(e) {
+                return y.a.delete("/pickInfo/" + e).then(function(e) {
+                    return e.data
+                })
+            },
+            oe = {
+                inject: ["reload"],
+                name: "pick",
+                data: function() {
+                    return {
+                        page: 1,
+                        pageSize: 10,
+                        total: 0,
+                        list: [],
+                        userList: [],
+                        selectList: [],
+                        tempId: "",
+                        selectName: "",
+                        selectTitle: "",
+                        Form: {
+                            areaId: "",
+                            type: ""
+                        }
+                    }
+                },
+                mounted: function() {
+                    this.getUserList(), this.getPageList()
+                },
+                methods: {
+                    getPageList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1;
+                        this.page = t,
+                            function(e, t) {
+                                return _("get", "/pickInfo/getFinish?page=" + e + "&pageSize=" + t)
+                            }(this.page, this.pageSize).then(function(t) {
+                                1 == t.code ? (e.list = t.data.records, e.total = t.data.total) : e.$message({
+                                    type: "info",
+                                    message: t.data.msg
+                                })
+                            })
+                    },
+                    handleSizeChange: function(e) {
+                        this.pageSize = e, this.getPageList()
+                    },
+                    deletePick: function(e) {
+                        var t = this;
+                        this.$confirm("确定删除" + e.title + "?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(function() {
+                            ne(e.id).then(function(e) {
+                                1 == e.code ? (t.$message({
+                                    type: "success",
+                                    message: "果蔬信息已删除!"
+                                }), t.getPageList(t.list.length > 1 ? t.page : t.page - 1)) : t.$message({
+                                    type: "info",
+                                    message: e.msg
+                                })
+                            }).catch(function(e) {
+                                t.loading = !1, t.$message.error("采摘完成信息删除失败，请稍后再试！")
+                            })
+                        }).catch(function() {
+                            t.$message({
+                                type: "info",
+                                message: "已取消删除"
+                            })
+                        })
+                    },
+                    getSelect1: function() {
+                        var e, t, a, i = this;
+                        if (this.selectName) {
+                            for (var r = 0; r < this.userList.length; r++) this.selectName == this.userList[r].name && (this.tempId = this.userList[r].id);
+                            (e = this.tempId, t = 1, a = 999, y.a.get("/pickInfo/getFinish?empId=" + e + "&page=" + t + "&pageSize=" + a).then(function(e) {
+                                return e.data
+                            })).then(function(e) {
+                                0 == e.success ? i.$message({
+                                    type: "info",
+                                    message: e.data
+                                }) : (0 == e.data.total && i.$message({
+                                    type: "error",
+                                    message: "未找到此信息"
+                                }), i.list = e.data.records, i.total = e.data.total)
+                            })
+                        } else this.getPageList()
+                    },
+                    getSelect2: function() {
+                        var e, t, a, i = this;
+                        this.list = void 0, this.list = new Array, this.selectTitle ? (e = this.selectTitle, t = 1, a = 999, y.a.get("/pickInfo/getFinish?page=" + t + "&pageSize=" + a + "&title=" + e).then(function(e) {
+                            return e.data
+                        })).then(function(e) {
+                            1 == e.code ? (0 == e.data.total && i.$message({
+                                type: "error",
+                                message: "未找到此信息"
+                            }), i.list = e.data.records, i.total = e.data.total) : i.$message({
+                                type: "info",
+                                message: e.data
+                            })
+                        }) : this.getPageList()
+                    },
+                    SelectOn: function() {
+                        this.reload()
+                    },
+                    getUserList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1,
+                            a = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 999;
+                        R(t, a).then(function(t) {
+                            0 == t.success ? e.$message({
+                                type: "info",
+                                message: t.data
+                            }) : e.userList = t.data.records
+                        }).catch(function(t) {
+                            e.$message.error("加载失败，请稍后重试")
+                        })
+                    }
+                }
+            },
+            se = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("div", [a("el-breadcrumb", {
+                        staticStyle: {
+                            "padding-bottom": "20px"
+                        },
+                        attrs: {
+                            "separator-class": "el-icon-arrow-right"
+                        }
+                    }, [a("el-breadcrumb-item", {
+                        attrs: {
+                            to: {
+                                path: "/"
+                            }
+                        }
+                    }, [e._v("登录页\n    ")]), e._v(" "), a("el-breadcrumb-item", [a("div", {
+                        staticStyle: {
+                            color: "#fff"
+                        }
+                    }, [e._v("采摘完成信息")])])], 1), e._v(" "), a("el-card", {
+                        staticStyle: {
+                            height: "80px"
+                        }
+                    }, [a("el-form", {
+                        staticClass: "demo-form-inline",
+                        attrs: {
+                            inline: !0
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "查询用户"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            placeholder: "输入用户名称"
+                        },
+                        model: {
+                            value: e.selectName,
+                            callback: function(t) {
+                                e.selectName = t
+                            },
+                            expression: "selectName"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.getSelect1
+                        }
+                    }, [e._v("查询")])], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "查询通知"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            placeholder: "输入通知名称"
+                        },
+                        model: {
+                            value: e.selectTitle,
+                            callback: function(t) {
+                                e.selectTitle = t
+                            },
+                            expression: "selectTitle"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.getSelect2
+                        }
+                    }, [e._v("查询")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.reload
+                        }
+                    }, [e._v("刷新页面")])], 1)], 1)], 1), e._v(" "), a("el-table", {
+                        staticStyle: {
+                            width: "100%"
+                        },
+                        attrs: {
+                            data: e.list,
+                            border: ""
+                        }
+                    }, [a("el-table-column", {
+                        attrs: {
+                            prop: "title",
+                            label: "任务通知"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "content",
+                            label: "任务通知信息"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "empName",
+                            label: "接收者"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "createTime",
+                            label: "任务发布时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "updateTime",
+                            label: "任务更新时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "操作"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        type: "danger",
+                                        icon: "el-icon-delete"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.deletePick(i)
+                                        }
+                                    }
+                                }, [e._v("删除")])]
+                            }
+                        }])
+                    })], 1), e._v(" "), a("el-pagination", {
+                        staticStyle: {
+                            "margin-top": "20px",
+                            textalign: "center"
+                        },
+                        attrs: {
+                            "current-page": e.page,
+                            "page-sizes": [5, 10, 15],
+                            "page-size": e.pageSize,
+                            total: e.total,
+                            layout: "prev, pager, next, jumper,->, sizes, total"
+                        },
+                        on: {
+                            "current-change": e.getPageList,
+                            "size-change": e.handleSizeChange
+                        }
+                    })], 1)
+                },
+                staticRenderFns: []
+            };
+        var le = a("VU/8")(oe, se, !1, function(e) {
+                a("FGHX")
+            }, null, null).exports,
+            ce = {
+                inject: ["reload"],
+                name: "nopick",
+                data: function() {
+                    return {
+                        page: 1,
+                        pageSize: 10,
+                        total: 0,
+                        datalist: [],
+                        list: [],
+                        adminList: [],
+                        userList: [],
+                        tempId: "",
+                        dialogFormVisible: !1,
+                        codeDialog: !1,
+                        selectName: "",
+                        selectTitle: "",
+                        Form: {
+                            title: "",
+                            content: "",
+                            empId: ""
+                        },
+                        rules: {
+                            title: [{
+                                required: !0,
+                                message: "请输入通知标题",
+                                trigger: "blur"
+                            }],
+                            content: [{
+                                required: !0,
+                                message: "请输入通知内容",
+                                trigger: "blur"
+                            }]
+                        }
+                    }
+                },
+                mounted: function() {
+                    this.getUserList(), this.getAdmin(), this.getPageList()
+                },
+                methods: {
+                    getPageList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1;
+                        this.page = t,
+                            function(e, t) {
+                                return _("get", "/pickInfo/getNoFinish?page=" + e + "&pageSize=" + t)
+                            }(this.page, this.pageSize).then(function(t) {
+                                1 == t.code ? (e.list = t.data.records, e.total = t.data.total) : e.$message({
+                                    type: "info",
+                                    message: t.data
+                                })
+                            })
+                    },
+                    handleSizeChange: function(e) {
+                        this.pageSize = e, this.getPageList()
+                    },
+                    showDialog: function() {
+                        this.dialogFormVisible = !0, this.Form = {
+                            areaId: "",
+                            type: ""
+                        }, this.getAdmin()
+                    },
+                    updatePick: function(e) {
+                        this.dialogFormVisible = !0, this.Form = q()({}, e)
+                    },
+                    addOrUpdatePick: function() {
+                        var e = this;
+                        this.$refs.ruleForm.validate(function(t) {
+                            if (!t) return console.log("error submit!!"), !1;
+                            var a;
+                            (a = e.Form, a.id ? y.a.put("/pickInfo", a) : y.a.post("/pickInfo", a)).then(function(t) {
+                                e.dialogFormVisible = !1, 1 == t.data.code ? (e.$message({
+                                    type: "success",
+                                    message: "发布通知信息成功"
+                                }), e.getPageList(e.Form.id ? e.page : 1)) : e.$message({
+                                    type: "warning",
+                                    message: t.data.msg
+                                })
+                            })
+                        })
+                    },
+                    deletePick: function(e) {
+                        var t = this;
+                        this.$confirm("确定删除" + e.title + "?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        }).then(function() {
+                            ne(e.id).then(function(e) {
+                                1 == e.code ? (t.$message({
+                                    type: "success",
+                                    message: "通知已删除!"
+                                }), t.getPageList(t.list.length > 1 ? t.page : t.page - 1)) : t.$message({
+                                    type: "info",
+                                    message: e.msg
+                                })
+                            }).catch(function(e) {
+                                t.loading = !1, t.$message.error("通知删除失败，请稍后再试！")
+                            })
+                        }).catch(function() {
+                            t.$message({
+                                type: "info",
+                                message: "已取消删除"
+                            })
+                        })
+                    },
+                    getSelect1: function() {
+                        var e, t, a, i = this;
+                        if (this.selectName) {
+                            for (var r = 0; r < this.userList.length; r++) this.selectName == this.userList[r].name && (this.tempId = this.userList[r].id);
+                            (e = this.tempId, t = 1, a = 999, y.a.get("/pickInfo/getNoFinish?empId=" + e + "&page=" + t + "&pageSize=" + a).then(function(e) {
+                                return e.data
+                            })).then(function(e) {
+                                0 == e.success ? i.$message({
+                                    type: "info",
+                                    message: e.data
+                                }) : (0 == e.data.total && i.$message({
+                                    type: "error",
+                                    message: "未找到此信息"
+                                }), i.list = e.data.records, i.total = e.data.total)
+                            })
+                        } else this.getPageList()
+                    },
+                    getSelect2: function() {
+                        var e, t, a, i = this;
+                        this.selectTitle ? (e = this.selectTitle, t = 1, a = 999, y.a.get("/pickInfo/getNoFinish?page=" + t + "&pageSize=" + a + "&title=" + e).then(function(e) {
+                            return e.data
+                        })).then(function(e) {
+                            1 == e.code ? (0 == e.data.total && i.$message({
+                                type: "error",
+                                message: "未找到此信息"
+                            }), i.list = e.data.records, i.total = e.data.total) : i.$message({
+                                type: "info",
+                                message: e.data
+                            })
+                        }) : this.getPageList()
+                    },
+                    SelectOn: function() {
+                        this.reload()
+                    },
+                    getAdmin: function() {
+                        var e = this;
+                        B().then(function(t) {
+                            1 == t.code && (e.adminList = t.data)
+                        })
+                    },
+                    getUserList: function() {
+                        var e = this,
+                            t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 1,
+                            a = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 999;
+                        R(t, a).then(function(t) {
+                            0 == t.success ? e.$message({
+                                type: "info",
+                                message: t.data
+                            }) : e.userList = t.data.records
+                        }).catch(function(t) {
+                            e.$message.error("加载失败，请稍后重试")
+                        })
+                    }
+                }
+            },
+            ue = {
+                render: function() {
+                    var e = this,
+                        t = e.$createElement,
+                        a = e._self._c || t;
+                    return a("div", [a("el-breadcrumb", {
+                        staticStyle: {
+                            "padding-bottom": "20px"
+                        },
+                        attrs: {
+                            "separator-class": "el-icon-arrow-right"
+                        }
+                    }, [a("el-breadcrumb-item", {
+                        attrs: {
+                            to: {
+                                path: "/"
+                            }
+                        }
+                    }, [e._v("登录页\n    ")]), e._v(" "), a("el-breadcrumb-item", [a("div", {
+                        staticStyle: {
+                            color: "#fff"
+                        }
+                    }, [e._v("采摘未完成信息")])])], 1), e._v(" "), a("el-card", {
+                        staticStyle: {
+                            height: "80px"
+                        }
+                    }, [a("el-form", {
+                        staticClass: "demo-form-inline",
+                        attrs: {
+                            inline: !0
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "查询用户"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            placeholder: "输入用户名称"
+                        },
+                        model: {
+                            value: e.selectName,
+                            callback: function(t) {
+                                e.selectName = t
+                            },
+                            expression: "selectName"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.getSelect1
+                        }
+                    }, [e._v("查询")])], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "查询通知"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            placeholder: "输入通知名称"
+                        },
+                        model: {
+                            value: e.selectTitle,
+                            callback: function(t) {
+                                e.selectTitle = t
+                            },
+                            expression: "selectTitle"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", [a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.getSelect2
+                        }
+                    }, [e._v("查询")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.reload
+                        }
+                    }, [e._v("刷新页面")])], 1), e._v(" "), a("el-button", {
+                        staticStyle: {
+                            float: "right"
+                        },
+                        attrs: {
+                            type: "primary",
+                            icon: "el-icon-plus"
+                        },
+                        on: {
+                            click: e.showDialog
+                        }
+                    }, [e._v("发布任务")])], 1)], 1), e._v(" "), a("el-table", {
+                        staticStyle: {
+                            width: "100%"
+                        },
+                        attrs: {
+                            data: e.list,
+                            border: ""
+                        }
+                    }, [a("el-table-column", {
+                        attrs: {
+                            prop: "title",
+                            label: "通知"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "content",
+                            label: "通知信息"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "empName",
+                            label: "接收者"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "createTime",
+                            label: "通知发布时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            prop: "updateTime",
+                            label: "通知更新时间"
+                        }
+                    }), e._v(" "), a("el-table-column", {
+                        attrs: {
+                            label: "操作"
+                        },
+                        scopedSlots: e._u([{
+                            key: "default",
+                            fn: function(t) {
+                                var i = t.row;
+                                return [a("el-button", {
+                                    attrs: {
+                                        size: "mini",
+                                        type: "danger",
+                                        icon: "el-icon-delete"
+                                    },
+                                    on: {
+                                        click: function(t) {
+                                            return e.deletePick(i)
+                                        }
+                                    }
+                                }, [e._v("删除")])]
+                            }
+                        }])
+                    })], 1), e._v(" "), a("el-pagination", {
+                        staticStyle: {
+                            "margin-top": "20px",
+                            textalign: "center"
+                        },
+                        attrs: {
+                            "current-page": e.page,
+                            "page-sizes": [5, 10, 15],
+                            "page-size": e.pageSize,
+                            total: e.total,
+                            layout: "prev, pager, next, jumper,->, sizes, total"
+                        },
+                        on: {
+                            "current-change": e.getPageList,
+                            "size-change": e.handleSizeChange
+                        }
+                    }), e._v(" "), a("el-dialog", {
+                        attrs: {
+                            title: e.Form.id ? "修改通知" : "发布通知",
+                            visible: e.dialogFormVisible
+                        },
+                        on: {
+                            "update:visible": function(t) {
+                                e.dialogFormVisible = t
+                            }
+                        }
+                    }, [a("el-form", {
+                        ref: "ruleForm",
+                        staticStyle: {
+                            width: "80%"
+                        },
+                        attrs: {
+                            model: e.Form,
+                            rules: e.rules
+                        }
+                    }, [a("el-form-item", {
+                        attrs: {
+                            label: "接收人",
+                            prop: "empId"
+                        }
+                    }, [a("el-select", {
+                        attrs: {
+                            placeholder: "请选择"
+                        },
+                        model: {
+                            value: e.Form.empId,
+                            callback: function(t) {
+                                e.$set(e.Form, "empId", t)
+                            },
+                            expression: "Form.empId"
+                        }
+                    }, e._l(e.adminList, function(e, t) {
+                        return a("el-option", {
+                            key: t,
+                            attrs: {
+                                label: e.name,
+                                value: e.id
+                            }
+                        })
+                    }), 1)], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "通知",
+                            prop: "title"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.title,
+                            callback: function(t) {
+                                e.$set(e.Form, "title", t)
+                            },
+                            expression: "Form.title"
+                        }
+                    })], 1), e._v(" "), a("el-form-item", {
+                        attrs: {
+                            label: "通知信息",
+                            prop: "content"
+                        }
+                    }, [a("el-input", {
+                        attrs: {
+                            type: "textarea",
+                            autocomplete: "off"
+                        },
+                        model: {
+                            value: e.Form.content,
+                            callback: function(t) {
+                                e.$set(e.Form, "content", t)
+                            },
+                            expression: "Form.content"
+                        }
+                    })], 1)], 1), e._v(" "), a("div", {
+                        staticClass: "dialog-footer",
+                        attrs: {
+                            slot: "footer"
+                        },
+                        slot: "footer"
+                    }, [a("el-button", {
+                        on: {
+                            click: function(t) {
+                                e.dialogFormVisible = !1
+                            }
+                        }
+                    }, [e._v("取 消")]), e._v(" "), a("el-button", {
+                        attrs: {
+                            type: "primary"
+                        },
+                        on: {
+                            click: e.addOrUpdatePick
+                        }
+                    }, [e._v("确 定")])], 1)], 1)], 1)
+                },
+                staticRenderFns: []
+            };
+        var me = a("VU/8")(ce, ue, !1, function(e) {
+            a("PbLp")
+        }, null, null).exports;
+        o.default.use(m.a);
+        var de = new m.a({
+            mode: "hash",
+            routes: [{
+                path: "/",
+                name: "",
+                component: C,
+                hidden: !0,
+                meta: {
+                    requireAuth: !1
+                }
+            }, {
+                path: "/login",
+                name: "登录",
+                component: C,
+                hidden: !0,
+                meta: {
+                    requireAuth: !1
+                }
+            }, {
+                path: "/index",
+                name: "首页",
+                component: V,
+                iconCls: "el-icon-tickets",
+                children: [{
+                    path: "/camera/index",
+                    name: "摄像机管理",
+                    component: j,
+                    meta: {
+                        requireAuth: !0
+                    }
+                }, {
+                    path: "/identify/index",
+                    name: "识别信息管理",
+                    component: Q,
+                    meta: {
+                        requireAuth: !0
+                    }
+                }, {
+                    path: "/blocks/area/index",
+                    name: "区管理",
+                    component: J,
+                    meta: {
+                        requireAuth: !0
+                    }
+                }, {
+                    path: "/blocks/piece/index",
+                    name: "块管理",
+                    component: te,
+                    meta: {
+                        requireAuth: !0
+                    }
+                }, {
+                    path: "/employee/index",
+                    name: "用户管理",
+                    component: re,
+                    meta: {
+                        requireAuth: !0
+                    }
+                }, {
+                    path: "/dopick/pick/index",
+                    name: "采摘完成信息",
+                    component: le,
+                    meta: {
+                        requireAuth: !0
+                    }
+                }, {
+                    path: "/dopick/nopick/index",
+                    name: "预采摘信息",
+                    component: me,
+                    meta: {
+                        requireAuth: !0
+                    }
+                }]
+            }]
+        });
+        de.beforeEach(function(e, t, a) {
+            if ("/" === e.path) a();
+            else {
+                var i = localStorage.getItem("logintoken");
+                null === i || "" === i ? a({
+                    path: "/"
+                }) : a()
+            }
+        });
+        var ge = de,
+            pe = a("NYxO");
+        o.default.use(pe.a);
+        var fe = new pe.a.Store({
+                state: {
+                    user: !1
+                },
+                mutations: {
+                    login: function(e, t) {
+                        e.user = t, localStorage.setItem("userInfo", t)
+                    },
+                    logout: function(e, t) {
+                        e.user = "", localStorage.setItem("userInfo", "")
+                    }
+                }
+            }),
+            he = (a("7xIN"), a("XLwt")),
+            ve = a.n(he);
+        o.default.prototype.$echarts = ve.a, o.default.prototype.$axios = y.a, o.default.config.productionTip = !1, o.default.use(l.a), n()(i).forEach(function(e) {
+            o.default.filter(e, i[e])
+        }), new o.default({
+            el: "#app",
+            router: ge,
+            store: fe,
+            components: {
+                App: u
+            },
+            template: "<App/>",
+            data: {
+                Bus: new o.default
+            }
+        })
+    },
+    PbLp: function(e, t) {},
+    Qxnm: function(e, t) {},
+    RSvX: function(e, t) {},
+    S7q4: function(e, t) {},
+    "T+0F": function(e, t) {},
+    XQa9: function(e, t) {},
+    aF8Q: function(e, t) {},
+    "dLd/": function(e, t, a) {
+        e.exports = a.p + "static/img/logo.4bf8e1f.png"
+    },
+    fYjA: function(e, t) {},
+    gQKk: function(e, t) {
+        e.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA/0lEQVRYR+2W6w2CQBCEZyqRDrQEO9ASLAE7sAO1A+kAK1A7wA6wA61gzSVH4uPgbgMHJrK/l5kv++KIgYMD+2ME+KqAiKQAFpFacyS5e9V2ASwBzCIBFCTzRoBIxrWy4xCOFWhVARFJAEwUg3sjWfrW0Kxg8rkuLhN7M7YKgIzkygcwB3ACcAawJlkoDNSprkNUAVRiBwtyV6sHfBACYGSM+YbkPkBTlRIK8LAAb3dc5VSTHAKQAUhJ9t6CizXufQiHXUNNX+0hMscoNErvIQpV6iqv1SnuAmIE+L0KiIh5lE676K9D4+p9lNpfrIGIEbn3WR7DtUnz92bg7yrwBOSXVCGtUZf9AAAAAElFTkSuQmCC"
+    },
+    hTcu: function(e, t) {},
+    kPal: function(e, t) {},
+    rWRm: function(e, t) {
+        e.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA80lEQVRYR+1W2xVBMRCcqYAO6IASqIASdEAHdEALOrg6UAIdUMk4e04+4rivuJL4yH4nO7OzTyKzMTM+CoEPBSTtAKwipeZC8uT7riOwBjCPROBGsmolEAm40W0pwqLAIAUkTQFMAgr3SfLxVRdIWgB4+A7czDgGEDiT3AQRcFEaiM2HJclrAGDn08YUSBoD2AI4eF7SEJBkMlnURsK3pARsZo+yEDBQlwJbTPvkKfCjdkVoatiGTJOCutLN1oZtfeTUsWHU197miH0aNAn7ora9KwSKAk1H6ewXBVbj4955lLoVa5svhlWdZ3kM1NKGf63ACzUdUCHpu3IjAAAAAElFTkSuQmCC"
+    },
+    tvR6: function(e, t) {}
+}, ["NHnr"]);
+//# sourceMappingURL=app.380d8acf32f6917d1c91.js.map

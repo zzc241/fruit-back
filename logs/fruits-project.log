@@ -1,0 +1,9 @@
+2026-01-27 10:27:22.337 [https-jsse-nio-3388-exec-5] ERROR com.jhc.fruit.service.impl.TaskServiceImpl - 
+### Error updating database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '0' for key 'task.PRIMARY'
+### The error may exist in com/jhc/fruit/dao/TaskDao.java (best guess)
+### The error may involve com.jhc.fruit.dao.TaskDao.insert-Inline
+### The error occurred while setting parameters
+### SQL: INSERT INTO task  ( id, creator_id, task_info, task_title, task_type, img, task_scope, completion_time, deadline, post_time, create_time, update_time, status, schedule )  VALUES  ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '0' for key 'task.PRIMARY'
+; Duplicate entry '0' for key 'task.PRIMARY'; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '0' for key 'task.PRIMARY'
+2026-01-27 10:27:22.355 [https-jsse-nio-3388-exec-5] ERROR com.jhc.fruit.common.GlobalExceptionHandler - Duplicate entry '0' for key 'task.PRIMARY'

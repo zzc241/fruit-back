@@ -1,0 +1,487 @@
+2026-01-22 10:47:19.748 [main] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 3388 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 3388 or configure this application to listen on another port.
+
+2026-01-22 10:50:43.356 [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@62:58 - no applicable action for [layout], current ElementPath  is [[configuration][layout]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@63:18 - no applicable action for [pattern], current ElementPath  is [[configuration][layout][pattern]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@64:30 - no applicable action for [defaultConverterMap], current ElementPath  is [[configuration][layout][defaultConverterMap]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@65:91 - no applicable action for [converter], current ElementPath  is [[configuration][layout][defaultConverterMap][converter]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@67:26 - no applicable action for [mapping], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@68:28 - no applicable action for [level], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@69:37 - no applicable action for [foregroundCode], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][foregroundCode]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@71:26 - no applicable action for [mapping], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@72:28 - no applicable action for [level], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@73:37 - no applicable action for [foregroundCode], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][foregroundCode]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@75:26 - no applicable action for [mapping], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@76:28 - no applicable action for [level], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@77:37 - no applicable action for [foregroundCode], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][foregroundCode]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@79:26 - no applicable action for [mapping], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@80:28 - no applicable action for [level], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@81:37 - no applicable action for [foregroundCode], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][foregroundCode]]
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:328)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:282)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:240)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:216)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:176)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:169)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:143)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:131)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:85)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:66)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:120)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:114)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:65)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:338)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:296)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292)
+	at com.jhc.fruit.FruitApplication.main(FruitApplication.java:14)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@62:58 - no applicable action for [layout], current ElementPath  is [[configuration][layout]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@63:18 - no applicable action for [pattern], current ElementPath  is [[configuration][layout][pattern]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@64:30 - no applicable action for [defaultConverterMap], current ElementPath  is [[configuration][layout][defaultConverterMap]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@65:91 - no applicable action for [converter], current ElementPath  is [[configuration][layout][defaultConverterMap][converter]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@67:26 - no applicable action for [mapping], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@68:28 - no applicable action for [level], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@69:37 - no applicable action for [foregroundCode], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][foregroundCode]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@71:26 - no applicable action for [mapping], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@72:28 - no applicable action for [level], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@73:37 - no applicable action for [foregroundCode], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][foregroundCode]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@75:26 - no applicable action for [mapping], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@76:28 - no applicable action for [level], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@77:37 - no applicable action for [foregroundCode], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][foregroundCode]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@79:26 - no applicable action for [mapping], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@80:28 - no applicable action for [level], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@81:37 - no applicable action for [foregroundCode], current ElementPath  is [[configuration][layout][defaultConverterMap][converter][mapping][foregroundCode]]
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:179)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:80)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:60)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:132)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:313)
+	... 18 common frames omitted
+2026-01-22 10:51:34.276 [main] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 3389 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 3389 or configure this application to listen on another port.
+
+2026-01-22 10:57:05.309 [main] ERROR [36morg.springframework.boot.SpringApplication[0;39m - Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - [coloredLevel] is not a valid conversion word
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@25:34 - no applicable action for [defaultConverterMap], current ElementPath  is [[configuration][appender][layout][defaultConverterMap]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@26:95 - no applicable action for [converter], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@27:27 - no applicable action for [name], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][name]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@29:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@30:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@31:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@33:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@34:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@35:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@37:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@38:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@39:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@41:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@42:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@43:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - [coloredLevel] is not a valid conversion word
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:328)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:282)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:240)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:216)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:176)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:169)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:143)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:131)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:85)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:66)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:120)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:114)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:65)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:338)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:296)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292)
+	at com.jhc.fruit.FruitApplication.main(FruitApplication.java:14)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - [coloredLevel] is not a valid conversion word
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@25:34 - no applicable action for [defaultConverterMap], current ElementPath  is [[configuration][appender][layout][defaultConverterMap]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@26:95 - no applicable action for [converter], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@27:27 - no applicable action for [name], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][name]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@29:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@30:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@31:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@33:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@34:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@35:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@37:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@38:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@39:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@41:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@42:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@43:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - [coloredLevel] is not a valid conversion word
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:179)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:80)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:60)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:132)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:313)
+	... 18 common frames omitted
+2026-01-22 10:58:12.737 [main] ERROR [36morg.springframework.boot.SpringApplication[0;39m - Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - [coloredLevel] is not a valid conversion word
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@25:34 - no applicable action for [defaultConverterMap], current ElementPath  is [[configuration][appender][layout][defaultConverterMap]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@26:95 - no applicable action for [converter], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@27:27 - no applicable action for [name], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][name]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@29:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@30:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@31:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@33:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@34:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@35:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@37:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@38:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@39:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@41:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@42:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@43:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - [coloredLevel] is not a valid conversion word
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:328)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:282)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:240)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:216)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:176)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:169)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:143)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:131)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:85)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:66)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:120)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:114)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:65)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:338)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:296)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292)
+	at com.jhc.fruit.FruitApplication.main(FruitApplication.java:14)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - [coloredLevel] is not a valid conversion word
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@25:34 - no applicable action for [defaultConverterMap], current ElementPath  is [[configuration][appender][layout][defaultConverterMap]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@26:95 - no applicable action for [converter], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@27:27 - no applicable action for [name], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][name]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@29:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@30:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@31:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@33:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@34:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@35:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@37:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@38:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@39:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@41:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@42:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@43:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - [coloredLevel] is not a valid conversion word
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:179)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:80)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:60)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:132)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:313)
+	... 18 common frames omitted
+2026-01-22 11:00:59.275 [main] ERROR [36morg.springframework.boot.SpringApplication[0;39m - Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - [coloredLevel] is not a valid conversion word
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@25:34 - no applicable action for [defaultConverterMap], current ElementPath  is [[configuration][appender][layout][defaultConverterMap]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@26:95 - no applicable action for [converter], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@27:27 - no applicable action for [name], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][name]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@29:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@30:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@31:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@33:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@34:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@35:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@37:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@38:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@39:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@41:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@42:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@43:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - [coloredLevel] is not a valid conversion word
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:328)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:282)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:240)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:216)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:176)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:169)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:143)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:131)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:85)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:66)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:120)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:114)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:65)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:338)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:296)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292)
+	at com.jhc.fruit.FruitApplication.main(FruitApplication.java:14)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@5d8bafa9 - [coloredLevel] is not a valid conversion word
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@25:34 - no applicable action for [defaultConverterMap], current ElementPath  is [[configuration][appender][layout][defaultConverterMap]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@26:95 - no applicable action for [converter], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@27:27 - no applicable action for [name], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][name]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@29:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@30:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@31:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@33:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@34:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@35:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@37:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@38:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@39:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@41:30 - no applicable action for [mapping], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@42:32 - no applicable action for [level], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][level]]
+ERROR in ch.qos.logback.core.joran.spi.Interpreter@43:37 - no applicable action for [foreground], current ElementPath  is [[configuration][appender][layout][defaultConverterMap][converter][mapping][foreground]]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - Failed to instantiate converter class [ch.qos.logback.classic.pattern.color.LevelConverter] for keyword [coloredLevel] ch.qos.logback.core.util.DynamicClassLoadingException: Failed to instantiate type ch.qos.logback.classic.pattern.color.LevelConverter
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@576f63f6 - [coloredLevel] is not a valid conversion word
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:179)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:80)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:60)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:132)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:313)
+	... 18 common frames omitted
+2026-01-22 11:01:50.581 [main] ERROR org.springframework.boot.SpringApplication - Application run failed
+java.lang.IllegalStateException: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@68be8808 - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@68be8808 - Failed to create converter for [%clr] keyword
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:328)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initialize(LoggingApplicationListener.java:282)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEnvironmentPreparedEvent(LoggingApplicationListener.java:240)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.onApplicationEvent(LoggingApplicationListener.java:216)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:176)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:169)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:143)
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:131)
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:85)
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:66)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:120)
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:114)
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:65)
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:338)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:296)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292)
+	at com.jhc.fruit.FruitApplication.main(FruitApplication.java:14)
+Caused by: java.lang.IllegalStateException: Logback configuration error detected: 
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@68be8808 - There is no conversion class registered for composite conversion word [clr]
+ERROR in ch.qos.logback.core.pattern.parser.Compiler@68be8808 - Failed to create converter for [%clr] keyword
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.loadConfiguration(LogbackLoggingSystem.java:179)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initializeWithConventions(AbstractLoggingSystem.java:80)
+	at org.springframework.boot.logging.AbstractLoggingSystem.initialize(AbstractLoggingSystem.java:60)
+	at org.springframework.boot.logging.logback.LogbackLoggingSystem.initialize(LogbackLoggingSystem.java:132)
+	at org.springframework.boot.context.logging.LoggingApplicationListener.initializeSystem(LoggingApplicationListener.java:313)
+	... 18 common frames omitted
+2026-01-22 11:03:50.081 [https-jsse-nio-3388-exec-6] ERROR o.a.c.c.C.[.[localhost].[/].[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Unknown column 'isAdmin' in 'field list'
+### The error may exist in com/jhc/fruit/dao/EmployeeDao.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT  id,username,name,password,phone,sex,status,create_time,update_time,create_user,update_user,head_img,isAdmin,open_id  FROM employee     WHERE (username = ?)
+### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Unknown column 'isAdmin' in 'field list'
+; bad SQL grammar []; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Unknown column 'isAdmin' in 'field list'] with root cause
+com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Unknown column 'isAdmin' in 'field list'
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:480)
+	at com.mysql.jdbc.Util.handleNewInstance(Util.java:425)
+	at com.mysql.jdbc.Util.getInstance(Util.java:408)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:944)
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:3978)
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:3914)
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:2530)
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:2683)
+	at com.mysql.jdbc.ConnectionImpl.execSQL(ConnectionImpl.java:2495)
+	at com.mysql.jdbc.PreparedStatement.executeInternal(PreparedStatement.java:1903)
+	at com.mysql.jdbc.PreparedStatement.execute(PreparedStatement.java:1242)
+	at com.alibaba.druid.pool.DruidPooledPreparedStatement.execute(DruidPooledPreparedStatement.java:497)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.logging.jdbc.PreparedStatementLogger.invoke(PreparedStatementLogger.java:59)
+	at jdk.proxy3/jdk.proxy3.$Proxy124.execute(Unknown Source)
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64)
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:79)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:63)
+	at jdk.proxy2/jdk.proxy2.$Proxy122.query(Unknown Source)
+	at com.baomidou.mybatisplus.core.executor.MybatisSimpleExecutor.doQuery(MybatisSimpleExecutor.java:67)
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:324)
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:156)
+	at com.baomidou.mybatisplus.core.executor.MybatisCachingExecutor.query(MybatisCachingExecutor.java:155)
+	at com.baomidou.mybatisplus.core.executor.MybatisCachingExecutor.query(MybatisCachingExecutor.java:90)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:76)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:426)
+	at jdk.proxy2/jdk.proxy2.$Proxy90.selectOne(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:159)
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:108)
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:96)
+	at jdk.proxy2/jdk.proxy2.$Proxy95.selectOne(Unknown Source)
+	at com.baomidou.mybatisplus.extension.service.impl.ServiceImpl.getOne(ServiceImpl.java:267)
+	at com.baomidou.mybatisplus.extension.service.IService.getOne(IService.java:191)
+	at com.baomidou.mybatisplus.extension.service.IService$$FastClassBySpringCGLIB$$f8525d18.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	at com.jhc.fruit.service.impl.EmployeeServiceImpl$$EnhancerBySpringCGLIB$$bb3ed470.getOne(<generated>)
+	at com.jhc.fruit.controller.EmployeeController.login(EmployeeController.java:160)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:681)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at com.jhc.fruit.filter.LoginCheckFilter.doFilter(LoginCheckFilter.java:60)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2026-01-22 11:05:17.928 [main] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 3388 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 3388 or configure this application to listen on another port.
+
+2026-01-22 13:39:25.915 [main] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 3388 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 3388 or configure this application to listen on another port.
+
+2026-01-22 13:51:17.665 [main] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 3388 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 3388 or configure this application to listen on another port.
+
+2026-01-22 14:16:52.016 [main] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 3388 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 3388 or configure this application to listen on another port.
+
