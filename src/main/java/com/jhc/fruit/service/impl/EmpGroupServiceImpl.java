@@ -1,5 +1,6 @@
 package com.jhc.fruit.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.EmpGroupDao;
 import com.jhc.fruit.dao.EmployeeDao;
@@ -9,8 +10,11 @@ import com.jhc.fruit.service.EmpGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author ：lcy
@@ -52,6 +56,9 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
 
     @Override
     public Long getGroupIdByName(String groupName) {
+        if(groupName == null){
+            return null;
+        }
         Long groupId = empGroupDao.getGroupIdByName(groupName);
         return groupId;
     }
@@ -92,5 +99,43 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
         return false;
     }
 
+
+
+    @Override
+    public String getGroupNameById(Long groupId) {
+        LambdaQueryWrapper<EmpGroup> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(EmpGroup::getGroupId, groupId);
+        EmpGroup empGroup = this.getOne(queryWrapper);
+        if(empGroup == null){
+            return null;
+        }
+        return empGroup.getGroupName();
+    }
+    // @Override
+    // public Long getGroupIdByName(String groupName) {
+    //     LambdaQueryWrapper<EmpGroup> queryWrapper = new LambdaQueryWrapper<>();
+    //     queryWrapper.eq(EmpGroup::getGroupName, groupName);
+    //     EmpGroup empGroup = this.getOne(queryWrapper);
+    //     if(empGroup == null){
+    //         return null;
+    //     }
+    //     return empGroup.getGroupId();
+    // }
+    @Override
+    public Map<Long, String> getGroupNameMapByIds(Set<Long> groupIds) {
+        if (groupIds == null || groupIds.isEmpty()) {
+            return new HashMap<>(); // 空集合直接返回空Map
+        }
+        LambdaQueryWrapper<EmpGroup> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(EmpGroup::getGroupId, groupIds);
+        queryWrapper.select(EmpGroup::getGroupId, EmpGroup::getGroupName);
+        List<EmpGroup> empGroups = this.list(queryWrapper);
+        Map<Long, String> groupNameMap = empGroups.stream().collect(
+            Collectors.toMap(
+                EmpGroup::getGroupId, 
+                EmpGroup::getGroupName,
+                (existingValue, newValue) -> existingValue));
+        return groupNameMap;
+    }
 
 }
