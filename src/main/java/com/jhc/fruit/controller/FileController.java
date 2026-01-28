@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @RestController
 @RequestMapping("/minio")
-@Api
+@Api(tags = "文件上传接口")
 public class FileController {
 
     @Autowired

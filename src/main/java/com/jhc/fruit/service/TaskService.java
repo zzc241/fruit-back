@@ -2,6 +2,7 @@ package com.jhc.fruit.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.entity.Task;
+import com.jhc.fruit.entity.vo.TaskVo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,11 +16,15 @@ import java.util.List;
 
 public interface TaskService extends IService<Task> {
 
-    void addTask(Task task);
+    void addTask(TaskVo taskVo);
 
-    void updateTask(Task task);
+    void updateTask(TaskVo taskVo);
 
     void removeByList(List<Long> taskIds);
 
-    List<Task> selectByPostTime(LocalDateTime start, LocalDateTime end);
+    List<TaskVo> todayTask();
+
+    List<TaskVo> queryTasks(TaskVo tasksVo);
+
+    TaskVo getById(Long id);
 }

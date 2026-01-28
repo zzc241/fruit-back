@@ -2,6 +2,7 @@ package com.jhc.fruit.controller;
 
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Task;
+import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,7 +23,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/task")
-@Api(tags = "后台：任务管理接口")
+@Api(tags = "任务管理接口")
 public class TaskController {
 
     @Autowired
@@ -31,15 +32,15 @@ public class TaskController {
     /*新增任务*/
     @ApiOperation(value = "新增任务")
     @PostMapping("/add")
-    public R<String> addTask(@RequestBody Task task) {
-        taskService.addTask(task);
+    public R<String> addTask(@RequestBody TaskVo taskVo) {
+        taskService.addTask(taskVo);
         return R.success("新增成功");
     }
 
     @ApiOperation(value = "修改任务")
     @PostMapping("update")
-    public R<String> updateTask(@RequestBody Task task) {
-        taskService.updateTask(task);
+    public R<String> updateTask(@RequestBody TaskVo taskVo) {
+        taskService.updateTask(taskVo);
         return R.success("修改成功");
     }
 
@@ -51,7 +52,7 @@ public class TaskController {
     }
 
     @ApiOperation(value = "批量删除任务")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/deleteList")
     public R<String> deleteTask(@RequestBody List<Long> taskIds) {
         taskService.removeByList(taskIds);
         return R.success("删除成功");
@@ -59,13 +60,27 @@ public class TaskController {
 
     @ApiOperation(value = "今日发布的任务")
     @GetMapping("/todayTask")
-    public R<List<Task>> todayTask() {
-        LocalDateTime now = LocalDateTime.now();
-        // 今日开始时间：年-月-日 00:00:00
-        LocalDateTime start = now.withHour(0).withMinute(0).withSecond(0);
-        // 今日结束时间：年-月-日 23:59:59
-        LocalDateTime end = now.withHour(23).withMinute(59).withSecond(59);
-        List<Task> tasks = taskService.selectByPostTime(start, end);
+    public R<List<TaskVo>> todayTask() {
+        List<TaskVo> tasks = taskService.todayTask();
         return R.success(tasks);
+    }
+
+    @GetMapping("/getById/{id}")
+    @ApiOperation(value = "根据id查询任务")
+    public R<TaskVo> getTaskById(@PathVariable Long id) {
+        TaskVo taskVo = taskService.getById(id);
+        return R.success(taskVo);
+    }
+
+    @PostMapping("/query")
+    @ApiOperation(value = "条件查询")
+    public R<List<TaskVo>> queryTasks(@RequestBody TaskVo taskVo) {
+        try{
+            List<TaskVo> taskList = taskService.queryTasks(taskVo);
+            return R.success(taskList);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return R.error("查询失败");
+        }
     }
 }
