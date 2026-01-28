@@ -3,17 +3,29 @@
 <mapper namespace="com.jhc.fruit.dao.EmpGroupDao">
     <parameterMap id="parameterMap" type="com.jhc.fruit.entity.EmpGroup" >
         <!-- property对应实体类的属性名称，column为数据库字段名 -->
+        <parameter property="id" jdbcType="BIGINT" />
         <parameter property="groupId" jdbcType="BIGINT" />
         <parameter property="empId" jdbcType="BIGINT" />
+        <parameter property="groupName" jdbcType="VARCHAR" />
+        <parameter property="description" jdbcType="VARCHAR" />
+        <parameter property="createTime" jdbcType="DATETIMEOFFSET" />
+        <parameter property="updateTime" jdbcType="DATETIMEOFFSET" />
         <parameter property="content" jdbcType="VARCHAR" />
+        <parameter property="isFinish" jdbcType="INTEGER" />
         <parameter property="infoId" jdbcType="BIGINT" />
     </parameterMap>
 
     <resultMap id="resultMap" type="com.jhc.fruit.entity.EmpGroup" >
         <!-- property对应实体类的属性名称，column为数据库字段名 -->
+        <result column="id" property="id" jdbcType="BIGINT" />
         <result column="group_id" property="groupId" jdbcType="BIGINT" />
         <result column = "emp_id" property="empId" jdbcType="BIGINT" />
+        <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="DATETIMEOFFSET" />
+        <result column="update_time" property="updateTime" jdbcType="DATETIMEOFFSET" />
         <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="is_finish" property="isFinish" jdbcType="INTEGER" />
         <result column="info_id" property="infoId" jdbcType="BIGINT" />
     </resultMap>
 
@@ -39,5 +51,11 @@
     </select>
     <select id = "getGroupsByContentEmp" parameterMap="parameterMap" resultMap="resultMap">
         select * from emp_group where group_id = #{groupId} and content = #{content}
+    </select>
+    <select id="getGroupIdByName" resultType="java.lang.Long">
+        select emp_group.group_id from emp_group where emp_group.group_name = #{groupName}
+    </select>
+    <select id="getGroupNameByGroupId" resultType="java.lang.String">
+        select emp_group.group_name from emp_group where emp_group.group_id = #{id}
     </select>
 </mapper>

@@ -11,9 +11,13 @@ import java.util.Map;
 public interface EmpGroupDao extends BaseMapper<EmpGroup> {
     public List<Long> getEmpId(Long groupId);
     public int deleteGroup(Long id);
-    public List<Map<String,String>> getGroupByContent(Long groupId);
-    public int update(EmpGroup empGroup);
+//    public List<Map<String,String>> getGroupByContent(Long groupId);
+//    public int update(EmpGroup empGroup);
     public List<EmpGroup> getGroupsByEmp(Long empId);
 //    public List<Map<String,String>> getGroupByContentEmp(Long empId);
     public List<EmpGroup> getGroupsByContentEmp(EmpGroup empGroup);
+
+    Long getGroupIdByName(String groupName);
+
+    String getGroupNameByGroupId(Long id);
 }

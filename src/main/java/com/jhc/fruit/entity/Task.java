@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  */
 
 @Data
-@ApiModel
+@ApiModel(value = "任务表")
 public class Task {
     @ApiModelProperty(value = "任务id")
     private Long id;
