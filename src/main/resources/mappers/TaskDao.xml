@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.TaskDao">
+    <resultMap id="Task" type="com.jhc.fruit.entity.Task" >
+        <!-- column为数据库字段名，property对应实体类的属性名称 -->
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="creator_id" property="creatorId" jdbcType="INTEGER" />
+        <result column="task_type" property="taskType" jdbcType="INTEGER"/>
+        <result column="task_info" property="taskInfo" jdbcType="VARCHAR" />
+        <result column="task_title" property="taskTitle" jdbcType="VARCHAR" />
+        <result column="img" property="img" jdbcType="VARCHAR" />
+        <result column="task_scope" property="taskScope" jdbcType="INTEGER" />
+        <result column="completion_time" property="completionTime" jdbcType="DATETIMEOFFSET" />
+        <result column="deadline" property="deadline" jdbcType="DATETIMEOFFSET" />
+        <result column="post_time" property="postTime" jdbcType="DATETIMEOFFSET" />
+        <result column="create_time" property="createTime" jdbcType="DATETIMEOFFSET" />
+        <result column="update_time" property="updateTime" jdbcType="DATETIMEOFFSET" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="schedule" property="schedule" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="TaskVo" type="com.jhc.fruit.entity.vo.TaskVo" >
+        <!-- column为数据库字段名，property对应实体类的属性名称 -->
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="task_type" property="taskType" jdbcType="INTEGER"/>
+        <result column="task_info" property="taskInfo" jdbcType="VARCHAR" />
+        <result column="task_title" property="taskTitle" jdbcType="VARCHAR" />
+        <result column="img" property="img" jdbcType="VARCHAR" />
+        <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+        <result column="completion_time" property="completionTime" jdbcType="DATETIMEOFFSET" />
+        <result column="deadline" property="deadline" jdbcType="DATETIMEOFFSET" />
+        <result column="post_time" property="postTime" jdbcType="DATETIMEOFFSET" />
+        <result column="create_time" property="createTime" jdbcType="DATETIMEOFFSET" />
+        <result column="update_time" property="updateTime" jdbcType="DATETIMEOFFSET" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="schedule" property="schedule" jdbcType="VARCHAR" />
+    </resultMap>
+
+</mapper>
+
+
+

@@ -1,10 +1,8 @@
 package com.jhc.fruit.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.entity.PickInfo;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 @Mapper
 /**
  * @author ：zzc

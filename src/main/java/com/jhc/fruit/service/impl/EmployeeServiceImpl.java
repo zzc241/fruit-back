@@ -6,7 +6,11 @@ import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.service.EmployeeService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -44,5 +48,21 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         Employee employee = getOne(queryWrapper);
         Long empId = employee.getId();
         return empId;
+    }
+    @Override
+    public Map<Long, String> getEmpNameMapByIds(Set<Long> empIds){
+        if (empIds == null || empIds.isEmpty()) {
+            return new HashMap<>(); // 空集合直接返回空Map
+        }
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(Employee::getId, empIds);
+        queryWrapper.select(Employee::getId, Employee::getName);
+        List<Employee> employees = list(queryWrapper);
+        Map<Long, String> empNameMap = employees.stream().collect(
+            Collectors.toMap(
+                Employee::getId, 
+                Employee::getName,
+                (existingValue, newValue) -> existingValue));
+        return empNameMap;
     }
 }

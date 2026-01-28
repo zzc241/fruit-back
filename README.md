@@ -163,6 +163,37 @@ To github.com:zzc241/-1.0.git
 
 2.将id都改成Long类型、数据库表中改成bigint，方便在service中写
 
+
+
+#### 1.27
+
+##### 1.实现分页查询中多表查询的合并查询
+
+- 先将想要查的id放到set中防止重复
+- 用map给id和name实现映射
+- 调用远程的getNameById接口（LambdaQureyWrapper的in和select）实现查找，如果i没有id返回nul
+- 最后在Vo中找对应name，再传
+
+##### 2.实现远程服务器的数据库部署
+
+```
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://120.27.205.171:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+      username: root1
+      password: 123456
+```
+
+##### 3.test如何通过mvn测试
+
+```
+
+```
+
+
+
 ### 2.寒假时
 
 ### 3.寒假后

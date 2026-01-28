@@ -40,7 +40,7 @@ public class EmpGroupController {
     @Autowired
     private PickInfoServiceImpl pickInfoServiceImpl;
 
-    @GetMapping("/getMyGroups")
+/*    @GetMapping("/getMyGroups")
     @ApiOperation("查询根据当前登陆用户的所在组")
     public R<List<List<EmpGroup>>> getMyGroups(){
         Long empId = BaseContext.getId();
@@ -55,9 +55,9 @@ public class EmpGroupController {
         }
         System.out.println("groups:" + groups);
         return R.success(groups);
-    }
+    }*/
 
-    @GetMapping("/getGroups/{groupId}")
+/*    @GetMapping("/getGroups/{groupId}")
     @ApiOperation("主任务下各个分任务对应的组")
     @ApiImplicitParam(name = "groupId", value = "组id[也就是任务id]")
     public R<List<List<EmpGroup>>> getGroups(@PathVariable Long groupId){
@@ -99,7 +99,7 @@ public class EmpGroupController {
                 empGroup.setIsFinish(isFinish);
                 // empGroup.setIsFinish(pickInfoServiceImpl.getIsFinish(Long.parseLong(splitInfo[j])));
                 empGroup.setEmpId(Long.parseLong(splitEmp[j]));
-                empGroup.setEmployee(employeeService.getById(Long.parseLong(splitEmp[j])));
+                // empGroup.setEmployee(employeeService.getById(Long.parseLong(splitEmp[j])));
                 //将临时工添加到列表中
                 empGroups.add(empGroup);
 
@@ -110,7 +110,7 @@ public class EmpGroupController {
             }
         }
         return R.success(sumEmpGroups);
-    }
+    }*/
 
 
     @PostMapping("/addGroup")

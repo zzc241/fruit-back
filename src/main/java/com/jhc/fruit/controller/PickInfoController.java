@@ -22,6 +22,8 @@ import java.util.List;
  * @description : 其中/getFinish和/getNoFinish已经合并到/list接口中，通过传参isFinish来区分
  * 修改发布通知方法，添加修改通知方法
  * @date : 2026/1/23
+ * @description : 完善添加通知方法和修改通知方法的参数校验
+ * @date : 2026/1/27
  */
 @RestController
 @RequestMapping("/pickInfo")
@@ -61,34 +63,30 @@ public class PickInfoController {
 
     @PostMapping("/list")
     @ApiOperation("后台：查看全部通知")
-    public R<Page<PickInfo>> getInfo(@RequestBody PickInfoVo pickInfoVo){
-        Page<PickInfo> pageInfo = pickInfoService.getPageInfo(pickInfoVo);
+    public R<Page<PickInfoVo>> getInfo(@RequestBody PickInfoVo pickInfoVo){
+        Page<PickInfoVo> pageInfo = pickInfoService.getPageInfo(pickInfoVo);
         return R.success(pageInfo);
     }
     //其中getPickInfoVo类中只需要传title，isFinish，isRead三个参数，empId从登录信息获取
     @PostMapping("/employee/my-list")
     @ApiOperation("员工-查询我的通知")
-    public R<List<PickInfo>> myList(@RequestBody PickInfoVo pickInfoVo) {
+    public R<List<PickInfoVo>> myList(@RequestBody PickInfoVo pickInfoVo) {
         Long currentEmpId = BaseContext.getId(); // 从登录信息获取
         if(currentEmpId == null) {
             return R.error("未获取到当前登录用户信息");
         }
+        //将登录id放到pickInfoVo中
+        pickInfoVo.setEmpId(currentEmpId);
         // 固定查询当前员工的通知
-        List<PickInfo> result = pickInfoService.getInfo(
-            pickInfoVo.getTitle(), 
-            currentEmpId, 
-            pickInfoVo.getIsFinish(), 
-            pickInfoVo.getIsRead()
-        );
-        
+        List<PickInfoVo> result = pickInfoService.getInfo(pickInfoVo);
         return R.success(result);
     }
 
 
     @PostMapping("/publish")
     @ApiOperation("发布通知")
-    public R<Boolean> deployInfo(@RequestBody PickInfoVo pickInfoVo){
-        Boolean result = pickInfoService.saveDeployInfo(pickInfoVo);
+    public R<String> deployInfo(@RequestBody PickInfoVo pickInfoVo){
+        String result = pickInfoService.saveDeployInfo(pickInfoVo);
         return R.success(result);
     }
 
@@ -100,27 +98,27 @@ public class PickInfoController {
     @PutMapping("/read/{id}")
     @ApiOperation("已读通知方法")
     @ApiImplicitParam(name = "id",value = "通知对应的id")
-    public R<Boolean> readInfo(@PathVariable Long id){
-        Boolean result = pickInfoService.updateReadInfo(id);
+    public R<String> readInfo(@PathVariable Long id){
+        String result = pickInfoService.updateReadInfo(id);
         return R.success(result);
     }
     @PutMapping("/finish/{id}")
     @ApiOperation("完成通知方法")
     @ApiImplicitParam(name = "id",value = "通知对应的id")
-    public R<Boolean> finishInfo(@PathVariable Long id){
-        Boolean result = pickInfoService.updateFinishInfo(id);
+    public R<String> finishInfo(@PathVariable Long id){
+        String result = pickInfoService.updateFinishInfo(id);
         return R.success(result);
     }
     @PostMapping("/change")
     @ApiOperation("修改通知内容方法")
-    public R<Boolean> changeInfo(@RequestBody PickInfoVo pickInfoVo) {
+    public R<String> changeInfo(@RequestBody PickInfoVo pickInfoVo) {
         // 校验主键和核心参数
         if (pickInfoVo.getId() == null || pickInfoVo.getId() <= 0) {
             return R.error("通知ID不能为空且必须为正数");
         }
         try {
-            Boolean result = pickInfoService.changeInfo(pickInfoVo);
-            return result ? R.success(true) : R.error("修改通知失败，通知ID不存在");
+            String result = pickInfoService.changeInfo(pickInfoVo);
+            return R.success(result);
         } catch (Exception e) {
             e.printStackTrace();
             return R.error("修改通知异常：" + e.getMessage());

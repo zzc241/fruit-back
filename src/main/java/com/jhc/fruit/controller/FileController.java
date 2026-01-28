@@ -19,13 +19,13 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author :zyr
  * @Date : 2026/1/25
- * 用于minio的文件上传下载
+ * @description ：minio文件上传下载
  * */
 
 @Slf4j
 @RestController
 @RequestMapping("/minio")
-@Api
+@Api(tags = "文件上传接口")
 public class FileController {
 
     @Autowired

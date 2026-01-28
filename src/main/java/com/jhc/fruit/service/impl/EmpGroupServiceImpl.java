@@ -32,6 +32,7 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
 //        return groupByContentEmp;
 //    }
 
+/*
     @Override
     public List<EmpGroup> getGroupsByContentEmp(EmpGroup empGroup) {
         List<EmpGroup> groupByContentEmp = empGroupDao.getGroupsByContentEmp(empGroup);
@@ -41,6 +42,7 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
         }
         return groupByContentEmp;
     }
+*/
 
     @Override
     public List<EmpGroup> getGroupsByEmp(Long empId) {
@@ -49,19 +51,31 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
     }
 
     @Override
+    public Long getGroupIdByName(String groupName) {
+        Long groupId = empGroupDao.getGroupIdByName(groupName);
+        return groupId;
+    }
+
+    @Override
+    public String getGroupNameByGroupId(Long id) {
+        String name = empGroupDao.getGroupNameByGroupId(id);
+        return name;
+    }
+
+/*    @Override
     public boolean update(EmpGroup empGroup) {
         int update = empGroupDao.update(empGroup);
         if(update == 1){
             return true;
         }
         return false;
-    }
+    }*/
 
-    @Override
+/*    @Override
     public List<Map<String, String>> getGroupByContent(Long groupId) {
         List<Map<String, String>> groupByContent = empGroupDao.getGroupByContent(groupId);
         return groupByContent;
-    }
+    }*/
 
     @Override
     public List<Long> getEmpId(Long groupId) {
@@ -77,4 +91,6 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
         }
         return false;
     }
+
+
 }

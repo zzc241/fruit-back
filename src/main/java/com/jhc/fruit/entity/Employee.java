@@ -26,6 +26,8 @@ public class Employee{
     private String phone;
     @ApiModelProperty(value = "性别")
     private String sex;
+    @ApiModelProperty(value = "身份证号")
+    private String id_card;
     @ApiModelProperty(value = "员工状态(可用：1，禁用：0)")
     private Integer status;
     @ApiModelProperty(value = "创建时间(自动填充)")

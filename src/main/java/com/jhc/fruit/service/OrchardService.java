@@ -13,4 +13,6 @@ public interface OrchardService extends IService<Orchard>{
     public List<OrchardVo> getInfo(OrchardVo orchardVo);
     public String saveOrchardInfo(OrchardVo orchardVo);
     public String changeInfo(OrchardVo orchardVo);
+
+    public String getOrchardNameById(Long orchardId);
 }

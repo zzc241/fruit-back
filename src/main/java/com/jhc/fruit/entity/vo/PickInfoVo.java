@@ -15,6 +15,7 @@ import lombok.Data;
 public class PickInfoVo {
     @ApiModelProperty(value = "标题")
     private String title;
+    
     @ApiModelProperty(value = "员工ID")
     //接收通知信息的用户id
     private Long empId;
@@ -24,6 +25,15 @@ public class PickInfoVo {
     private Long orchardId;
     @ApiModelProperty("关联的果园名称")
     private String orchardName;
+    @ApiModelProperty("关联的组id")
+    private Long groupId;
+    @ApiModelProperty("关联的组名称")
+    private String groupName;
+    @ApiModelProperty("关联的创建消息者id")
+    private Long senderId;
+    @ApiModelProperty("关联的创建消息者名称")
+    private String senderName;
+
     @ApiModelProperty(value = "是否完成")
     private Boolean isFinish;
     @ApiModelProperty(value = "是否已读")

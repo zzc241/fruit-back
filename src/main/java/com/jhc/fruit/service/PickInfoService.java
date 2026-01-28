@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author ：zzc
  * @description：getNoFinish和getFinish方法
- * 改成getPageInfo和getInfo方法，通过传参区分
+ * 改成getPageInfo和getInfo方法
  * @date ：2026/1/23
  */
 public interface PickInfoService extends IService<PickInfo> {
@@ -24,10 +24,10 @@ public interface PickInfoService extends IService<PickInfo> {
 
 
 
-    public Page<PickInfo> getPageInfo(PickInfoVo pickInfoVo);
-    public List<PickInfo> getInfo(String title, Long empId , Boolean isFinish , Boolean isRead);
-    public Boolean changeInfo(PickInfoVo pickInfoVo);
-    public Boolean updateReadInfo(Long id);
-    public Boolean updateFinishInfo(Long id);
-    public Boolean saveDeployInfo(PickInfoVo pickInfoVo);
+    public Page<PickInfoVo> getPageInfo(PickInfoVo pickInfoVo);
+    public List<PickInfoVo> getInfo(PickInfoVo pickInfoVo);
+    public String changeInfo(PickInfoVo pickInfoVo);
+    public String updateReadInfo(Long id);
+    public String updateFinishInfo(Long id);
+    public String saveDeployInfo(PickInfoVo pickInfoVo);
 }
