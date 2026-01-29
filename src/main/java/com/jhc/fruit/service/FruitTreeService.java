@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
-import com.jhc.fruit.entity.PickInfo;
+import com.jhc.fruit.entity.AnnounceInfo;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 
 import java.util.List;

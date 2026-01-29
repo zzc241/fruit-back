@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * @date ：2022/5/28 0028 13:21
  */
 @Data
-public class PickInfo {
+public class AnnounceInfo {
     // ALTER TABLE pick_info AUTO_INCREMENT = 21;设置自增起始值
     @TableId(type = IdType.AUTO)
     private Long id;

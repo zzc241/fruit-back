@@ -1,7 +1,7 @@
 package com.jhc.fruit.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jhc.fruit.entity.PickInfo;
+import com.jhc.fruit.entity.AnnounceInfo;
 import org.apache.ibatis.annotations.Mapper;
 @Mapper
 /**
@@ -9,5 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @description：impl已经全部变成mybatis plus的通用方法，所以这个接口基本全部方法都不需要重写
  * @date ：2026/1/23
  */
-public interface PickInfoDao extends BaseMapper<PickInfo> {
+public interface AnnounceInfoDao extends BaseMapper<AnnounceInfo> {
 }

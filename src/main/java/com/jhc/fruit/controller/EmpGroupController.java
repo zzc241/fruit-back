@@ -6,10 +6,10 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.EmpGroup;
 import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.IdentifyInfo;
-import com.jhc.fruit.entity.PickInfo;
+import com.jhc.fruit.entity.AnnounceInfo;
 import com.jhc.fruit.service.impl.EmpGroupServiceImpl;
 import com.jhc.fruit.service.impl.EmployeeServiceImpl;
-import com.jhc.fruit.service.impl.PickInfoServiceImpl;
+import com.jhc.fruit.service.impl.AnnounceInfoServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -38,7 +38,7 @@ public class EmpGroupController {
     private EmpGroupServiceImpl empGroupServiceImpl;
 
     @Autowired
-    private PickInfoServiceImpl pickInfoServiceImpl;
+    private AnnounceInfoServiceImpl pickInfoServiceImpl;
 
 /*    @GetMapping("/getMyGroups")
     @ApiOperation("查询根据当前登陆用户的所在组")
@@ -131,9 +131,9 @@ public class EmpGroupController {
             lEmpIds.add(Long.parseLong(empIds.get(i)));
         }
         //向选中的临时工发送通知
-        PickInfo pickInfo;
+        AnnounceInfo pickInfo;
         for (Long empId:lEmpIds) {
-            pickInfo = new PickInfo();
+            pickInfo = new AnnounceInfo();
             //将通知转发至临时工
             pickInfo.setContent(content.get(0));
             pickInfo.setEmpId(empId);
@@ -179,7 +179,7 @@ public class EmpGroupController {
     @ApiImplicitParam(name = "id",value = "通知对应的id")
     public R<String> finishInfo(@PathVariable Long id){
         //查询到对应通知信息
-        PickInfo info = pickInfoServiceImpl.getById(id);
+        AnnounceInfo info = pickInfoServiceImpl.getById(id);
         Employee employee = employeeService.getById(info.getEmpId());
         //设置属性为完成
         info.setIsFinish(true);

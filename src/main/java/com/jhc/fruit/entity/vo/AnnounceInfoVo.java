@@ -12,7 +12,7 @@ import lombok.Data;
  * @Date : 2026/1/23
  */
 @Data
-public class PickInfoVo {
+public class AnnounceInfoVo {
     @ApiModelProperty(value = "标题")
     private String title;
     
