@@ -16,7 +16,7 @@
         <result column="count_num" property="countNum" jdbcType="INTEGER" />
         <result column="ripe_num" property="ripeNum" jdbcType="INTEGER" />
         <result column="img" property="img" jdbcType="VARCHAR" />
-        <result column="type" property="typen" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
         <result column="name" property="areaName" jdbcType="INTEGER"/>
     </resultMap>
     <!-- <update id = "updateById" parameterType="com.jhc.fruit.entity.FruitTree">

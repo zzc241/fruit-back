@@ -22,11 +22,13 @@ public class Area {
     @ApiModelProperty("地区id")
     @TableId(type = IdType.AUTO)
     private Long id;
+    @ApiModelProperty("果园id")
+    private Long orchardId;
     @ApiModelProperty("地区名称")
     private String name;
-
+    @ApiModelProperty("区域大小")
     private int size;
-
+    @ApiModelProperty("果树类型")
     private Long typeId;
     @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)
@@ -46,5 +48,6 @@ public class Area {
     @ApiModelProperty("修改人")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+    @ApiModelProperty("负责人")
     private Long empId;
 }

@@ -16,15 +16,4 @@ import java.util.List;
 
 public interface TaskService extends IService<Task> {
 
-    void addTask(TaskVo taskVo);
-
-    void updateTask(TaskVo taskVo);
-
-    void removeByList(List<Long> taskIds);
-
-    List<TaskVo> todayTask();
-
-    List<TaskVo> queryTasks(TaskVo tasksVo);
-
-    TaskVo getById(Long id);
 }

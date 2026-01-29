@@ -29,7 +29,7 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    /*新增任务*/
+/*    *//*新增任务*//*
     @ApiOperation(value = "新增任务")
     @PostMapping("/add")
     public R<String> addTask(@RequestBody TaskVo taskVo) {
@@ -82,5 +82,5 @@ public class TaskController {
             log.error(e.getMessage());
             return R.error("查询失败");
         }
-    }
+    }*/
 }

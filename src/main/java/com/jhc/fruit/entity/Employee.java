@@ -15,6 +15,9 @@ public class Employee{
     @ApiModelProperty(value = "员工id")
     private Long id;
 
+    @ApiModelProperty(value = "果园id")
+    private Long orchardId;
+
     @ApiModelProperty(value = "账号" , example = "zzc")
     private String username;
 

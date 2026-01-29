@@ -63,7 +63,7 @@ public class LogAspect {
         String operationResult = extractJsonCoreContent(resultValue);
 //封装属性
         OperationLog operateLog = new OperationLog();
-        operateLog.setUserId(userId);
+        operateLog.setId(userId);
         operateLog.setOperationContent(operationContent);
         operateLog.setOperationTime(operateTime);
         operateLog.setOperationIp(IP);
