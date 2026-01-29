@@ -22,9 +22,9 @@
         <result column="update_time" property="updateTime" jdbcType="DATE" />
         <result column="emp_id" property="empId" jdbcType="BIGINT" />
     </resultMap>
-    <update id="updateById" parameterType="com.jhc.fruit.entity.Area">
+    <!-- <update id="updateById" parameterType="com.jhc.fruit.entity.Area">
         UPDATE area_info  SET name=#{name}, size=#{size}, type_id=#{typeId},  update_time=#{updateTime}, description=#{description},  update_user=#{updateUser}, emp_id=#{empId}  WHERE id= #{id}
-    </update>
+    </update> -->
     <select id="getPageInfo" resultMap="AreaVo">
         SELECT area_info.`id`,area_info.`name`,area_info.`size`,fruit_type.`type`,area_info.`type_id`,area_info.`description`,area_info.`update_time`,area_info.`emp_id`
             FROM area_info,fruit_type

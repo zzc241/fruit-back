@@ -18,7 +18,7 @@ public interface AreaDao extends BaseMapper<Area> {
     public List<Area> getAreaByType(String type);
     public List<AreaVo> getPageInfo(Page pageInfo, String name);
     public Area getById(Integer id);
-    public int updateById(Area area);
+    // public int updateById(Area area);
     @Select("SELECT id,name,size,type_id,create_time,update_time,description,create_user,update_user,emp_id  FROM area_info")
     public Page<AreaVo> page(Page<AreaVo> page);
 }

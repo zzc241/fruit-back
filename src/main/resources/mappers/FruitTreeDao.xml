@@ -19,9 +19,9 @@
         <result column="type" property="typen" jdbcType="VARCHAR"/>
         <result column="name" property="areaName" jdbcType="INTEGER"/>
     </resultMap>
-    <update id = "updateById" parameterType="com.jhc.fruit.entity.FruitTree">
+    <!-- <update id = "updateById" parameterType="com.jhc.fruit.entity.FruitTree">
         UPDATE fruit_tree  SET type=#{type}, count_num=#{countNum}, ripe_num=#{ripeNum}, img=#{img} WHERE id=#{id}
-    </update>
+    </update> -->
     <select id = "selectBy2Id" resultType="com.jhc.fruit.entity.FruitTree">
         SELECT * from fruit_tree where id = #{id}
     </select>
@@ -66,6 +66,3 @@
         WHERE fruit_tree.`area_id` = area_info.`id` AND fruit_tree.`type` = fruit_type.`id` AND area_id = #{areaId} order by ripe_num desc
     </select>
 </mapper>
-
-
-

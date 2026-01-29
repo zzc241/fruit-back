@@ -1,14 +1,26 @@
 package com.jhc.fruit.config;
 
-import io.swagger.annotations.Contact;
+import java.util.List;
+
+import javax.lang.model.type.WildcardType;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.classmate.TypeResolver;
+import com.jhc.fruit.common.R;
+
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.AlternateTypeRules;
+import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.service.Contact; // 修改导入的Contact类
 
 /**
  * @author ：lcy
@@ -18,6 +30,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration //将这个类在Spring中标注为配置类
 @EnableSwagger2 //启用Swagger2
 public class SwaggerConfig {
+    @Autowired
+    private TypeResolver typeResolver;
     //返回一个Docket Bean即可
     @Bean
     public Docket createRestApi(){
@@ -26,14 +40,44 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.jhc.fruit.controller"))
                 .paths(PathSelectors.any())
-                .build().apiInfo(new ApiInfoBuilder()
-                        .title("SpringBoot整合Swagger")
-                        .description("SpringBoot整合Swagger，详细信息......")
-                        .version("9.0")
-                        .license("The Apache License")
-                        .licenseUrl("http://www.baidu.com")
-                        .build());
+                .build()
+                .apiInfo(apiInfo())
+                // 添加泛型模型支持
+                .alternateTypeRules(
+                        // 处理 R<List<T>>
+                        AlternateTypeRules.newRule(
+                                typeResolver.resolve(R.class, 
+                                        typeResolver.resolve(List.class, WildcardType.class)),
+                                typeResolver.resolve(List.class, WildcardType.class)
+                        ),
+                        // 处理 R<Page<T>>
+                        AlternateTypeRules.newRule(
+                                typeResolver.resolve(R.class, 
+                                        typeResolver.resolve(Page.class, WildcardType.class)),
+                                typeResolver.resolve(Page.class, WildcardType.class)
+                        ),
+                        // 处理 R<T> 其中 T 是普通类型
+                        AlternateTypeRules.newRule(
+                                typeResolver.resolve(R.class, WildcardType.class),
+                                typeResolver.resolve(WildcardType.class)
+                        )
+                )
+                // 忽略泛型参数的警告
+                .forCodeGeneration(true)
+                .useDefaultResponseMessages(false);
+                
 
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("果蔬项目API文档")
+                .description("中软国际果蔬项目后端API接口文档")
+                .version("1.0")
+                .contact(new Contact("开发团队", "", "2714156899@qq.com"))
+                .license("Apache 2.0")
+                .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
+                .build();
     }
 
 }

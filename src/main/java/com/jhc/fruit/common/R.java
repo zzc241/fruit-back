@@ -1,12 +1,21 @@
 package com.jhc.fruit.common;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import io.swagger.annotations.ApiModel;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@NoArgsConstructor
+@ApiModel(description = "统一响应结果")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class R<T> {
 
     private Integer code; //编码：1成功，0和其它数字为失败
@@ -17,7 +26,7 @@ public class R<T> {
 
     private String token;//登录令牌
 
-    private Map map = new HashMap(); //动态数据
+    private Map<String, Object> map = new HashMap<>(); //动态数据
 
     public static <T> R<T> success() {
         R<T> r = new R<T>();
@@ -33,7 +42,7 @@ public class R<T> {
         r.data = object;
         r.code = 1;
         r.token = String.valueOf(BaseContext.getId());
-        System.out.println(r.token);
+        // System.out.println(r.token);
         return r;
     }
     public static <T> R<T> success(T object,HttpServletRequest request) {
@@ -46,7 +55,7 @@ public class R<T> {
     }
 
     public static <T> R<T> error(String msg) {
-        R r = new R();
+        R<T> r = new R<>();
         r.msg = msg;
         r.code = 0;
         return r;

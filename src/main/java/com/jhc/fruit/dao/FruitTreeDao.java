@@ -24,7 +24,7 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     public List<FruitTreeVo> sortByRipeCount(int areaId);
     public List<FruitTreeVo> sortByCount(Long areaId);
     public FruitTree selectBy2Id(Long id);
-    public int updateById(FruitTree fruitTree);
+    // public int updateById(FruitTree fruitTree);
     @Select("SELECT id,type,count_num,ripe_num,img,area_id FROM fruit_tree")
     public Page<FruitTreeVo> page(Page<FruitTreeVo> page);
 }
