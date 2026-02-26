@@ -11,10 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.HashMap;
 
@@ -25,13 +22,15 @@ import java.util.HashMap;
  */
 public class QRCodeUtil {
 
+    private static final String treeUrl = "https://127.0.0.1:3388/fruitTree/";
+
     //生成二维码方法
     public static MultipartFile createQRCode(Long id){
         //1.定义二维码属性
         int width = 300;    //定义图片宽度
         int height = 300;   //定义图片高度
         String format = "png";  //定义图片格式
-        String content = "https://127.0.0.1:3388/fruitTree/" + id; //定义二维码内容，也可以是图片或者字符串
+        String content = treeUrl + id; //定义二维码内容，也可以是图片或者字符串
 
         //2.定义二维码中参数
         HashMap hashMap = new HashMap<>();
@@ -65,27 +64,32 @@ public class QRCodeUtil {
     }
 
     //解析二维码方法
-    public static void readQRCode(Long id){
+    public static Long readQRCode(InputStream inputStream){
         try{
             /**
              * MultiFormatReader 多格式读取
              */
             MultiFormatReader formatReader = new MultiFormatReader();
-            File file = new File("E:/QRCodeImage/fruitTree" + id + ".png");
-            //将图片读进流中
-            BufferedImage bufferedImage = ImageIO.read(file);
+            //转换数据类型
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
+
             //BinaryBitmap-二进制位图                    HybridBinarizer 混合二值化器      BufferedImageLuminanceSource-图像缓存区
             BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufferedImage)));
             //定义二维码参数
             HashMap hashMap = new HashMap();
             hashMap.put(EncodeHintType.CHARACTER_SET, "utf-8");//编码方式
-            //解码
-            Result result = formatReader.decode(binaryBitmap,hashMap);
-            System.out.println("解析结果：" + result.toString());
+            //解码,然后获取内容
+            String qrContent = formatReader.decode(binaryBitmap,hashMap).getText();
+            //提取果树id
+            Integer index = qrContent.lastIndexOf("/");
+            Long treeId = Long.parseLong(qrContent.substring(index + 1));
+            return treeId;
+/*            System.out.println("解析结果：" + result.toString());
             System.out.println("二维码格式类型："+result.getBarcodeFormat());//BarcodeFormat   条形码格式
-            System.out.println("二维码文本内容："+result.getText());
+            System.out.println("二维码文本内容："+result.getText());*/
         }catch (Exception e){
             e.printStackTrace();
+            throw new RuntimeException("未识别到二维码，请上传有效的二维码图片", e);
         }
     }
 }

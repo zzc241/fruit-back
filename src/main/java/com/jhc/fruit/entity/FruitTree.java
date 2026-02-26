@@ -24,11 +24,11 @@ public class FruitTree {
     @TableField("type")
     private Long type;
     @TableField("count_num")
-    private int countNum;
+    private Long countNum;
     @TableField("ripe_num")
-    private int ripeNum;
+    private Long ripeNum;
     @ApiModelProperty("图片路径")
     private String img;
     @TableField("area_id")
-    private int areaId;
+    private Long areaId;
 }

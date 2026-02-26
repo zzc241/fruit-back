@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -29,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 public class FileController {
 
     @Autowired
-    private FileServiceImpl fileServiceImpl;
+    private FileService fileService;
 
     /**
      * @param file
@@ -38,23 +39,25 @@ public class FileController {
     @ApiOperation("上传文件")
     @PostMapping("upload")
     public R<String> upload(@RequestPart("file") MultipartFile file) {
-        return R.success(fileServiceImpl.upload(file));
+        return R.success(fileService.upload(file));
     }
 
     /**
      * @param fileName
-     * 返回下载链接
+     * 预览图片
      * */
     @ApiOperation("预览文件")
     @GetMapping("preview/{fileName}")
-    public void preview(@ApiParam(name = "fileName", value = "在Minio的相对路径（xxx.png）", required = true)
+    public void preview(
+            @ApiParam(name = "fileName", value = "在Minio的相对路径（xxx.png）", required = true)
             @PathVariable String fileName,
-            HttpServletResponse response) {
+            HttpServletResponse response
+    ) {
         try {
             // 对fileName进行URL解码
             String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
             log.info(decodedFileName);
-            fileServiceImpl.preview(decodedFileName, response);
+            fileService.preview(decodedFileName, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

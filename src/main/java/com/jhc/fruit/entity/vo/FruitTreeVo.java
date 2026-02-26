@@ -23,11 +23,11 @@ public class FruitTreeVo {
     @ApiModelProperty(value = "类型名称")
     private String type;
     @ApiModelProperty(value = "区域id")
-    private Long AreaId;
-    @ApiModelProperty(value = "行数")
-    private int countNum;
-    @ApiModelProperty(value = "列数")
-    private int ripeNum;
+    private Long areaId;
+    @ApiModelProperty(value = "果实总数量")
+    private Long countNum;
+    @ApiModelProperty(value = "成熟个数")
+    private Long ripeNum;
     @ApiModelProperty(value = "图片路径")
     private String img;
     @ApiModelProperty(value = "区域名")

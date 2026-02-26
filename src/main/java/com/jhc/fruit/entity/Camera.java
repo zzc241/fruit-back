@@ -25,7 +25,7 @@ public class Camera {
     private Long orchardId;
 
     @ApiModelProperty(value="区id，标识摄像头属于哪一块")
-    private int areaId;
+    private Long areaId;
 
     @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)

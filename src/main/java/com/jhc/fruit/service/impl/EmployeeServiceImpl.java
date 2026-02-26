@@ -1,26 +1,43 @@
 package com.jhc.fruit.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jhc.fruit.common.JsonUtil;
+import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.entity.Employee;
+import com.jhc.fruit.entity.vo.loginEmployeeVo;
 import com.jhc.fruit.service.EmployeeService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author ：lcy
  * @description：TODO
  * @date ：2022/4/28 0028 14:04
  */
+@Slf4j
 @Service
 public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> implements EmployeeService {
+    @Autowired
+    private EmployeeDao employeeDao;
+
 
     @Override
     public List<Employee> getWorkers(){
@@ -64,5 +81,150 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
                 Employee::getName,
                 (existingValue, newValue) -> existingValue));
         return empNameMap;
+    }
+
+    public String getOpenId(String code, HttpServletRequest request){
+        //拼接url
+        if (code == null || code.isEmpty()) {
+            return null;
+        }else {
+            StringBuilder url = new StringBuilder("https://api.weixin.qq.com/sns/jscode2session?");
+            url.append("appid=");//appid设置
+            url.append("wx8d7387dcf72d379e");
+            url.append("&secret=");//secret设置
+            url.append("1cb81e119574f97c341f794b6e545c7e");
+            url.append("&js_code=");//code设置
+            url.append(code);
+            url.append("&grant_type=authorization_code");
+            Map<String, Object> map = null;
+            try {
+                HttpClient client = HttpClientBuilder.create().build();//构建一个Client
+                HttpGet get = new HttpGet(url.toString());    //构建一个GET请求
+                HttpResponse response = client.execute(get);//提交GET请求
+                HttpEntity result = response.getEntity();//拿到返回的HttpResponse的"实体"
+                String content = EntityUtils.toString(result);
+//            System.out.println(content);//打印返回的信息
+                JSONObject res = JSONObject.parseObject(content);//把信息封装为json
+                //把信息封装到map
+                map = JsonUtil.parseJSON2Map(res);//使用工具类将JSON数据转换为Map类型
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("code:001-" + e.getMessage());
+            }
+            if (map.get("openid") == null) {
+                return null;
+            } else {
+                return map.get("openid").toString();
+            }
+        }
+    }
+
+    //通过微信id登录/游客登录
+    @Override
+    public R<Employee> openIdLogin(String code, HttpServletRequest request) {
+        //获取微信id
+        String openId = getOpenId(code, request);
+
+        LambdaQueryWrapper<Employee> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Employee::getOpenId,openId);
+        //根据openId查询用户
+        Employee emp = employeeDao.selectOne(wrapper);
+        if(emp == null){
+            //代表用户第一次登录，还没有存入openId
+            //存入数据库作为游客账户
+            Employee employee = new Employee();
+            employee.setOpenId(openId);
+            employee.setCreateTime(LocalDateTime.now());
+            //生成默认用户名
+            employee.setUsername(UUID.randomUUID().toString());
+            //生成默认密码
+            employee.setPassword("123456");
+            //设置为游客账户
+            employee.setIsAdmin(5);
+
+            log.info("游客登录：" + openId);
+            //保存用户数据
+            employeeDao.insert(employee);
+
+            //登录成功，将用户id存入Session
+            request.getSession().setAttribute("employee",employee.getId());
+            //openId
+            request.getSession().setAttribute("openId",openId);
+            //果园id
+            request.getSession().setAttribute("orchardId", employee.getOrchardId());
+            //账户类型
+            request.getSession().setAttribute("isAdmin", employee.getIsAdmin());
+
+            return R.success(emp,request);
+        }
+
+        //登录成功，将用户id存入Session
+        request.getSession().setAttribute("employee",emp.getId());
+        //openId
+        request.getSession().setAttribute("openId",openId);
+        //果园id
+        request.getSession().setAttribute("orchardId", emp.getOrchardId());
+        //账户类型
+        request.getSession().setAttribute("isAdmin", emp.getIsAdmin());
+
+        //清空openId
+        openId = null;
+        return R.success(emp,request);
+    }
+
+    //用户密码登录
+    @Override
+    public R<Employee> login(loginEmployeeVo loginEmployeeVo, HttpServletRequest request) {
+        //获取前端提交的数据
+        String userName = loginEmployeeVo.getUsername();
+        String password = loginEmployeeVo.getPassword();
+        String code = loginEmployeeVo.getCode();
+
+        //1.将提交的密码进行md5处理
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
+        System.out.println(password);
+
+        //2.根据页面提交的用户名username查询数据库
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Employee::getUsername,userName);
+        Employee employee = employeeDao.selectOne(queryWrapper);
+        //3.如果没有查询到则返回登录失败结果
+        if(employee == null){
+            return R.error("账户不存在");
+        }
+
+        //4.密码比对
+        if(!employee.getPassword().equals(password)){
+            return R.error("密码错误");
+        }
+
+        //5.查看员工状态
+        if(employee.getStatus() != 1){
+            return R.error("员工状态被禁用");
+        }
+
+        //登录成功，将用户id存入Session
+        request.getSession().setAttribute("employee",employee.getId());
+        //果园id
+        request.getSession().setAttribute("orchardId", employee.getOrchardId());
+        //账户类型
+        request.getSession().setAttribute("isAdmin", employee.getIsAdmin());
+
+        //获取用户微信id
+        if(getOpenId(code, request) != null){
+            String openId = getOpenId(code, request);
+            //openId
+            request.getSession().setAttribute("openId",openId);
+
+            //存入该员工的openId
+            employee.setOpenId(openId);
+            //防止重复登录，账号状态禁用
+            //TODO:测试阶段，用户状态先注释掉
+            // employee.setStatus(0);
+            //更新用户信息
+            employeeDao.updateById(employee);
+
+        }
+        return R.success(employee,request);
     }
 }

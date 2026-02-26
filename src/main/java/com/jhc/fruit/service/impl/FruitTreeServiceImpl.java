@@ -1,15 +1,23 @@
 package com.jhc.fruit.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jhc.fruit.common.QRCodeUtil;
+import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.FruitTreeDao;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
+import com.jhc.fruit.entity.vo.QRTreeVo;
+import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.FruitTreeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,11 +30,43 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
 
     @Autowired
     private FruitTreeDao fruitTreeDao;
+    @Autowired
+    private FileService fileService;
 
     @Override
     public Page<FruitTreeVo> page(Page<FruitTreeVo> page) {
         Page<FruitTreeVo> pageInfo = fruitTreeDao.page(page);
         return pageInfo;
+    }
+
+    //解析二维码，返回果树信息
+    @Override
+    public R<FruitTreeVo> showTree(QRTreeVo eqTreeVo) {
+        //解析二维码
+        InputStream inputStream = fileService.getMinioFileInputStream(eqTreeVo.getFileName());
+
+        //查找果树信息
+        FruitTree fruitTree = fruitTreeDao.selectById(QRCodeUtil.readQRCode(inputStream));
+        FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
+        return R.success(fruitTreeVo);
+    }
+
+    @Override
+    public R<List<FruitTreeVo>> myTree(Long id) {
+        //1. 判断id是否存在
+        if (fruitTreeDao.selectById(id) == null) {
+            return R.error("用户不存在");
+        }else {
+            //2.如果id存在，查询id对应用户负责的果树列表
+            List<FruitTree> fruitTreeList = fruitTreeDao.myTree(id);
+            //转换为vo类
+            List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
+            fruitTreeList.forEach(fruitTree -> {
+                fruitTreeVoList.add(fruitToVo(fruitTree));
+            });
+            return R.success(fruitTreeVoList);
+        }
+        //3.返回列表
     }
 
     @Override
@@ -69,13 +109,13 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     }
 
     @Override
-    public List<FruitTree> selectByAreaId(int areaId) {
-        List<FruitTree> fruitTreeList = fruitTreeDao.selectByAreaId(areaId);
+    public List<FruitTree> selectByAreaIdList(Long areaId) {
+        List<FruitTree> fruitTreeList = fruitTreeDao.selectByAreaIdList(areaId);
         return fruitTreeList;
     }
 
     @Override
-    public List<FruitTreeVo> sortByRipeCount(int areaId) {
+    public List<FruitTreeVo> sortByRipeCount(Long areaId) {
         List<FruitTreeVo> fruitTrees = fruitTreeDao.sortByRipeCount(areaId);
         return fruitTrees;
     }
@@ -84,5 +124,22 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     public List<FruitTreeVo> sortByCount(Long areaId) {
         List<FruitTreeVo> fruitTrees = fruitTreeDao.sortByCount(areaId);
         return fruitTrees;
+    }
+
+    public FruitTreeVo fruitToVo(FruitTree fruitTree){
+        FruitTreeVo fruitTreeVo = new FruitTreeVo();
+        BeanUtils.copyProperties(fruitTree,fruitTreeVo);
+        fruitTreeVo.setTypeId(fruitTree.getType());
+        fruitTreeVo.setType(fruitTreeDao.selectByType(fruitTree.getType()));
+        fruitTreeVo.setAreaName(fruitTreeDao.selectByAreaId(fruitTree.getAreaId()));
+        return fruitTreeVo;
+    }
+
+    public FruitTree voToFruitTree(FruitTreeVo fruitTreeVo) {
+        FruitTree fruitTree = new FruitTree();
+        BeanUtils.copyProperties(fruitTreeVo, fruitTree);
+        Long typeId = fruitTreeVo.getTypeId();
+        fruitTree.setType(typeId);
+        return fruitTree;
     }
 }

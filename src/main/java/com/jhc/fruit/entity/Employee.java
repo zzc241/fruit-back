@@ -27,8 +27,8 @@ public class Employee{
     private String password;
     @ApiModelProperty(value = "手机号")
     private String phone;
-    @ApiModelProperty(value = "性别")
-    private String sex;
+    @ApiModelProperty(value = "性别(1男0女)")
+    private Long sex;
     @ApiModelProperty(value = "身份证号")
     private String id_card;
     @ApiModelProperty(value = "员工状态(可用：1，禁用：0)")

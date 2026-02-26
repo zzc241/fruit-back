@@ -4,19 +4,21 @@
     <resultMap id="ResultMap" type="com.jhc.fruit.entity.FruitTree" >
         <!-- property对应实体类的属性名称，column为数据库字段名 -->
         <result column="id" property="id" jdbcType="BIGINT" />
-        <result column="count_num" property="countNum" jdbcType="INTEGER" />
-        <result column="ripe_num" property="ripeNum" jdbcType="INTEGER" />
         <result column="img" property="img" jdbcType="VARCHAR" />
+        <result column="count_num" property="countNum" jdbcType="INTEGER"/>
+        <result column="ripe_num" property="ripeNum" jdbcType="INTEGER"/>
         <result column="type" property="type" jdbcType="INTEGER"/>
         <result column="area_id" property="areaId" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap id="TreeVo" type="com.jhc.fruit.entity.vo.FruitTreeVo" >
         <!--column为数据库字段名, property对应实体类的属性名称 -->
         <result column="id" property="id" jdbcType="BIGINT" />
-        <result column="count_num" property="countNum" jdbcType="INTEGER" />
-        <result column="ripe_num" property="ripeNum" jdbcType="INTEGER" />
         <result column="img" property="img" jdbcType="VARCHAR" />
+        <!--由于数据库里面id冲突到了，这里查询的时候要把fruit_type.id重命名为type_id-->
+        <result column="type_id" property="typeId" jdbcType="BIGINT"/>
         <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="count_num" property="countNum" jdbcType="INTEGER"/>
+        <result column="ripe_num" property="ripeNum" jdbcType="INTEGER"/>
         <result column="name" property="areaName" jdbcType="INTEGER"/>
     </resultMap>
     <!-- <update id = "updateById" parameterType="com.jhc.fruit.entity.FruitTree">
@@ -50,19 +52,30 @@
     <select id="showType" resultMap="TypeMap">
         select * from fruit_type;
     </select>
-    <select id = "selectByAreaId" resultMap="TreeVo">
-        SELECT fruit_tree.`id`,fruit_type.`type`,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,area_info.`name`,fruit_tree.`area_id`
+    <select id = "selectByAreaIdList" resultMap="TreeVo">
+        SELECT fruit_tree.`id`,fruit_type.`type`,fruit_type.id AS type_id,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,area_info.`name`,fruit_tree.`area_id`
         FROM fruit_tree,area_info,fruit_type
         WHERE fruit_tree.`area_id` = area_info.`id` AND fruit_tree.`type` = fruit_type.`id` AND area_id = #{areaId}
     </select>
     <select id = "sortByCount" resultMap="TreeVo">
-        SELECT fruit_tree.`id`,fruit_type.`type`,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,area_info.`name`,fruit_tree.`area_id`
+        SELECT fruit_tree.`id`,fruit_type.`type`,fruit_type.id AS type_id,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,area_info.`name`,fruit_tree.`area_id`
         FROM fruit_tree,area_info,fruit_type
         WHERE fruit_tree.`area_id` = area_info.`id` AND fruit_tree.`type` = fruit_type.`id` AND area_id = #{areaId} order by count_num desc
     </select>
     <select id = "sortByRipeCount" resultMap="TreeVo">
-        SELECT fruit_tree.`id`,fruit_type.`type`,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,area_info.`name`,fruit_tree.`area_id`
+        SELECT fruit_tree.`id`,fruit_type.`type`,fruit_type.id AS type_id,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,area_info.`name`,fruit_tree.`area_id`
         FROM fruit_tree,area_info,fruit_type
         WHERE fruit_tree.`area_id` = area_info.`id` AND fruit_tree.`type` = fruit_type.`id` AND area_id = #{areaId} order by ripe_num desc
+    </select>
+    <select id="selectByAreaId" resultType="java.lang.String">
+        SELECT area_info.id from area_info where id = #{areaId}
+    </select>
+    <select id="selectByType" resultType="java.lang.String">
+        select  fruit_type.type from fruit_type where id = #{type}
+    </select>
+    <select id="myTree" resultType="com.jhc.fruit.entity.FruitTree">
+        SELECT fruit_tree.id, fruit_tree.img, fruit_tree.type
+        FROM fruit_tree, fruit_emp
+        WHERE fruit_emp.id = #{id} AND fruit_tree.id = fruit_emp.tree_id
     </select>
 </mapper>
