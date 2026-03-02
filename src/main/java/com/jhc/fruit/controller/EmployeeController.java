@@ -359,4 +359,13 @@ public class EmployeeController {
         employeeService.updateById(employee);
         return R.success();
     }
+
+    @ApiOperation("用户列表")
+    @GetMapping("/getAll")
+    public R<List<Employee>> getAll(@RequestParam Long orchardId){
+        LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
+        List<Employee> employees = employeeService.list(lambdaQueryWrapper);
+        return R.success(employees);
+    }
 }
