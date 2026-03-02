@@ -13,7 +13,18 @@ import java.util.List;
  * @author zyr
  * &#064;date  2026/1/26
  */
-
+@Service
 public interface TaskService extends IService<Task> {
-
+//
+//    void addTask(TaskVo taskVo);
+//
+//    void updateTask(TaskVo taskVo);
+//
+//    void removeByList(List<Long> taskIds);
+//
+//    List<TaskVo> todayTask();
+//
+//    List<TaskVo> queryTasks(TaskVo tasksVo);
+//
+//    TaskVo getById(Long id);
 }

@@ -45,7 +45,6 @@ import java.util.UUID;
 @RequestMapping("/employee")
 @Api(tags = "后台：用户管理接口")
 public class EmployeeController {
-    private String openId;
     @Autowired
     private EmployeeService employeeService;
 
@@ -63,7 +62,7 @@ public class EmployeeController {
      * @return
      *      */
     @GetMapping("/OpenIdLogin")
-    @ApiOperation("用户登录时获取openId方法")
+    @ApiOperation("小程序微信登录")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code",value = "用户登录时获得的临时code"),
             @ApiImplicitParam(name = "appId",value = "每个微信小程序都有的appId"),
@@ -102,7 +101,7 @@ public class EmployeeController {
      */
     //将登录的用户存入session中，通过HttpServletRequest中来操作session
     @PostMapping("/login")
-    @ApiOperation(value="用户登录方法")
+    @ApiOperation(value="用户密码登录方法")
     public R<Employee> login(@RequestBody loginEmployeeVo loginEmployeeVo , HttpServletRequest request){
         return employeeService.login(loginEmployeeVo,request);
     }
@@ -133,9 +132,9 @@ public class EmployeeController {
      * @param employee
      * @return
      */
-    @PostMapping
+    @PostMapping("/add")
     @ApiOperation("后：新增用户方法")
-    public R<String> save(@RequestBody Employee employee,HttpServletRequest request){
+    public R<String> save(@RequestBody Employee employee){
         log.info("新增员工，员工信息：",employee.toString());
         //用户名校验
         String username = employee.getUsername();
@@ -146,7 +145,16 @@ public class EmployeeController {
             return R.error("用户名已经存在");
         }
         //设置初始密码123456，使用md5加密处理
-        employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        if(employee.getPassword() == null || "".equals(employee.getPassword())){
+            employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        }
+        if(employee.getUsername() == null || "".equals(employee.getUsername())){
+            employee.setUsername("newUser" + UUID.randomUUID().toString().replace("-", ""));
+        }
+        if (employee.getIsAdmin() == null || "".equals(employee.getIsAdmin())){
+            //如果没有设置过用户类型，默认用户为游客5
+            employee.setIsAdmin(5);
+        }
         //设置创建时间（新增时创建时间和修改时间同步）
 //        employee.setCreateTime(LocalDateTime.now());
 //        employee.setUpdateTime(LocalDateTime.now());
@@ -164,18 +172,23 @@ public class EmployeeController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page",value = "当前页码数"),
             @ApiImplicitParam(name = "pageSize",value = "最大页码数"),
-            @ApiImplicitParam(name = "name", value= "搜索时输入的用户名称(可选)")
+            @ApiImplicitParam(name = "name", value= "搜索时输入的用户名称(可选)"),
+            @ApiImplicitParam(name = "orchardId", value = "所属果园")
     })
-    public R<Page> page(int page,int pageSize,String name){
-        log.info("page = {},pageSize = {},name = {}",page,pageSize,name);
+    public R<Page> page(int page,int pageSize,String name, Long orchardId){
+        log.info("page = {},pageSize = {},name = {}, orchardId = {}",page,pageSize,name, orchardId);
 
+        if(orchardId == null){
+            orchardId = BaseContext.getId();
+        }
         //创建分页构造器
         Page pageInfo = new Page(page,pageSize);
         //创建条件构造器
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(StringUtils.isNotEmpty(name),Employee::getName,name);
+        lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
         //进行分页查询
-        employeeService.page(pageInfo,lambdaQueryWrapper);
+        pageInfo = employeeService.page(pageInfo,lambdaQueryWrapper);
         return R.success(pageInfo);
     }
 

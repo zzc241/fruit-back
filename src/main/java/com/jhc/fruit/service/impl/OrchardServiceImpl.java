@@ -3,6 +3,7 @@ package com.jhc.fruit.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.jhc.fruit.common.R;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implem
     private AreaService areaService;
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private OrchardDao orchardDao;
+
     /*
      * 
      * {
@@ -303,5 +307,12 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implem
 
     public String getOrchardNameById(Long orchardId){
         return this.getById(orchardId).getName();
+    }
+
+    public R<String> updateByOrchardVo(OrchardVo orchardVo) {
+        Orchard orchard = new Orchard();
+        BeanUtils.copyProperties(orchardVo, orchard);
+        orchardDao.insert(orchard);
+        return R.success("修改成功");
     }
 }

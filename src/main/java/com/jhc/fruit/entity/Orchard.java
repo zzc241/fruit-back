@@ -52,4 +52,6 @@ public class Orchard {
     @ApiModelProperty("修改人")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+    @ApiModelProperty("地址")
+    private String address;
 }

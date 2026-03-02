@@ -70,6 +70,25 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     }
 
     @Override
+    public R<FruitTreeVo> myTreeInfo(Long userId, Long treeId) {
+        FruitTree fruitTree = fruitTreeDao.selectById(treeId);
+
+        if (fruitTree == null) {
+            return R.error("果树不存在");
+        }
+        if (fruitTreeDao.selectById(userId) == null){
+            return R.error("用户不存在");
+        }
+        //检查果树id是否属于该用户
+        if (! fruitTreeDao.checkEmpOfTree(userId, treeId)){
+            return R.error("非该果树负责人，无权限查看");
+        }
+
+        FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
+        return R.success(fruitTreeVo);
+    }
+
+    @Override
     public boolean updateById(FruitTree fruitTree) {
         int i = fruitTreeDao.updateById(fruitTree);
         if(i == 1){

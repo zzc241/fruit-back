@@ -26,4 +26,6 @@ public interface FruitTreeService extends IService<FruitTree> {
     R<FruitTreeVo> showTree(QRTreeVo eqTreeVo);
 
     R<List<FruitTreeVo>> myTree(Long id);
+
+    R<FruitTreeVo> myTreeInfo(Long userId, Long treeId);
 }

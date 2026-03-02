@@ -78,4 +78,9 @@
         FROM fruit_tree, fruit_emp
         WHERE fruit_emp.id = #{id} AND fruit_tree.id = fruit_emp.tree_id
     </select>
+    <select id="checkEmpOfTree" resultType="java.lang.Boolean">
+        SELECT *
+        FROM fruit_emp
+        WHERE emp_id = #{userId} AND tree_id = #{treeId}
+    </select>
 </mapper>

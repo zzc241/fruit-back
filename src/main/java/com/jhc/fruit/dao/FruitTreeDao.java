@@ -33,4 +33,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     String selectByType(Long type);
 
     List<FruitTree> myTree(Long id);
+
+    boolean checkEmpOfTree(Long userId, Long treeId);
 }

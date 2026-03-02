@@ -259,4 +259,10 @@ public class FruitTreeController {
     public R<List<FruitTreeVo>> myTree(@PathVariable Long id){
         return fruitTreeService.myTree(id);
     }
+
+    @GetMapping("/myTree/{userId}/{treeId}")
+    @ApiOperation("我的果树详情信息")
+    public R<FruitTreeVo> myTreeInfo(@PathVariable Long userId, @PathVariable Long treeId){
+        return fruitTreeService.myTreeInfo(userId, treeId);
+    }
 }
