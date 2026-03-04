@@ -30,9 +30,8 @@ public class R<T> {
 
     public static <T> R<T> success() {
         R<T> r = new R<T>();
-        r.code = 1;
+        r.code = 200;
         r.msg = "success";
-        r.token = String.valueOf(BaseContext.getId());
         r.data = null;
         return r;
     }
@@ -40,17 +39,17 @@ public class R<T> {
     public static <T> R<T> success(T object) {
         R<T> r = new R<T>();
         r.data = object;
-        r.code = 1;
-        r.token = String.valueOf(BaseContext.getId());
+        r.code = 200;
+        r.msg = "success";
         // System.out.println(r.token);
         return r;
     }
     public static <T> R<T> success(T object,HttpServletRequest request) {
         R<T> r = new R<T>();
         r.data = object;
-        r.code = 1;
-        r.token = String.valueOf(request.getSession().getAttribute("employee"));
-        System.out.println(r.token);
+        r.code = 200;
+        r.msg = "success";
+//        System.out.println(r.token);
         return r;
     }
 

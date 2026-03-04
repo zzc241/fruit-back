@@ -52,9 +52,9 @@ public class CameraController {
         //根据摄像头id获取该摄像头对应的区
         Camera camera = cameraService.getOne(wrapperCamera);
         //获取摄像头对应的区
-        int areaId = camera.getAreaId();
+        Long areaId = camera.getAreaId();
         //查询出区块当中的树对象
-        List<FruitTree> fruitTreeList = fruitTreeService.selectByAreaId(areaId);
+        List<FruitTree> fruitTreeList = fruitTreeService.selectByAreaIdList(areaId);
 
         List<Long> treeIds = new ArrayList<>();
         Long id = null;

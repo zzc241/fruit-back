@@ -92,7 +92,7 @@ public class IdentifyInfoController {
         //更新果树识别完后的信息
         fruitTree.setRipeNum(identify.getRipeNum());
         fruitTree.setImg(ripe_url);
-        fruitTree.setCountNum(identify.getFruitNum());
+        fruitTree.setCountNum((long) identify.getFruitNum());
         fruitTreeServiceImpl.updateById(fruitTree);
         //将数据封装到识别信息对象中
         identify.setImgCount(count_url);
@@ -135,7 +135,7 @@ public class IdentifyInfoController {
         String ripe_url = QiniuUtils.downloadImg2Cloud(identify.getImgRipe());
         //更新果树识别完后的信息
         fruitTree.setRipeNum(identify.getRipeNum());
-        fruitTree.setCountNum(identify.getFruitNum());
+        fruitTree.setCountNum((long) identify.getFruitNum());
         fruitTree.setImg(ripe_url);
         fruitTreeServiceImpl.updateById(fruitTree);
         //将数据封装到识别信息对象中

@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 public class IdentifyInfo {
     @ApiModelProperty("识别信息id")
     private Long id;
+    @ApiModelProperty("果园id")
+    private Long orchardId;
     @ApiModelProperty("果蔬数量")
     private int fruitNum;
     @ApiModelProperty("水果名称")
@@ -30,9 +32,9 @@ public class IdentifyInfo {
     private String imgCount;
     private String imgRipe;
     @ApiModelProperty("成熟水果数量")
-    private int ripeNum;
+    private Long ripeNum;
     private Long treeId;
-    private int treeRipePercent;
+    private Long treeRipePercent;
 
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty("创建者")

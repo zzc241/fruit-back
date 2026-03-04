@@ -16,4 +16,6 @@ public class loginEmployeeVo {
     private String username;
     @ApiModelProperty(value = "密码", example = "123456")
     private String password;
+    @ApiModelProperty(value = "微信临时登录code", example = "123456")
+    private String code;
 }

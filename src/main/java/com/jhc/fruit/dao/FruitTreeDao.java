@@ -20,11 +20,19 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     public Long getTypeId(Long areaId);
     public List<FruitType> showType();
     public FruitTree getById(Long id);
-    public List<FruitTree> selectByAreaId(int areaId);
-    public List<FruitTreeVo> sortByRipeCount(int areaId);
+    public List<FruitTree> selectByAreaIdList(Long areaId);
+    public List<FruitTreeVo> sortByRipeCount(Long areaId);
     public List<FruitTreeVo> sortByCount(Long areaId);
     public FruitTree selectBy2Id(Long id);
     // public int updateById(FruitTree fruitTree);
     @Select("SELECT id,type,count_num,ripe_num,img,area_id FROM fruit_tree")
     public Page<FruitTreeVo> page(Page<FruitTreeVo> page);
+
+    String selectByAreaId(Long areaId);
+
+    String selectByType(Long type);
+
+    List<FruitTree> myTree(Long id);
+
+    boolean checkEmpOfTree(Long userId, Long treeId);
 }
