@@ -227,4 +227,20 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         }
         return R.success(employee,request);
     }
+
+    @Override
+    public R<String> deleteList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return R.error("没有选择员工");
+        }
+        try {
+            LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.in(Employee::getId, ids);
+            employeeDao.delete(queryWrapper);
+            return R.success("操作成功");
+        }catch (Exception e){
+            log.info(e.getMessage());
+            return R.error("操作失败");
+        }
+    }
 }

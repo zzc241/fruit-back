@@ -38,7 +38,7 @@ public class FileController {
      * */
     @ApiOperation("上传文件")
     @PostMapping("upload")
-    public R<String> upload(@RequestPart("file") MultipartFile file) {
+    public R<String> upload(@RequestPart MultipartFile file) {
         return R.success(fileService.upload(file));
     }
 

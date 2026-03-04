@@ -23,4 +23,6 @@ public interface EmployeeService extends IService<Employee> {
     R<Employee> openIdLogin(String code, HttpServletRequest request);
 
     R<Employee> login(loginEmployeeVo loginEmployeeVo, HttpServletRequest request);
+
+    R<String> deleteList(List<Long> ids);
 }

@@ -197,7 +197,7 @@ public class EmployeeController {
      * @param employee
      * @return
      */
-    @PutMapping
+    @PutMapping("/update")
     @ApiOperation("后：修改用户信息")
     public R<String> update(@RequestBody Employee employee){
         //Long empId = (Long)request.getSession().getAttribute("emplopyee");
@@ -367,5 +367,11 @@ public class EmployeeController {
         lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
         List<Employee> employees = employeeService.list(lambdaQueryWrapper);
         return R.success(employees);
+    }
+
+    @ApiOperation("批量删除员工")
+    @DeleteMapping("deleteList")
+    public R<String> deleteList(@RequestBody List<Long> ids){
+        return employeeService.deleteList(ids);
     }
 }
