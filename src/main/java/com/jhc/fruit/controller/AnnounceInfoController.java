@@ -24,6 +24,7 @@ import java.util.List;
  * @description : 完善添加通知方法和修改通知方法的参数校验
  * @date : 2026/1/27
  * @description : pickInfo改成announceInfo，之前的接口用不了删除了
+ * @date : 2026/1/28
  */
 @RestController
 @RequestMapping("/announceInfo")

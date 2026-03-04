@@ -38,7 +38,7 @@ public class TaskController {
     }
 
     @ApiOperation(value = "修改任务")
-    @PostMapping("update")
+    @PostMapping("/update")
     public R<String> updateTask(@RequestBody TaskVo taskVo) {
         taskService.updateTask(taskVo);
         return R.success("修改成功");
@@ -83,4 +83,5 @@ public class TaskController {
             return R.error("查询失败");
         }
     }
+    
 }

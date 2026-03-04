@@ -29,6 +29,8 @@ public class AnnounceInfoVo {
     private Long groupId;
     @ApiModelProperty("关联的组名称")
     private String groupName;
+    @ApiModelProperty("招聘需要的人数")
+    private Long needNumber;
     @ApiModelProperty("关联的创建消息者id")
     private Long senderId;
     @ApiModelProperty("关联的创建消息者名称")

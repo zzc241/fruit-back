@@ -22,6 +22,8 @@ public class Task {
     private Long id;
     @ApiModelProperty(value = "创建人id")
     private Long creatorId;
+    @ApiModelProperty(value = "果园id")
+    private Long orchardId;
     /*描述任务内容*/
     @ApiModelProperty(value = "任务内容")
     private String taskInfo;
@@ -32,7 +34,7 @@ public class Task {
     private Integer taskType;
     /*在存储服务器的相对路径*/
     @ApiModelProperty(value = "任务图片")
-    private String img;
+    private String imgId;
     /*绑定员工组empGroup的groupId，用来表示发布范围*/
     @ApiModelProperty(value = "发布范围")
     private Long taskScope;

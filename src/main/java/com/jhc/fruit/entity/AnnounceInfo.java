@@ -38,6 +38,7 @@ public class AnnounceInfo {
     private Long updateUser;
     //接收通知信息的用户id
     private Long empId;
+    private Long needNumber;
     private Long orchardId;
     //发送通知信息的用户id
     @ApiModelProperty("发送通知信息的用户id")

@@ -15,6 +15,8 @@ public class TaskVo {
     /*创建人姓名可能存在重名，区分需要用id*/
     @ApiModelProperty(value = "创建人id")
     private Long creatorId;
+    @ApiModelProperty(value = "果园id")
+    private Long orchardId;
     @ApiModelProperty(value = "创建人姓名")
     private String username;
     /*描述任务内容*/
@@ -54,6 +56,10 @@ public class TaskVo {
     @ApiModelProperty(value = "定时发布")
     private String schedule;
 
+    @ApiModelProperty(value = "任务开始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime start;
+    @ApiModelProperty(value = "任务结束时间")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime end;
 }
