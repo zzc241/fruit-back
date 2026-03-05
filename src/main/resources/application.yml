@@ -18,9 +18,9 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://120.27.205.171:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
-      username: root1
-      password: 123456
+      url: jdbc:mysql://192.168.123.92:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+      username: root
+      password: tyzx99ty!
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSS
     time-zone: GMT+8
@@ -43,8 +43,10 @@ mybatis-plus:
   mapper-locations: mappers/*.xml
 #Minio配置
 minio:
-  endpoint: http://192.168.123.92:9000
+  endpoint: http://192.168.123.92:9090
   access-key: X7HDRb4DBwMdMbtjDDPB
   secret-key: ej3CttgQgUHzfw5Zu1oomsETaCjWdR4N5S9IeHG9
-  bucket-name: test-qr
+  bucket-name: fruit-bucket
+ai-api:
+  endpoint: http://172.16.0.231:8001
 

@@ -109,6 +109,19 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.3</version>
         </dependency>
+        <!-- FastJSON2 核心依赖（必选） -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.49</version> <!-- 2026年最新稳定版，兼容Java 8+ -->
+        </dependency>
+
+        <!-- 可选：若需要兼容 fastjson 1.x 的 API（比如旧代码用 com.alibaba.fastjson） -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2-extension</artifactId>
+            <version>2.0.49</version>
+        </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
@@ -174,6 +187,12 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>4.10.0</version>
+        </dependency>
+<!--远程调用-->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.12.0</version> <!-- 2026年最新稳定版，兼容Java 8+ -->
         </dependency>
     </dependencies>
 <!-- springboot 打包插件-->
