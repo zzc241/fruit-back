@@ -6,4 +6,6 @@ import com.jhc.fruit.entity.FruitType;
 public interface FruitTypeService extends IService<FruitType> {
 
     public String getTypeById(Long id);
+
+    public Long getIdByType(String type);
 }

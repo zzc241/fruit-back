@@ -231,6 +231,31 @@ public class FruitTreeController {
         }
         return R.success(fruitTreeList);
     }
+    @GetMapping("/area/{areaId}")
+    @ApiOperation("区域果树详情信息")
+    public R<List<FruitTreeVo>> myTreeInfo(@PathVariable Long areaId){ 
+        LambdaQueryWrapper<FruitTree> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(FruitTree::getAreaId, areaId);
+        queryWrapper.orderByDesc(FruitTree::getCreateTime); 
+        List<FruitTree> fruitTreeList = fruitTreeService.list(queryWrapper);
+        if(fruitTreeList == null && fruitTreeList.size() == 0){
+            return R.error("查找失败");
+        }
+        List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
+        fruitTreeList.forEach(fruitTree -> {
+            fruitTreeVoList.add(fruitToVo(fruitTree));
+        });
+        return R.success(fruitTreeVoList);
+    }
+    private FruitTreeVo fruitToVo(FruitTree fruitTree) { 
+        FruitTreeVo fruitTreeVo = new FruitTreeVo();
+        fruitTreeVo.setId(fruitTree.getId());
+        Double ripeDegree = fruitTree.getRipeNum() * 1.0 / fruitTree.getCountNum();
+        fruitTreeVo.setRipeDegree(ripeDegree);
+        fruitTreeVo.setHealthCondition(fruitTree.getHealthCondition());
+        return fruitTreeVo;
+    }
+
     /**
      * 生成二维码后生成到minio上，
      * 返回图片的存储路径 MinIO服务地址/桶名称/目录/文件名.扩展名

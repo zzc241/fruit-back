@@ -10,7 +10,7 @@
     <select id="getTypeById" parameterType="com.jhc.fruit.entity.FruitType" resultType="String">
         SELECT fruit_type.type FROM fruit_type WHERE id = #{id}
     </select>
+    <select id="getIdByType" parameterType="com.jhc.fruit.entity.FruitType" resultType="Long">
+        SELECT id FROM fruit_type WHERE type = #{type}
+    </select>
 </mapper>
-
-
-

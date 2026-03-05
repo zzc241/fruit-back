@@ -27,7 +27,7 @@ public class AreaVo {
     @ApiModelProperty("区域大小")
     private int size;
     @ApiModelProperty("果树类型")
-    private Long typeId;
+    private String FruitType;
     @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -57,4 +57,7 @@ public class AreaVo {
     private Long updateUserName;
     @ApiModelProperty("负责人")
     private String empName;
+
+    @ApiModelProperty("果树数量")
+    private Long fruitCount;
 }
