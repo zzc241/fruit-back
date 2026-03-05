@@ -43,8 +43,10 @@ mybatis-plus:
   mapper-locations: mappers/*.xml
 #Minio配置
 minio:
-  endpoint: http://192.168.123.92:9000
+  endpoint: http://192.168.123.92:9090
   access-key: X7HDRb4DBwMdMbtjDDPB
   secret-key: ej3CttgQgUHzfw5Zu1oomsETaCjWdR4N5S9IeHG9
-  bucket-name: test-qr
+  bucket-name: fruit-bucket
+ai-api:
+  endpoint: http://172.16.0.231:8001
 

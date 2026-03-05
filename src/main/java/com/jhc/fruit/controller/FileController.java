@@ -1,19 +1,17 @@
 package com.jhc.fruit.controller;
 
+import com.jhc.fruit.common.QRCodeUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.service.FileService;
-import com.jhc.fruit.service.impl.FileServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -61,5 +59,19 @@ public class FileController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @ApiOperation("生成二维码")
+    @PostMapping("/createQROfUrl")
+    public R<String> createQROfUrl(@RequestParam String url) {
+        String fileName = fileService.upload(QRCodeUtil.createQROfURL(url));
+        return R.success(fileName);
+    }
+
+    @ApiOperation("解析二维码")
+    @PostMapping("/readQR")
+    public R<String> readQR(@RequestParam String qr) {
+        String path = QRCodeUtil.readQRCode(fileService.getMinioFileInputStream(qr));
+        return R.success(path);
     }
 }
