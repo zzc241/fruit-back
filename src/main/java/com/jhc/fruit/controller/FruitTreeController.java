@@ -308,7 +308,7 @@ public class FruitTreeController {
 
     @ApiOperation("AI识别果实成熟度")
     @PostMapping("/AIRipe")
-    public R<Integer> AIripe(@RequestParam MultipartFile file,
+    public R<List<Integer>> AIripe(@RequestParam MultipartFile file,
                                   @ApiParam(value = "conf", defaultValue = "0.25")
                                     @RequestParam(required = false)
                                   @DefaultValue("0.25") double conf,

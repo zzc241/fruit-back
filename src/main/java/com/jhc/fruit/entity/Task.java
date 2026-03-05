@@ -1,5 +1,7 @@
 package com.jhc.fruit.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,6 +20,7 @@ import java.time.LocalDateTime;
 @Data
 @ApiModel(value = "任务表")
 public class Task {
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "任务id")
     private Long id;
     @ApiModelProperty(value = "创建人id")

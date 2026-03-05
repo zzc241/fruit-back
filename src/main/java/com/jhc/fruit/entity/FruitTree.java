@@ -31,4 +31,6 @@ public class FruitTree {
     private String img;
     @TableField("area_id")
     private Long areaId;
+    @ApiModelProperty(value = "健康状态")
+    private Integer healthCondition;
 }

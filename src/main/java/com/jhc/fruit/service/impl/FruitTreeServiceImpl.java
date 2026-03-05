@@ -199,7 +199,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     }
 
     @Override
-    public R<Integer> AIOfRipeness(MultipartFile file,double conf, double iou) {
+    public R<List<Integer>> AIOfRipeness(MultipartFile file,double conf, double iou) {
         List<String> ripes = new ArrayList<>();
         //创建请求对象
         String url = aiConfig.getEndpoint() + "/ripeness/detect/upload" + "?conf=" + conf + "&iou=" + iou;
@@ -263,9 +263,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
                             if (detection != null) {
                                 String ripenessName = detection.getString("ripeness_name");
                                 if (ripenessName != null && !ripenessName.isEmpty()) {
-                                    if (ripenessName.equals("Ripe")){
-                                        ripes.add(ripenessName);
-                                    }
+                                    ripes.add(ripenessName);
                                 } else {
                                     log.warn("第{}条检测结果无成熟度名称", i);
                                 }
@@ -288,7 +286,18 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
                 return R.error("未检测到果实成熟度信息");
             }
 
-            return R.success(ripes.size());
+            Integer totalCount = ripes.size();
+            Integer ripeCount = 0;
+            for (int i = 0; i < ripes.size(); i++) {
+                if(ripes.get(i).equals("Ripe")){
+                    ripeCount += 1;
+                }
+            }
+            List<Integer> counts = new ArrayList<>();
+            counts.add(ripeCount);
+            counts.add(totalCount);
+
+            return R.success(counts);
         } catch (IOException e) {
             log.error("网络通信失败", e);
             return R.error("网络通信失败: " + e.getMessage());
