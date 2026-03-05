@@ -18,6 +18,8 @@ public class TaskVo {
     private Long creatorId;
     @ApiModelProperty(value = "果园id")
     private Long orchardId;
+    @ApiModelProperty(value = "果园名称")
+    private String orchardName;
     @ApiModelProperty(value = "创建人姓名")
     private String username;
     /*描述任务内容*/
@@ -25,6 +27,11 @@ public class TaskVo {
     private String taskInfo;
     @ApiModelProperty(value = "任务标题")
     private String taskTitle;
+    @ApiModelProperty(value = "任务类型")
+    private Integer taskType;
+    
+    @ApiModelProperty(value = "任务范围")
+    private Long taskScope;
     @ApiModelProperty(value = "任务图片组id")
     private Long imgId;
     @ApiModelProperty(value = "复数图片URL")
@@ -33,7 +40,8 @@ public class TaskVo {
     @ApiModelProperty(value = "完成时间")
     private LocalDateTime completionTime;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime postTime;
+    @ApiModelProperty(value = "任务结束时间")
+    private LocalDateTime deadline;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
@@ -41,6 +49,8 @@ public class TaskVo {
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @ApiModelProperty(value = "发布时间")
+    private LocalDateTime postTime;
     @ApiModelProperty(value = "任务状态")
     private Integer status;
     @ApiModelProperty(value = "用户组id")
