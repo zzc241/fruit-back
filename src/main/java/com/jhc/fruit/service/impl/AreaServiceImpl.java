@@ -5,11 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.entity.Area;
-import com.jhc.fruit.entity.PickInfo;
 import com.jhc.fruit.entity.vo.AreaVo;
 import com.jhc.fruit.service.AreaService;
 
-import kotlin.jvm.internal.Lambda;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

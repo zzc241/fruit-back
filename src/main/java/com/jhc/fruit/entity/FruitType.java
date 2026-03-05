@@ -1,6 +1,7 @@
 package com.jhc.fruit.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -11,6 +12,8 @@ import lombok.Data;
 @Data
 @TableName("fruit_type")
 public class FruitType {
+    @ApiModelProperty
     private Long id;
+    @ApiModelProperty
     private String type;
 }

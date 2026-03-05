@@ -45,7 +45,6 @@ import java.util.UUID;
 @RequestMapping("/employee")
 @Api(tags = "后台：用户管理接口")
 public class EmployeeController {
-    private String openId;
     @Autowired
     private EmployeeService employeeService;
 
@@ -61,54 +60,16 @@ public class EmployeeController {
      * 用户通过openId登录
      * @param code
      * @return
-     */
-    @GetMapping("/getOpenId")
-    @ApiOperation("用户登录时获取openId方法")
+     *      */
+    @GetMapping("/OpenIdLogin")
+    @ApiOperation("小程序微信登录")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code",value = "用户登录时获得的临时code"),
             @ApiImplicitParam(name = "appId",value = "每个微信小程序都有的appId"),
             @ApiImplicitParam(name = "appSecret",value = "前端传入的appSecret")
     })
-    public R<Employee> getOpenId(String code,HttpServletRequest request){
-        //拼接url
-        StringBuilder url = new StringBuilder("https://api.weixin.qq.com/sns/jscode2session?");
-        url.append("appid=");//appid设置
-        url.append("wx8d7387dcf72d379e");
-        url.append("&secret=");//secret设置
-        url.append("1cb81e119574f97c341f794b6e545c7e");
-        url.append("&js_code=");//code设置
-        url.append(code);
-        url.append("&grant_type=authorization_code");
-        Map<String, Object> map = null;
-        try {
-            HttpClient client = HttpClientBuilder.create().build();//构建一个Client
-            HttpGet get = new HttpGet(url.toString());    //构建一个GET请求
-            HttpResponse response = client.execute(get);//提交GET请求
-            HttpEntity result = response.getEntity();//拿到返回的HttpResponse的"实体"
-            String content = EntityUtils.toString(result);
-//            System.out.println(content);//打印返回的信息
-            JSONObject res = JSONObject.parseObject(content);//把信息封装为json
-            //把信息封装到map
-            map = JsonUtil.parseJSON2Map(res);//使用工具类将JSON数据转换为Map类型
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        openId = (String) map.get("openid");
-        LambdaQueryWrapper<Employee> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Employee::getOpenId,openId);
-        //根据openId查询用户
-        Employee emp = employeeService.getOne(wrapper);
-        if(emp == null){
-            //代表用户第一次登录，还没有存入openId
-            return R.error(openId);
-        }
-        System.out.println("openId查出的用户id" + emp.getId());
-        request.getSession().setAttribute("employee",emp.getId());
-        System.out.println("openId登录时的request" + request);
-        //清空openId
-        openId = null;
-        return R.success(emp,request);
+    public R<Employee> openIdLogin(String code,HttpServletRequest request){
+        return employeeService.openIdLogin(code,request);
     }
 
     /**
@@ -134,50 +95,15 @@ public class EmployeeController {
 
     /**
      * 员工登录
+     * 账户、密码、code
      * @param request
      * @return
      */
     //将登录的用户存入session中，通过HttpServletRequest中来操作session
     @PostMapping("/login")
-    @ApiOperation(value="用户登录方法")
+    @ApiOperation(value="用户密码登录方法")
     public R<Employee> login(@RequestBody loginEmployeeVo loginEmployeeVo , HttpServletRequest request){
-        //获取前端提交的数据
-        String userName = loginEmployeeVo.getUsername();
-        String password = loginEmployeeVo.getPassword();
-
-        //1.将提交的密码进行md5处理
-         password = DigestUtils.md5DigestAsHex(password.getBytes());
-        System.out.println(password);
-
-        //2.根据页面提交的用户名username查询数据库
-        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Employee::getUsername,userName);
-        Employee employee = employeeService.getOne(queryWrapper);
-        //3.如果没有查询到则返回登录失败结果
-        if(employee == null){
-            return R.error("用户名不存在");
-        }
-
-        //4.密码比对
-        if(!employee.getPassword().equals(password)){
-            return R.error("密码错误");
-        }
-
-        //5.查看员工状态
-        if(employee.getStatus() != 1){
-            return R.error("员工状态被禁用");
-        }
-
-        //登录成功，将用户id存入Session
-        request.getSession().setAttribute("employee",employee.getId());
-        //存入该员工的openId
-        employee.setOpenId(openId);
-        //防止重复登录，账号状态禁用
-        //TODO:测试阶段，用户状态先注释掉
-        // employee.setStatus(0);
-        //更新用户信息
-        employeeService.updateById(employee);
-        return R.success(employee,request);
+        return employeeService.login(loginEmployeeVo,request);
     }
 
     /**
@@ -206,9 +132,9 @@ public class EmployeeController {
      * @param employee
      * @return
      */
-    @PostMapping
+    @PostMapping("/add")
     @ApiOperation("后：新增用户方法")
-    public R<String> save(@RequestBody Employee employee,HttpServletRequest request){
+    public R<String> save(@RequestBody Employee employee){
         log.info("新增员工，员工信息：",employee.toString());
         //用户名校验
         String username = employee.getUsername();
@@ -219,7 +145,16 @@ public class EmployeeController {
             return R.error("用户名已经存在");
         }
         //设置初始密码123456，使用md5加密处理
-        employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        if(employee.getPassword() == null || "".equals(employee.getPassword())){
+            employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        }
+        if(employee.getUsername() == null || "".equals(employee.getUsername())){
+            employee.setUsername("newUser" + UUID.randomUUID().toString().replace("-", ""));
+        }
+        if (employee.getIsAdmin() == null || "".equals(employee.getIsAdmin())){
+            //如果没有设置过用户类型，默认用户为游客5
+            employee.setIsAdmin(5);
+        }
         //设置创建时间（新增时创建时间和修改时间同步）
 //        employee.setCreateTime(LocalDateTime.now());
 //        employee.setUpdateTime(LocalDateTime.now());
@@ -237,18 +172,23 @@ public class EmployeeController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page",value = "当前页码数"),
             @ApiImplicitParam(name = "pageSize",value = "最大页码数"),
-            @ApiImplicitParam(name = "name", value= "搜索时输入的用户名称(可选)")
+            @ApiImplicitParam(name = "name", value= "搜索时输入的用户名称(可选)"),
+            @ApiImplicitParam(name = "orchardId", value = "所属果园")
     })
-    public R<Page> page(int page,int pageSize,String name){
-        log.info("page = {},pageSize = {},name = {}",page,pageSize,name);
+    public R<Page> page(int page,int pageSize,String name, Long orchardId){
+        log.info("page = {},pageSize = {},name = {}, orchardId = {}",page,pageSize,name, orchardId);
 
+        if(orchardId == null){
+            orchardId = BaseContext.getId();
+        }
         //创建分页构造器
         Page pageInfo = new Page(page,pageSize);
         //创建条件构造器
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(StringUtils.isNotEmpty(name),Employee::getName,name);
+        lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
         //进行分页查询
-        employeeService.page(pageInfo,lambdaQueryWrapper);
+        pageInfo = employeeService.page(pageInfo,lambdaQueryWrapper);
         return R.success(pageInfo);
     }
 
@@ -257,7 +197,7 @@ public class EmployeeController {
      * @param employee
      * @return
      */
-    @PutMapping
+    @PutMapping("/update")
     @ApiOperation("后：修改用户信息")
     public R<String> update(@RequestBody Employee employee){
         //Long empId = (Long)request.getSession().getAttribute("emplopyee");
@@ -418,5 +358,20 @@ public class EmployeeController {
         //账户存在
         employeeService.updateById(employee);
         return R.success();
+    }
+
+    @ApiOperation("用户列表")
+    @GetMapping("/getAll")
+    public R<List<Employee>> getAll(@RequestParam Long orchardId){
+        LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
+        List<Employee> employees = employeeService.list(lambdaQueryWrapper);
+        return R.success(employees);
+    }
+
+    @ApiOperation("批量删除员工")
+    @DeleteMapping("deleteList")
+    public R<String> deleteList(@RequestBody List<Long> ids){
+        return employeeService.deleteList(ids);
     }
 }

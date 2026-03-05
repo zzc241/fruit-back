@@ -10,6 +10,11 @@ import com.jhc.fruit.common.QiniuUtils;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
+import com.jhc.fruit.entity.vo.QRTreeVo;
+import com.jhc.fruit.service.FileService;
+import com.jhc.fruit.service.FruitGrowService;
+import com.jhc.fruit.service.FruitTreeService;
+import com.jhc.fruit.service.FruitTypeService;
 import com.jhc.fruit.service.impl.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,16 +38,16 @@ import java.util.Map;
 @Api(tags = "果树管理接口")
 public class FruitTreeController {
     @Autowired
-    private FruitTreeServiceImpl fruitTreeServiceImpl;
+    private FruitTreeService fruitTreeService;
 
     @Autowired
-    private FruitGrowServiceImpl fruitGrowService;
+    private FruitGrowService fruitGrowService;
 
     @Autowired
-    private FruitTypeServiceImpl fruitTypeServiceImpl;
+    private FruitTypeService fruitTypeService;
 
     @Autowired
-    private FileServiceImpl fileServiceImpl;
+    private FileService fileService;
 
 
 
@@ -59,9 +64,9 @@ public class FruitTreeController {
         }
         Page<FruitTreeVo> pageInfo = new Page(page,pageSize);
         Page<FruitTree> page1 = new Page(page,pageSize);
-        pageInfo.setTotal(fruitTreeServiceImpl.page(page1).getTotal());
-        pageInfo.setPages(fruitTreeServiceImpl.page(page1).getPages());
-        List<FruitTreeVo> result = fruitTreeServiceImpl.pageSelect(pageInfo, type);
+        pageInfo.setTotal(fruitTreeService.page(page1).getTotal());
+        pageInfo.setPages(fruitTreeService.page(page1).getPages());
+        List<FruitTreeVo> result = fruitTreeService.pageSelect(pageInfo, type);
         pageInfo.setRecords(result);
 
         System.out.println(pageInfo.getRecords());
@@ -81,7 +86,7 @@ public class FruitTreeController {
         //获取区号
         Long areaId = (long) fruitTree.getAreaId();
         //获取对应区块种植的蔬菜
-        Long trueTypeId = fruitTreeServiceImpl.getTypeId(areaId);
+        Long trueTypeId = fruitTreeService.getTypeId(areaId);
         //判断添加的果树与对应区块种植的果树的类型是否相同
         //如果果树类型不同
         if(!typeId.equals(trueTypeId)){
@@ -91,7 +96,7 @@ public class FruitTreeController {
         FruitTree fruitTreeSave = new FruitTree();
         BeanUtils.copyProperties(fruitTree, fruitTreeSave);
         //添加果蔬
-        boolean treeSave = fruitTreeServiceImpl.save(fruitTreeSave);
+        boolean treeSave = fruitTreeService.save(fruitTreeSave);
         if(!treeSave){
            return R.error("新增失败");
         }
@@ -110,10 +115,10 @@ public class FruitTreeController {
     @GetMapping("/{id}")
     @ApiOperation("根据id查询果树信息，用于修改果树时回溯信息")
     public R<FruitTreeVo> getById(@PathVariable Long id){
-        FruitTree fruitTree = fruitTreeServiceImpl.getById(id);
+        FruitTree fruitTree = fruitTreeService.getById(id);
         FruitTreeVo fruitTreeVo = new FruitTreeVo();
         BeanUtils.copyProperties(fruitTree, fruitTreeVo);
-        fruitTreeVo.setTypen(fruitTypeServiceImpl.getTypeById(fruitTree.getType()));
+        fruitTreeVo.setType(fruitTypeService.getTypeById(fruitTree.getType()));
         if(fruitTreeVo != null){
             return R.success(fruitTreeVo);
         }
@@ -136,7 +141,7 @@ public class FruitTreeController {
         //解决：将long型数据统一转为String字符串
 //        employee.setUpdateTime(LocalDateTime.now());
 //        employee.setUpdateUser(empId);
-        boolean b = fruitTreeServiceImpl.updateById(fruitTree);
+        boolean b = fruitTreeService.updateById(fruitTree);
         if(!b){
             return R.error("修改失败");
         }
@@ -152,7 +157,7 @@ public class FruitTreeController {
     @ApiOperation("根据id删除果树")
     @ApiImplicitParam(name="id",value ="要删除果树的对应id")
     public R<String> delete(@PathVariable Long id){
-        FruitTree fruitTree = fruitTreeServiceImpl.getById(id);
+        FruitTree fruitTree = fruitTreeService.getById(id);
         if(fruitTree == null){
             return R.error("找不到当前果树");
         }
@@ -176,7 +181,7 @@ public class FruitTreeController {
             }*/
             //删除对应生长过程
             fruitGrowService.removeById(fruitGrow.getTreeId());
-            fruitTreeServiceImpl.removeById(id);
+            fruitTreeService.removeById(id);
         }
 //        fruitTreeServiceImpl.removeById(id);
         return R.success("删除成功");
@@ -185,15 +190,15 @@ public class FruitTreeController {
     @GetMapping("/showType")
     @ApiOperation("展示果树类型的数据[id + 类型]")
     public R<List<FruitType>> showType(){
-        List<FruitType> fruitTypes = fruitTreeServiceImpl.showType();
+        List<FruitType> fruitTypes = fruitTreeService.showType();
         return R.success(fruitTypes);
     }
 
     @GetMapping("/select/{areaId}")
     @ApiOperation("根据区号展示果树")
     @ApiImplicitParam(name="areaId",value ="区块id")
-    public R<List<FruitTree>> selectByAreaId(int areaId){
-        List<FruitTree> fruitTreeList = fruitTreeServiceImpl.selectByAreaId(areaId);
+    public R<List<FruitTree>> selectByAreaId(@PathVariable Long areaId){
+        List<FruitTree> fruitTreeList = fruitTreeService.selectByAreaIdList(areaId);
         if(fruitTreeList == null && fruitTreeList.size() == 0){
             return R.error("查找失败");
         }
@@ -204,7 +209,7 @@ public class FruitTreeController {
     @ApiOperation("根据区号展示果树完后按果实数量降序")
     @ApiImplicitParam(name="areaId",value ="区块id")
     public R<List<FruitTreeVo>> sortByCount(@PathVariable Long areaId){
-        List<FruitTreeVo> fruitTreeList = fruitTreeServiceImpl.sortByCount(areaId);
+        List<FruitTreeVo> fruitTreeList = fruitTreeService.sortByCount(areaId);
         if(fruitTreeList == null && fruitTreeList.size() == 0){
             return R.error("查找失败");
         }
@@ -214,8 +219,8 @@ public class FruitTreeController {
     @GetMapping("/select/sortByRipeCount/{areaId}")
     @ApiOperation("根据区号展示果树完后成熟果实实数量降序")
     @ApiImplicitParam(name="areaId",value ="区块id")
-    public R<List<FruitTreeVo>> sortByRipeCount(@PathVariable int areaId){
-        List<FruitTreeVo> fruitTreeList = fruitTreeServiceImpl.sortByRipeCount(areaId);
+    public R<List<FruitTreeVo>> sortByRipeCount(@PathVariable Long areaId){
+        List<FruitTreeVo> fruitTreeList = fruitTreeService.sortByRipeCount(areaId);
         if(fruitTreeList == null && fruitTreeList.size() == 0){
             return R.error("查找失败");
         }
@@ -232,14 +237,32 @@ public class FruitTreeController {
     @ApiImplicitParam(name = "id", value = "果树id")
     public R<String> createQR(@PathVariable Long id){
         //先判断该id对应的果树是否存在
-        FruitTree fruitTree = fruitTreeServiceImpl.getById(id);
+        FruitTree fruitTree = fruitTreeService.getById(id);
         if (fruitTree == null) {
             return  R.error("目标果树不存在");
         }
         //如果果树存在
         //上传二维码并上传到minio
-        String QRPath = fileServiceImpl.upload(QRCodeUtil.createQRCode(id));
+        String QRPath = fileService.upload(QRCodeUtil.createQRCode(id));
         //返回图片在minio上的路径
         return R.success(QRPath);
+    }
+
+    @PostMapping("/showTree")
+    @ApiOperation("扫码查看果树信息")
+    public R<FruitTreeVo> showTree(@RequestBody QRTreeVo eqTreeVo){
+        return fruitTreeService.showTree(eqTreeVo);
+    }
+
+    @GetMapping("/myTree/{id}")
+    @ApiOperation("我的果树")
+    public R<List<FruitTreeVo>> myTree(@PathVariable Long id){
+        return fruitTreeService.myTree(id);
+    }
+
+    @GetMapping("/myTree/{userId}/{treeId}")
+    @ApiOperation("我的果树详情信息")
+    public R<FruitTreeVo> myTreeInfo(@PathVariable Long userId, @PathVariable Long treeId){
+        return fruitTreeService.myTreeInfo(userId, treeId);
     }
 }

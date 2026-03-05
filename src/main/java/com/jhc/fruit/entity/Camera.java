@@ -21,8 +21,11 @@ public class Camera {
     @ApiModelProperty(value="摄像头id，唯一id")
     private int id;
 
+    @ApiModelProperty(value = "果园id")
+    private Long orchardId;
+
     @ApiModelProperty(value="区id，标识摄像头属于哪一块")
-    private int areaId;
+    private Long areaId;
 
     @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)

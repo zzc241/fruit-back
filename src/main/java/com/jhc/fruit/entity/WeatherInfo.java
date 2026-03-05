@@ -12,7 +12,9 @@ import lombok.Data;
 @Data
 @TableName("weather")
 public class WeatherInfo {
-    private int id;
+    private Long id;
+
+    private Long orchardId;
 
     private String date; //时间
 

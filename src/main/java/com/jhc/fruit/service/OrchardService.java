@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Orchard;
 import com.jhc.fruit.entity.vo.OrchardVo;
 
@@ -15,4 +16,6 @@ public interface OrchardService extends IService<Orchard>{
     public String changeInfo(OrchardVo orchardVo);
 
     public String getOrchardNameById(Long orchardId);
+
+    R<String> updateByOrchardVo(OrchardVo orchardVo);
 }

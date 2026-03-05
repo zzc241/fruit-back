@@ -41,11 +41,11 @@ public class WeatherController {
         String weatherData = WeatherUtil.getWeatherData(province);
         //获取昨天天气数据
         WeatherInfo yesterday = WeatherUtil.GetYesterdayWeather(weatherData);
-        yesterday.setId(1);
+        yesterday.setId(1L);
         weatherServiceImpl.save(yesterday);
         for(int i = 0;i <= 4; i ++){
             WeatherInfo info = WeatherUtil.GetWeather(i,weatherData);
-            info.setId(i + 2);
+            info.setId((long) (i + 2));
             weatherServiceImpl.save(info);
         }
         return R.success("获取天气成功");

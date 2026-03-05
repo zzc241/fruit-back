@@ -1,5 +1,7 @@
 package com.jhc.fruit.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -7,7 +9,8 @@ import java.time.LocalDateTime;
 @Data
 public class OperationLog {
     //系统操作日志类
-    private Long logId;
+    @TableId(type = IdType.AUTO)
+    private Long id;
 //    操作者ID
     private Long userId;
 //    操作内容

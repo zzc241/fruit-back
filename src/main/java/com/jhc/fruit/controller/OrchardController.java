@@ -76,4 +76,9 @@ public class OrchardController {
         Boolean result = orchardServiceImpl.removeById(id);
         return R.success(result);
     }
+
+//    @PostMapping("/update")
+//    private R<String> updateOrchard(@RequestBody OrchardVo orchardVo){
+//        return orchardServiceImpl.updateByOrchardVo(orchardVo);
+//    }
 }

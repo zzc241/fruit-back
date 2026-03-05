@@ -1,12 +1,21 @@
 package com.jhc.fruit.common;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import io.swagger.annotations.ApiModel;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@NoArgsConstructor
+@ApiModel(description = "统一响应结果")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class R<T> {
 
     private Integer code; //编码：1成功，0和其它数字为失败
@@ -17,13 +26,12 @@ public class R<T> {
 
     private String token;//登录令牌
 
-    private Map map = new HashMap(); //动态数据
+    private Map<String, Object> map = new HashMap<>(); //动态数据
 
     public static <T> R<T> success() {
         R<T> r = new R<T>();
-        r.code = 1;
+        r.code = 200;
         r.msg = "success";
-        r.token = String.valueOf(BaseContext.getId());
         r.data = null;
         return r;
     }
@@ -31,22 +39,22 @@ public class R<T> {
     public static <T> R<T> success(T object) {
         R<T> r = new R<T>();
         r.data = object;
-        r.code = 1;
-        r.token = String.valueOf(BaseContext.getId());
-        System.out.println(r.token);
+        r.code = 200;
+        r.msg = "success";
+        // System.out.println(r.token);
         return r;
     }
     public static <T> R<T> success(T object,HttpServletRequest request) {
         R<T> r = new R<T>();
         r.data = object;
-        r.code = 1;
-        r.token = String.valueOf(request.getSession().getAttribute("employee"));
-        System.out.println(r.token);
+        r.code = 200;
+        r.msg = "success";
+//        System.out.println(r.token);
         return r;
     }
 
     public static <T> R<T> error(String msg) {
-        R r = new R();
+        R<T> r = new R<>();
         r.msg = msg;
         r.code = 0;
         return r;

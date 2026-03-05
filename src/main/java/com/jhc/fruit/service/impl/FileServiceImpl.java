@@ -3,6 +3,7 @@ package com.jhc.fruit.service.impl;
 import com.jhc.fruit.config.MinioConfig;
 import com.jhc.fruit.service.FileService;
 import io.minio.*;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,11 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private MinioConfig minioProperties;
 
+    /**
+     * 上传图片到minio
+     * @param file
+     * @return 返回图片地址
+     */
     @Override
     public String upload(MultipartFile file) {
         try {
@@ -60,18 +66,7 @@ public class FileServiceImpl implements FileService {
      */
     public void preview(String fileName, HttpServletResponse response) {
         try {
-            // 1. 创建MinIO客户端
-            MinioClient minioClient = MinioClient.builder()
-                    .endpoint(minioProperties.getEndpoint())
-                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                    .build();
-
-            // 2. 获取文件流
-            GetObjectArgs getArgs = GetObjectArgs.builder()
-                    .bucket(minioProperties.getBucketName())
-                    .object(fileName)
-                    .build();
-            InputStream inputStream = minioClient.getObject(getArgs);
+            InputStream inputStream = getMinioFileInputStream(fileName);
 
             // 3. 处理文件名和MIME类型（用于预览响应头）
             String pureFileName = fileName.lastIndexOf("/") > 0 ? fileName.substring(fileName.lastIndexOf("/") + 1) : fileName;
@@ -97,6 +92,30 @@ public class FileServiceImpl implements FileService {
             response.getOutputStream().flush();
         } catch (Exception e) {
             throw new RuntimeException("文件预览失败：" + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * @param fileName
+     * 获取图片数据流
+     */
+    public InputStream getMinioFileInputStream(String fileName){
+        try {
+            // 1. 创建MinIO客户端
+            MinioClient minioClient = MinioClient.builder()
+                    .endpoint(minioProperties.getEndpoint())
+                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                    .build();
+
+            // 2. 获取文件流
+            GetObjectArgs getArgs = GetObjectArgs.builder()
+                    .bucket(minioProperties.getBucketName())
+                    .object(fileName)
+                    .build();
+            //返回图片数据流
+            return minioClient.getObject(getArgs);
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
     }
 

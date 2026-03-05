@@ -109,8 +109,8 @@ public class IdentifyUtil {
             Integer countNum = Integer.parseInt(split[1]);
             Integer ripeNum = Integer.parseInt(ripInformation.split(",")[1]);
             info.setFruitNum(countNum);
-            info.setRipeNum(ripeNum);
-            info.setTreeRipePercent(ripeNum*100/countNum);
+            info.setRipeNum(Long.valueOf(ripeNum));
+            info.setTreeRipePercent((long) (ripeNum*100/countNum));
             return info;
         }
 }
