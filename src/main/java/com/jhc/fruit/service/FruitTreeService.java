@@ -32,5 +32,5 @@ public interface FruitTreeService extends IService<FruitTree> {
 
     List<FruitTree> getByIds(List<Long> ids);
 
-    R<Integer> AIOfRipeness(MultipartFile file, double conf, double iou);
+    R<List<Integer>> AIOfRipeness(MultipartFile file, double conf, double iou);
 }
