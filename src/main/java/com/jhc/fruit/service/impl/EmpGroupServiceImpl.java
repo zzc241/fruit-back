@@ -1,5 +1,6 @@
 package com.jhc.fruit.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.EmpGroupDao;
 import com.jhc.fruit.dao.EmployeeDao;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author ：lcy
@@ -60,6 +64,23 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
     public String getGroupNameByGroupId(Long id) {
         String name = empGroupDao.getGroupNameByGroupId(id);
         return name;
+    }
+
+    @Override
+    public Map<Long, String> getGroupNameMapByIds(Set<Long> groupIds) {
+        if (groupIds == null || groupIds.isEmpty()) {
+            return new HashMap<>();
+        }
+        LambdaQueryWrapper<EmpGroup> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(EmpGroup::getGroupId, groupIds);
+        List<EmpGroup> empGroups = list(queryWrapper);
+        return empGroups.stream()
+                .collect(Collectors.toMap(EmpGroup::getGroupId, EmpGroup::getGroupName, (existing, replacement) -> existing));
+    }
+
+    @Override
+    public String getGroupNameById(Long id) {
+        return getGroupNameByGroupId(id);
     }
 
 /*    @Override

@@ -1,5 +1,6 @@
 server:
-  port: 3388 #3388
+  port: 3388
+
   ssl:
     key-store-password: fz5cdIT4
     key-store-type: PKCS12
@@ -24,27 +25,24 @@ spring:
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSS
     time-zone: GMT+8
-#  web:
-#    resources:
-#      static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
-#        classpath:/static/,classpath:/public/,classpath:/backend/,classpath:/front/
-#  mvc:
-#    static-path-pattern: /**
 
 mybatis-plus:
   configuration:
-    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射；
     map-underscore-to-camel-case: true
-    #标准日志输出格式
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       id-type: ASSIGN_ID
   mapper-locations: mappers/*.xml
-#Minio配置
+
 minio:
   endpoint: http://192.168.123.92:9000
   access-key: X7HDRb4DBwMdMbtjDDPB
   secret-key: ej3CttgQgUHzfw5Zu1oomsETaCjWdR4N5S9IeHG9
-  bucket-name: test-qr
+  bucket-name: fruit-bucket
 
+# 我帮你加的微信配置 ↓↓↓
+wechat:
+  miniprogram:
+    appid: wx48d69ca1939e7559
+    secret: da642f38affa49109370716f19991eb5

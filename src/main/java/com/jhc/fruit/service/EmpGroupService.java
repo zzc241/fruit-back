@@ -5,16 +5,21 @@ import com.jhc.fruit.entity.EmpGroup;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface EmpGroupService extends IService<EmpGroup> {
     List<Long> getEmpId(Long groupId);
     boolean deleteGroup(Long id);
-//    List<Map<String,String>> getGroupByContent(Long groupId);
+    //    List<Map<String,String>> getGroupByContent(Long groupId);
 //    boolean update(EmpGroup empGroup);
     public List<EmpGroup> getGroupsByEmp(Long empId);
-//    public List<Map<String,String>> getGroupByContentEmp(Long empId);
+    //    public List<Map<String,String>> getGroupByContentEmp(Long empId);
 //    public List<EmpGroup> getGroupsByContentEmp(EmpGroup empGroup);
     Long getGroupIdByName(String groupName);
 
     String getGroupNameByGroupId(Long id);
+
+    Map<Long, String> getGroupNameMapByIds(Set<Long> groupIds);
+
+    String getGroupNameById(Long id);
 }

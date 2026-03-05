@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @author ：lcy
  * @description：TODO
  * @date ：2022/5/30 0030 10:07
- * 
+ *
  */
 /**
  * @author ：zzc
@@ -67,24 +67,24 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
     @Override
     public Page<PickInfo> getFinish(int page, int pageSize, String title, Long empId){
         Page<PickInfo> pageInfo = new Page<>(page, pageSize);
-    
+
         // 构建查询条件
         LambdaQueryWrapper<PickInfo> queryWrapper = new LambdaQueryWrapper<>();
-        
+
         // 只查询状态为"完成"的记录
         queryWrapper.eq(PickInfo::getIsFinish, 1);
-        
+
         if (StringUtils.isNotBlank(title)) {
             queryWrapper.like(PickInfo::getTitle, title);
         }
-        
+
         if (empId != null) {
             queryWrapper.eq(PickInfo::getEmpId, empId);
         }
-        
+
         // 按时间倒序排列
         queryWrapper.orderByDesc(PickInfo::getCreateTime);
-        
+
         pageInfo = page(pageInfo , queryWrapper);
         return pageInfo;
     }
@@ -93,7 +93,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
 
 
     @Override
-    public Page<PickInfoVo> getPageInfo(PickInfoVo pickInfoVo) { 
+    public Page<PickInfoVo> getPageInfo(PickInfoVo pickInfoVo) {
         Page<PickInfo> pageInfo = new Page<>(pickInfoVo.getPage(), pickInfoVo.getPageSize());
         LambdaQueryWrapper<PickInfo> queryWrapper = new LambdaQueryWrapper<>();
 
@@ -124,9 +124,9 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
 
         // 转换分页数据
         Page<PickInfoVo> pageInfoVo = new Page<>(
-            pageInfo.getCurrent(),
-            pageInfo.getSize(),
-            pageInfo.getTotal()
+                pageInfo.getCurrent(),
+                pageInfo.getSize(),
+                pageInfo.getTotal()
         );
         pageInfoVo.setPages(pageInfo.getPages());
 
@@ -146,18 +146,18 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
         Map<Long, String> groupNameMap = empGroupService.getGroupNameMapByIds(groupIds);
         // 转换records
         List<PickInfoVo> voList = records.stream()
-            .map(pickInfo -> {
-                PickInfoVo vo = new PickInfoVo();
-                BeanUtils.copyProperties(pickInfo, vo);
+                .map(pickInfo -> {
+                    PickInfoVo vo = new PickInfoVo();
+                    BeanUtils.copyProperties(pickInfo, vo);
 
-                // 设置关联的名称信息
-                vo.setSenderName(empNameMap.get(pickInfo.getSenderId()));
-                vo.setEmpName(empNameMap.get(pickInfo.getEmpId()));
-                vo.setGroupName(groupNameMap.get(pickInfo.getGroupId()));
-                
-                return vo;
-            })
-            .collect(Collectors.toList());
+                    // 设置关联的名称信息
+                    vo.setSenderName(empNameMap.get(pickInfo.getSenderId()));
+                    vo.setEmpName(empNameMap.get(pickInfo.getEmpId()));
+                    vo.setGroupName(groupNameMap.get(pickInfo.getGroupId()));
+
+                    return vo;
+                })
+                .collect(Collectors.toList());
         pageInfoVo.setRecords(voList);
         return pageInfoVo;
     }
@@ -165,7 +165,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
     public List<PickInfoVo> getInfo(PickInfoVo pickInfoVo) {
         // 构建查询条件
         LambdaQueryWrapper<PickInfo> queryWrapper = new LambdaQueryWrapper<>();
-        
+
         if (StringUtils.isNotBlank(pickInfoVo.getTitle())) {
             queryWrapper.like(PickInfo::getTitle, pickInfoVo.getTitle());
         }
@@ -184,7 +184,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
             Integer isReadInt = pickInfoVo.getIsRead() ? 1 : 0;
             queryWrapper.eq(PickInfo::getIsRead, isReadInt);
         }
-        
+
         // 按时间倒序排列
         queryWrapper.orderByDesc(PickInfo::getCreateTime);
 
@@ -210,9 +210,9 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
             PickInfoVo pickInfoVoResult = new PickInfoVo();
             BeanUtils.copyProperties(pickInfo, pickInfoVoResult);
             // 设置关联的名称信息
-                pickInfoVoResult.setSenderName(empNameMap.get(pickInfo.getSenderId()));
-                pickInfoVoResult.setEmpName(empNameMap.get(pickInfo.getEmpId()));
-                pickInfoVoResult.setGroupName(groupNameMap.get(pickInfo.getGroupId()));
+            pickInfoVoResult.setSenderName(empNameMap.get(pickInfo.getSenderId()));
+            pickInfoVoResult.setEmpName(empNameMap.get(pickInfo.getEmpId()));
+            pickInfoVoResult.setGroupName(groupNameMap.get(pickInfo.getGroupId()));
             return pickInfoVoResult;
         }).collect(Collectors.toList());
     }
@@ -226,7 +226,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
         if(senderId != null && senderId != userId){
             return "当前用户传来的不是登录用户，请检查登录状态";
         }
-        try { 
+        try {
             if(senderId != null){
                 String senderName = employeeService.getEmpNameById(senderId);
                 if(senderName == null){
@@ -247,7 +247,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
         } catch (Exception e) {
             return "未获取到当前员工信息，请检查empId是否正常";
         }
-        
+
         try {
             Long groupId = pickInfoVo.getGroupId();
             if(groupId != null){
@@ -269,7 +269,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
                     return "未获取到当前果园信息，请检查orchardId是否正常";
                 }
             }
-            
+
         } catch (Exception e) {
             return "未获取到当前果园信息，请检查orchardId是否正常";
         }
@@ -306,7 +306,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
         if(senderId != userId){
             return R.error("当前用户传来的不是登录用户，请检查登录状态").toString();
         }
-        try { 
+        try {
             if(senderId == null || userId == null){
                 return R.error("未获取到当前登录用户信息，请检查登录状态").toString();
             }
@@ -329,7 +329,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
         } catch (Exception e) {
             return R.error("未获取到当前员工信息，请检查empId是否正常").toString();
         }
-        
+
         try {
             Long groupId = pickInfoVo.getGroupId();
             if(groupId == null){
@@ -356,7 +356,7 @@ public class PickInfoServiceImpl extends ServiceImpl<PickInfoDao, PickInfo> impl
         } catch (Exception e) {
             return R.error("未获取到当前果园信息，请检查orchardId是否正常").toString();
         }
-        
+
         PickInfo pickInfo = new PickInfo();
         BeanUtils.copyProperties(pickInfoVo, pickInfo);
         this.save(pickInfo);
