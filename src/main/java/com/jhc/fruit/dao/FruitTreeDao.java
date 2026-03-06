@@ -6,6 +6,7 @@ import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -35,4 +36,5 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     List<FruitTree> myTree(Long id);
 
     boolean checkEmpOfTree(Long userId, Long treeId);
+
 }

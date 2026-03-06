@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 确保namespace与TreeInfoDao全类名完全一致 -->
+<mapper namespace="com.jhc.fruit.dao.TreeInfoDao">
+
+    <!-- 自定义结果集映射，解决字段与属性的驼峰转换 -->
+    <resultMap id="TreeInfoResultMap" type="com.jhc.fruit.entity.vo.TreeInfoVo">
+        <id property="treeId" column="tree_id" />
+        <result property="treeName" column="tree_name" />
+        <result property="age" column="age" />
+        <result property="address" column="address" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="type" column="type" />
+        <result property="firstTerm" column="first_term" />
+        <result property="secondTerm" column="second_term" />
+        <result property="thirdTerm" column="third_term" />
+    </resultMap>
+
+    <!-- 根据treeId查询果树完整信息 -->
+    <select id="selectTreeInfoByTreeId" resultMap="TreeInfoResultMap">
+        SELECT
+            ft.id,
+            ft.tree_name,
+            ft.age,
+            ft.address,
+            ft.create_time,
+            ft.update_time,
+            ftp.type,
+            fg.first_term,
+            fg.second_term,
+            fg.third_term
+        FROM fruit_tree ft
+                 LEFT JOIN fruit_type ftp ON ft.tree_id = ftp.tree_id
+                 LEFT JOIN fruit_grow fg ON ft.tree_id = fg.tree_id
+        WHERE ft.tree_id = #{treeId}
+    </select>
+
+</mapper>
