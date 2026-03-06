@@ -37,26 +37,11 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
     }
 
     @Override
-    public Boolean addEmployee(List<Long> empIds, Long groupId) {
-        try {
-            for (Long empId : empIds) {
-                empGroupDao.addEmployee(empId, groupId);
-            }
-            return true;
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-
-    @Override
     public Long saveEmpGroup(List<Long> empIds , EmpGroup empGroup) {
         this.save(empGroup);
-        Long groupId = empGroup.getGroupId();
+        Long groupId = empGroup.getId();
         for(Long empId : empIds){
-
-
+            empGroupDao.addEmployee(empId, groupId);
         }
         return groupId;
 

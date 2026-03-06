@@ -61,8 +61,12 @@ public class EmpGroupController {
 
     @PostMapping("/addEmployee")
     @ApiOperation("添加员工到员工组")
-    public R<Boolean> addEmployee(@RequestBody List<Long> empIds, @RequestParam Long groupId) {
-        Boolean flag = empGroupService.addEmployee(empIds, groupId);
-        return R.success(flag);
+    public R<Long> addEmployee(@RequestBody List<Long> empIds, @RequestParam Long groupId) {
+            EmpGroup empGroup = empGroupService.getById(groupId);
+            if(empGroup == null){
+                return R.error("找不到当前的员工组");
+            }
+        Long theGroupId = empGroupService.saveEmpGroup(empIds, empGroup);
+        return R.success(theGroupId);
     }
 }

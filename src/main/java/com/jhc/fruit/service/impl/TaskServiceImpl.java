@@ -55,12 +55,11 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                 taskImgService.addTaskImg(taskImg);
             }
             //判断前端是否传回员工组id
-            if(taskVo.getEmpgroupId() != null){
+            if(taskVo.getEmpIds() != null){
                 //如果返回员工组id，则创建一个groupId
                 EmpGroup empGroup = new EmpGroup();
                 empGroup.setGroupName(taskVo.getGroupName());
                 empGroup.setDescription(taskVo.getGroupDescription());
-                empGroup.setContent(taskVo.getGroupContent());
                 Long groupId = empGroupService.saveEmpGroup(taskVo.getEmpIds() , empGroup);
                 return groupId;
             }

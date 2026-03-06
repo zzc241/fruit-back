@@ -13,5 +13,4 @@ public interface EmpGroupService extends IService<EmpGroup> {
     public Map<Long, String> getGroupNameMapByIds(Set<Long> groupIds);
 
     public Long saveEmpGroup(List<Long> empIds , EmpGroup empGroup);
-    Boolean addEmployee(List<Long> empIds, Long groupId);
 }
