@@ -2,6 +2,7 @@ package com.jhc.fruit.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.entity.EmpGroup;
+import com.jhc.fruit.entity.vo.TaskVo;
 
 import java.util.List;
 import java.util.Map;
@@ -20,4 +21,6 @@ public interface EmpGroupService extends IService<EmpGroup> {
     String getGroupNameByGroupId(Long id);
     public String getGroupNameById(Long groupId);
     public Map<Long, String> getGroupNameMapByIds(Set<Long> groupIds);
+
+    public Long saveEmpGroup(List<Long> empIds , EmpGroup empGroup);
 }

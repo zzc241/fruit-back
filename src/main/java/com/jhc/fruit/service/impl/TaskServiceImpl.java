@@ -3,9 +3,11 @@ package com.jhc.fruit.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.TaskDao;
+import com.jhc.fruit.entity.EmpGroup;
 import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.entity.TaskImg;
 import com.jhc.fruit.entity.vo.TaskVo;
+import com.jhc.fruit.service.EmpGroupService;
 import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.OrchardService;
 import com.jhc.fruit.service.TaskImgService;
@@ -32,10 +34,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     private TaskImgService taskImgService;
     @Autowired
     private OrchardService orchardService;
+    @Autowired
+    private EmpGroupService empGroupService;
 
     /*新增任务*/
     @Override
-    public void addTask(TaskVo taskVo) {
+    public Long addTask(TaskVo taskVo) {
         try {
             Task task = voToTask(taskVo);
             //设置创建时间
@@ -50,6 +54,17 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                 taskImg.setTaskId(id);
                 taskImgService.addTaskImg(taskImg);
             }
+            //判断前端是否传回员工组id
+            if(taskVo.getEmpgroupId() != null){
+                //如果返回员工组id，则创建一个groupId
+                EmpGroup empGroup = new EmpGroup();
+                empGroup.setGroupName(taskVo.getGroupName());
+                empGroup.setDescription(taskVo.getGroupDescription());
+                empGroup.setContent(taskVo.getGroupContent());
+                Long groupId = empGroupService.saveEmpGroup(taskVo.getEmpIds() , empGroup);
+                return groupId;
+            }
+            return taskVo.getOrchardId();
             
         }catch (Exception e){
             log.error(e.getMessage());
@@ -159,7 +174,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         //任务类型
         queryWrapper.eq(task.getTaskType() != null, Task::getTaskType, task.getTaskType());
         //任务范围
-        queryWrapper.eq(task.getTaskScope() != null, Task::getTaskScope, task.getTaskScope());
+        if(task.getGroupId() != null){
+            queryWrapper.eq(Task::getGroupId, task.getGroupId());
+
+        }
         //任务状态
         queryWrapper.eq(task.getStatus() != null, Task::getStatus, task.getStatus());
         //发布时间

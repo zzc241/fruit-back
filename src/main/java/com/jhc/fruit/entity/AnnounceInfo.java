@@ -49,4 +49,9 @@ public class AnnounceInfo {
     private Boolean isRead;
     //判断任务是否完成（默认false：未完成）
     private Boolean isFinish;
+
+    //消息状态：0未审核，1已审核，2已撤销
+    private Integer status;
+    //薪资
+    private String salary;
 }

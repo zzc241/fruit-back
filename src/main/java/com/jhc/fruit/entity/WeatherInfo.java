@@ -22,16 +22,8 @@ public class WeatherInfo {
 
     private Integer week; //星期
 
-    private String location; //城市名
-
     @JsonProperty("weather")
     private String type; //天气类型
-
-    @TableField("high_temp")
-    private String highTemp; //最高温度
-    
-    @TableField("low_temp")
-    private String lowTemp; //最低温度
     // ====== 新增字段（匹配API返回的数据）=======
     
     private String province; //省份

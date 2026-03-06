@@ -16,7 +16,7 @@ public class Comment {
     @ApiModelProperty(value = "果园id")
     private Long orchardId;
     @ApiModelProperty(value = "内容")
-    private String comment;
+    private String content;
     @ApiModelProperty(value = "选择（好吃/不好）")
     private Integer choice;
 }

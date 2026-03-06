@@ -6,6 +6,7 @@ import com.jhc.fruit.dao.EmpGroupDao;
 import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.entity.EmpGroup;
 import com.jhc.fruit.entity.Employee;
+import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.EmpGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -136,6 +137,19 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
                 EmpGroup::getGroupName,
                 (existingValue, newValue) -> existingValue));
         return groupNameMap;
+    }
+
+
+    @Override
+    public Long saveEmpGroup(List<Long> empIds , EmpGroup empGroup) {
+        this.save(empGroup);
+        Long groupId = empGroup.getGroupId();
+        for(Long empId : empIds){
+
+
+        }
+        return groupId;
+
     }
 
 }

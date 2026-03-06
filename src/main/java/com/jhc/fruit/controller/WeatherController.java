@@ -1,6 +1,7 @@
 package com.jhc.fruit.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jhc.fruit.common.BaseContext;
@@ -40,13 +41,54 @@ public class WeatherController {
 
     //存储当日天气
     @PostMapping
-    @ApiOperation("保存天气信息")
-    public R<String> saveWeather() throws Exception{
-        for(int i = 1;i<=6;i++){
-            if(weatherServiceImpl.getById(i) != null){
-                weatherServiceImpl.removeById(i);
-            }
+    @ApiOperation("获取天气信息")
+    public R<WeatherInfo> saveWeather(@RequestParam Long orchardId) throws Exception{
+        LambdaQueryWrapper<WeatherInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(WeatherInfo::getOrchardId, orchardId);
+        queryWrapper.orderByDesc(WeatherInfo::getReportTime);
+        queryWrapper.last("LIMIT 1");
+        WeatherInfo existingWeather = weatherServiceImpl.getOne(queryWrapper);
+        if(existingWeather != null){
+            return R.success(existingWeather);
         }
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build();
+        
+        try {
+            // 1. 构建请求
+            Request request = new Request.Builder()
+                    .url("https://uapis.cn/api/v1/misc/weather") // 确保这是正确的URL
+                    .get()
+                    .addHeader("Content-Type", "application/json")
+                    // 如果需要API密钥，在这里添加
+                    // .addHeader("Authorization", "Bearer YOUR_API_KEY")
+                    .build();
+            
+            // 2. 发送同步请求
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return R.error("天气接口调用失败，状态码：" + response.code());
+                }
+                
+                // 3. 解析响应
+                String responseBody = response.body().string();
+                WeatherInfo weatherInfo = parseWeatherInfo(responseBody);
+    
+                return R.success(weatherInfo);
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return R.error("天气信息获取异常：" + e.getMessage());
+        }
+        
+    }
+    @GetMapping("/getWeather/add")
+    @ApiOperation("保存天气信息")
+    //传入果园id
+    public R<String> getWeather() throws Exception {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
@@ -94,42 +136,6 @@ public class WeatherController {
             return R.error("天气信息获取异常：" + e.getMessage());
         }
         return R.success("添加天气成功");
-    }
-    @GetMapping("/getWeather/add")
-    @ApiOperation("获取天气信息")
-    public R<WeatherInfo> getWeather() throws Exception {
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .build();
-        
-        try {
-            // 1. 构建请求
-            Request request = new Request.Builder()
-                    .url("https://uapis.cn/api/v1/misc/weather") // 确保这是正确的URL
-                    .get()
-                    .addHeader("Content-Type", "application/json")
-                    // 如果需要API密钥，在这里添加
-                    // .addHeader("Authorization", "Bearer YOUR_API_KEY")
-                    .build();
-            
-            // 2. 发送同步请求
-            try (Response response = client.newCall(request).execute()) {
-                if (!response.isSuccessful()) {
-                    return R.error("天气接口调用失败，状态码：" + response.code());
-                }
-                
-                // 3. 解析响应
-                String responseBody = response.body().string();
-                WeatherInfo weatherInfo = parseWeatherInfo(responseBody);
-    
-                return R.success(weatherInfo);
-            }
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            return R.error("天气信息获取异常：" + e.getMessage());
-        }
     }
 
     private WeatherInfo parseWeatherInfo(String jsonResponse) {

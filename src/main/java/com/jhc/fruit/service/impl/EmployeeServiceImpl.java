@@ -253,10 +253,10 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     }
 
     @Override
-    public List<String> getEmpNameByOrchardId(Long orchardId){
+    public List<Employee> getEmpByOrchardId(Long orchardId){
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Employee::getOrchardId, orchardId);
         List<Employee> employees = employeeDao.selectList(queryWrapper);
-        return employees.stream().map(Employee::getName).collect(Collectors.toList());
+        return employees;
     }
 }
