@@ -283,7 +283,7 @@ public class FruitTreeController {
     @PostMapping("/createTreeQRList")
     @ApiOperation("批量生成展示果树详情消息的二维码")
     @ApiImplicitParam(name = "ids", value = "果树id集合")
-    public R<List<String>> createTreeQR(@RequestParam List<Long> ids){
+    public R<List<String>> createTreeQR(@RequestBody List<Long> ids){
         //先判断该id对应的果树是否存在
         List<FruitTree> fruitTrees = fruitTreeService.getByIds(ids);
         if (fruitTrees == null || fruitTrees.isEmpty()) {
