@@ -8,16 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 public interface EmpGroupService extends IService<EmpGroup> {
-    List<Long> getEmpId(Long groupId);
-    boolean deleteGroup(Long id);
-//    List<Map<String,String>> getGroupByContent(Long groupId);
-//    boolean update(EmpGroup empGroup);
-    public List<EmpGroup> getGroupsByEmp(Long empId);
-//    public List<Map<String,String>> getGroupByContentEmp(Long empId);
-//    public List<EmpGroup> getGroupsByContentEmp(EmpGroup empGroup);
-    Long getGroupIdByName(String groupName);
 
-    String getGroupNameByGroupId(Long id);
-    public String getGroupNameById(Long groupId);
     public Map<Long, String> getGroupNameMapByIds(Set<Long> groupIds);
+
+    Boolean addEmployee(List<Long> empIds, Long groupId);
 }
