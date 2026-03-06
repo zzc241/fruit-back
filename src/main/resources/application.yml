@@ -24,6 +24,8 @@ spring:
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSS
     time-zone: GMT+8
+  profiles:
+    include: txt
 #  web:
 #    resources:
 #      static-locations: classpath:/META-INF/resources/,classpath:/resources/,\

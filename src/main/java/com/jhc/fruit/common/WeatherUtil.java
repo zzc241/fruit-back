@@ -114,7 +114,7 @@ public class WeatherUtil {
 
         weatherInfo.setDate(sdf1.format(cal.getTime())); // 时间
         SimpleDateFormat sdf2 = new SimpleDateFormat("EEEE");
-        weatherInfo.setWeek(sdf2.format(cal.getTime())); // 星期
+        weatherInfo.setWeek(Integer.valueOf(sdf2.format(cal.getTime()))); // 星期
 
         // 从json数据中提取数据：城市、温度、小提醒
         dataOfJson = JSONObject.parseObject(dataOfJson.getString("data"));
@@ -125,9 +125,6 @@ public class WeatherUtil {
         weatherInfo.setHighTemp(yesterday.getString("high").substring(2)); // 最高气温
         weatherInfo.setLowTemp(yesterday.getString("low").substring(2)); // 最低气温
         weatherInfo.setType(yesterday.getString("type")); // 天气
-        weatherInfo.setFx(yesterday.getString("fx")); // 天气
-        //风力
-        weatherInfo.setWind(yesterday.getString("fl").substring(9,10));
         return weatherInfo;
     }
 
@@ -155,7 +152,7 @@ public class WeatherUtil {
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日");
         weatherInfo.setDate(sdf1.format(cal.getTime())); // 时间
         SimpleDateFormat sdf2 = new SimpleDateFormat("EEEE");
-        weatherInfo.setWeek(sdf2.format(cal.getTime())); // 星期
+        weatherInfo.setWeek(Integer.valueOf(sdf2.format(cal.getTime()))); // 星期
 
         // 从json数据中提取数据：城市、温度、小提醒
         dataOfJson = JSONObject.parseObject(dataOfJson.getString("data"));
@@ -170,10 +167,6 @@ public class WeatherUtil {
         weatherInfo.setLowTemp(result.getString("low").substring(2));
         // 天气
         weatherInfo.setType(result.getString("type"));
-        // 风向
-        weatherInfo.setFx(result.getString("fx"));
-        //风力
-        weatherInfo.setWind(result.getString("fengli").substring(9,10));
         return weatherInfo;
 
     }
@@ -207,7 +200,7 @@ public class WeatherUtil {
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy年MM月dd日");
         weatherInfo.setDate(sdf1.format(cal.getTime())); // 时间
         SimpleDateFormat sdf2 = new SimpleDateFormat("EEEE");
-        weatherInfo.setWeek(sdf2.format(cal.getTime())); // 星期
+        weatherInfo.setWeek(Integer.valueOf(sdf2.format(cal.getTime()))); // 星期
 
         // 从json数据中提取数据：城市、温度、小提醒
         dataOfJson = JSONObject.parseObject(dataOfJson.getString("data"));
@@ -222,10 +215,6 @@ public class WeatherUtil {
         weatherInfo.setLowTemp(result.getString("low").substring(2));
         // 天气
         weatherInfo.setType(result.getString("type"));
-        // 风向
-        weatherInfo.setFx(result.getString("fengxiang"));
-        //风力
-        weatherInfo.setWind(result.getString("fengli").substring(9,10));
         return weatherInfo;
 
     }

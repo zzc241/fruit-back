@@ -44,11 +44,12 @@ public class R<T> {
         // System.out.println(r.token);
         return r;
     }
-    public static <T> R<T> success(T object,HttpServletRequest request) {
+    public static <T> R<T> success(T object,String token) {
         R<T> r = new R<T>();
         r.data = object;
         r.code = 200;
         r.msg = "success";
+        r.token = token;
 //        System.out.println(r.token);
         return r;
     }
