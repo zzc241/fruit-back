@@ -42,4 +42,12 @@ public class FruitTree {
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private Date createTime;
+
+    @ApiModelProperty(value = "创建者")
+    @TableField(fill = FieldFill.INSERT)
+    private Long createUser;
+    @ApiModelProperty(value = "更新者")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateUser;
+
 }
