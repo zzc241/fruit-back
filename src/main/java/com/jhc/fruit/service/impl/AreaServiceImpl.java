@@ -92,4 +92,11 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
         Long areaId = area.getId();
         return areaId;
     }
+
+    public List<Area> selectByOrchardId(Long orchardId){
+        LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Area::getOrchardId, orchardId);
+        List<Area> areaList = areaDao.selectList(queryWrapper);
+        return areaList;
+    }
 }

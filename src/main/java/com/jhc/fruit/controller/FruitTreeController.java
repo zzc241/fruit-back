@@ -1,13 +1,13 @@
 package com.jhc.fruit.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.aop.Log;
-import com.jhc.fruit.common.BaseContext;
-import com.jhc.fruit.common.QRCodeUtil;
-import com.jhc.fruit.common.QiniuUtils;
-import com.jhc.fruit.common.R;
+import com.jhc.fruit.common.*;
+import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.entity.vo.QRTreeVo;
@@ -16,17 +16,22 @@ import com.jhc.fruit.service.FruitGrowService;
 import com.jhc.fruit.service.FruitTreeService;
 import com.jhc.fruit.service.FruitTypeService;
 import com.jhc.fruit.service.impl.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ：lcy
@@ -119,6 +124,7 @@ public class FruitTreeController {
         FruitTreeVo fruitTreeVo = new FruitTreeVo();
         BeanUtils.copyProperties(fruitTree, fruitTreeVo);
         fruitTreeVo.setType(fruitTypeService.getTypeById(fruitTree.getType()));
+        
         if(fruitTreeVo != null){
             return R.success(fruitTreeVo);
         }
@@ -226,16 +232,41 @@ public class FruitTreeController {
         }
         return R.success(fruitTreeList);
     }
+    @GetMapping("/area/{areaId}")
+    @ApiOperation("区域果树详情信息")
+    public R<List<FruitTreeVo>> myTreeInfo(@PathVariable Long areaId){ 
+        LambdaQueryWrapper<FruitTree> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(FruitTree::getAreaId, areaId);
+        queryWrapper.orderByDesc(FruitTree::getCreateTime); 
+        List<FruitTree> fruitTreeList = fruitTreeService.list(queryWrapper);
+        if(fruitTreeList == null && fruitTreeList.size() == 0){
+            return R.error("查找失败");
+        }
+        List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
+        fruitTreeList.forEach(fruitTree -> {
+            fruitTreeVoList.add(fruitToVo(fruitTree));
+        });
+        return R.success(fruitTreeVoList);
+    }
+    private FruitTreeVo fruitToVo(FruitTree fruitTree) { 
+        FruitTreeVo fruitTreeVo = new FruitTreeVo();
+        fruitTreeVo.setId(fruitTree.getId());
+        Double ripeDegree = fruitTree.getRipeNum() * 1.0 / fruitTree.getCountNum();
+        fruitTreeVo.setRipeDegree(ripeDegree);
+        fruitTreeVo.setHealthCondition(fruitTree.getHealthCondition());
+        return fruitTreeVo;
+    }
+
     /**
      * 生成二维码后生成到minio上，
      * 返回图片的存储路径 MinIO服务地址/桶名称/目录/文件名.扩展名
      * @param id
      * @return R.success(QRPat
      * */
-    @GetMapping("/createQR/{id}")
+    @GetMapping("/createTreeQR/{id}")
     @ApiOperation("生成展示果树详情消息的二维码")
     @ApiImplicitParam(name = "id", value = "果树id")
-    public R<String> createQR(@PathVariable Long id){
+    public R<String> createTreeQR(@PathVariable Long id){
         //先判断该id对应的果树是否存在
         FruitTree fruitTree = fruitTreeService.getById(id);
         if (fruitTree == null) {
@@ -243,15 +274,48 @@ public class FruitTreeController {
         }
         //如果果树存在
         //上传二维码并上传到minio
-        String QRPath = fileService.upload(QRCodeUtil.createQRCode(id));
+        String QRPath = fileService.upload(QRCodeUtil.createTreeQRCode(id));
         //返回图片在minio上的路径
         return R.success(QRPath);
     }
 
+    @PostMapping("/createTreeQRList")
+    @ApiOperation("批量生成展示果树详情消息的二维码")
+    @ApiImplicitParam(name = "ids", value = "果树id集合")
+    public R<List<String>> createTreeQR(@RequestParam List<Long> ids){
+        //先判断该id对应的果树是否存在
+        List<FruitTree> fruitTrees = fruitTreeService.getByIds(ids);
+        if (fruitTrees == null || fruitTrees.isEmpty()) {
+            return  R.error("目标果树不存在");
+        }
+
+        //校验「传入的ID数量」和「查询到的数量」是否一致（避免部分ID不存在）
+        if (fruitTrees.size() != ids.size()) {
+            //找出不存在的ID
+            Set<Long> existIds = fruitTrees.stream()
+                    .map(FruitTree::getId)
+                    .collect(Collectors.toSet());
+            Set<Long> notExistIds = ids.stream()
+                    .filter(id -> !existIds.contains(id))
+                    .collect(Collectors.toSet());
+            return R.error("部分果树不存在，不存在的ID：" + notExistIds);
+        }
+        //如果果树都存在
+        String treeUrl = "https://127.0.0.1:3388/fruitTree/";
+        List<String> urls = new ArrayList<>();
+        for (FruitTree fruitTree : fruitTrees) {
+            urls.add(treeUrl + fruitTree.getId());
+        }
+        //上传二维码并上传到minio
+        List<String> QRPaths = fileService.uploads(QRCodeUtil.createQRList(urls));
+        //返回图片在minio上的路径
+        return R.success(QRPaths);
+    }
+
     @PostMapping("/showTree")
     @ApiOperation("扫码查看果树信息")
-    public R<FruitTreeVo> showTree(@RequestBody QRTreeVo eqTreeVo){
-        return fruitTreeService.showTree(eqTreeVo);
+    public R<FruitTreeVo> showTree(@RequestParam MultipartFile imgFile){
+        return fruitTreeService.showTree(imgFile);
     }
 
     @GetMapping("/myTree/{id}")
@@ -264,5 +328,20 @@ public class FruitTreeController {
     @ApiOperation("我的果树详情信息")
     public R<FruitTreeVo> myTreeInfo(@PathVariable Long userId, @PathVariable Long treeId){
         return fruitTreeService.myTreeInfo(userId, treeId);
+    }
+
+    private AIConfig aiConfig;
+
+    @ApiOperation("AI识别果实成熟度")
+    @PostMapping("/AIRipe")
+    public R<List<Integer>> AIripe(@RequestParam MultipartFile file,
+                                  @ApiParam(value = "conf", defaultValue = "0.25")
+                                    @RequestParam(required = false)
+                                  @DefaultValue("0.25") double conf,
+                                  @ApiParam(value = "iou", defaultValue = "0.5")
+                                      @RequestParam(required = false)
+                                  @DefaultValue("0.5") double iou) {
+
+        return fruitTreeService.AIOfRipeness(file, conf, iou);
     }
 }

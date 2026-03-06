@@ -71,10 +71,10 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("果蔬项目API文档")
-                .description("中软国际果蔬项目后端API接口文档")
+                .title("果园项目API文档")
+                .description("码上增产—山地果园单株溯源与AI决策系统项目后端API接口文档")
                 .version("1.0")
-                .contact(new Contact("开发团队", "", "2714156899@qq.com"))
+                .contact(new Contact("开发团队", "", "1660985901@qq.com"))
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .build();

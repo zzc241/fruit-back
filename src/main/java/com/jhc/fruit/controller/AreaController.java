@@ -6,9 +6,12 @@ import com.jhc.fruit.aop.Log;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Camera;
+import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.vo.AreaVo;
+import com.jhc.fruit.service.FruitTreeService;
 import com.jhc.fruit.service.impl.AreaServiceImpl;
 import com.jhc.fruit.service.impl.CameraServiceImpl;
+import com.jhc.fruit.service.impl.FruitTreeServiceImpl;
 import com.jhc.fruit.service.impl.FruitTypeServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -37,11 +40,13 @@ public class AreaController {
 
     @Autowired
     private FruitTypeServiceImpl fruitTypeServiceImpl;
+    @Autowired
+    private FruitTreeServiceImpl fruitTreeServiceImpl;
 
 
     @PostMapping
     @ApiOperation("后：地区增加方法")
-    public R<String> save(@RequestBody AreaVo areaVo){
+    public R<Long> save(@RequestBody AreaVo areaVo){
         //获取新增区域的类型
         String type = areaVo.getType();
         //通过前端新增区域里的类型查找对应类型在后端的id
@@ -58,7 +63,19 @@ public class AreaController {
         BeanUtils.copyProperties(areaVo, area);
         //保存
         areaServiceImpl.save(area);
-        return R.success("新增地区成功");
+        Long areaId = area.getId();
+        Long fruitCount = areaVo.getFruitCount();
+        Long fruitId = fruitTypeServiceImpl.getIdByType(type);
+        if(fruitCount != null && fruitCount > 0){
+            for(int i = 0; i < fruitCount; i++){ 
+                FruitTree fruitTree = new FruitTree();
+                fruitTree.setAreaId(areaId);
+                fruitTree.setType(fruitId);
+                fruitTreeServiceImpl.save(fruitTree);
+            }
+        }
+        Long id = area.getId();
+        return R.success(id);
     }
 
     @DeleteMapping("/{id}")
@@ -162,6 +179,14 @@ public class AreaController {
             return R.error("筛选失败");
         }
         return R.success(areaByType);
+    }
+
+    @GetMapping("/selectByOrchardId")
+    @ApiOperation("根据果园id筛选")
+    @ApiImplicitParam(name = "orchardId",value = "果园id")
+    public R<List<Area>> selectByOrchardId(Long orchardId){
+        List<Area> areaByOrchardId = areaServiceImpl.selectByOrchardId(orchardId);
+        return R.success(areaByOrchardId);
     }
 
 

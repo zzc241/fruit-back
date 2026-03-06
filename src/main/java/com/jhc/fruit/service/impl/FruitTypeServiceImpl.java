@@ -1,5 +1,6 @@
 package com.jhc.fruit.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.FruitTypeDao;
 import com.jhc.fruit.entity.FruitType;
@@ -21,5 +22,13 @@ public class FruitTypeServiceImpl extends ServiceImpl<FruitTypeDao, FruitType> i
     public String getTypeById(Long id){
         fruitTypeDao.getTypeById(id);
         return fruitTypeDao.getTypeById(id);
+    }
+    public Long getIdByType(String type){
+        LambdaQueryWrapper<FruitType> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(FruitType::getType, type);
+        FruitType fruitType = fruitTypeDao.selectOne(queryWrapper);
+        Long typeId = fruitType.getId();
+        return typeId;
+
     }
 }

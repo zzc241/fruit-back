@@ -63,6 +63,9 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         if(pickInfoVo.getSenderId() != null){
             queryWrapper.eq(AnnounceInfo::getSenderId, pickInfoVo.getSenderId());
         }
+        if(pickInfoVo.getOrchardId() != null){
+            queryWrapper.eq(AnnounceInfo::getOrchardId, pickInfoVo.getOrchardId());
+        }
 
         if (pickInfoVo.getIsFinish() != null) {
             //如果isFinish为true是已完成1，否则为未完成0
@@ -206,19 +209,19 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
             return "未获取到当前员工信息，请检查empId是否正常";
         }
         
-        try {
-            Long groupId = pickInfoVo.getGroupId();
-            if(groupId != null){
-                // log.info("groupId:{}",groupId);
-                String groupName = empGroupService.getGroupNameById(groupId);
-                // log.info("groupName:{}",groupName);
-                if(groupName == null){
-                    return "未获取到当前组信息，请检查groupId是否正常";
-                }
-            }
-        } catch (Exception e) {
-            return "未获取到当前组信息，请检查groupId是否正常";
-        }
+        // try {
+        //     Long groupId = pickInfoVo.getGroupId();
+        //     if(groupId != null){
+        //         // log.info("groupId:{}",groupId);
+        //         String groupName = empGroupService.getGroupNameById(groupId);
+        //         log.info("groupName:{}",groupName);
+        //         if(groupName == null){
+        //             return "未获取到当前组信息，请检查groupId是否正常";
+        //         }
+        //     }
+        // } catch (Exception e) {
+        //     return "未获取到当前组信息，请检查groupId是否正常";
+        // }
         try {
             Long orchardId = pickInfoVo.getOrchardId();
             if(orchardId != null){

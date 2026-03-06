@@ -18,6 +18,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
     </properties>
 
     <dependencies>
@@ -75,7 +76,7 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.5</version>
         </dependency>
-        <!--        Swagger的所需依赖-->
+<!--        Swagger的所需依赖-->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -108,20 +109,18 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.3</version>
         </dependency>
-        <!-- Jackson依赖 -->
+        <!-- FastJSON2 核心依赖（必选） -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.49</version> <!-- 2026年最新稳定版，兼容Java 8+ -->
         </dependency>
+
+        <!-- 可选：若需要兼容 fastjson 1.x 的 API（比如旧代码用 com.alibaba.fastjson） -->
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-        </dependency>
-        <!-- 解决json-smart依赖问题 -->
-        <dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>json-smart</artifactId>
-            <version>2.4.7</version>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2-extension</artifactId>
+            <version>2.0.49</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -150,7 +149,7 @@
         </dependency>
         <!-- http请求工具包依赖 -->
 
-        <!--        httpClient-->
+<!--        httpClient-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -161,7 +160,7 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.6</version>
         </dependency>
-        <!--        Mybatis Plus代码生成-->
+<!--        Mybatis Plus代码生成-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
@@ -172,12 +171,12 @@
             <artifactId>velocity-engine-core</artifactId>
             <version>2.1</version>
         </dependency>
-        <!--        aop-->
+<!--        aop-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-        <!--minio-->
+<!--minio-->
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
@@ -189,8 +188,14 @@
             <artifactId>okhttp</artifactId>
             <version>4.10.0</version>
         </dependency>
+<!--远程调用-->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.12.0</version> <!-- 2026年最新稳定版，兼容Java 8+ -->
+        </dependency>
     </dependencies>
-    <!-- springboot 打包插件-->
+<!-- springboot 打包插件-->
     <build>
         <plugins>
             <plugin>
@@ -206,6 +211,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.7.RELEASE</version>
                 <configuration>
                     <mainClass>com.jhc.fruit.FruitApplication</mainClass>
                 </configuration>
@@ -220,4 +226,7 @@
             </plugin>
         </plugins>
     </build>
+
+
+
 </project>

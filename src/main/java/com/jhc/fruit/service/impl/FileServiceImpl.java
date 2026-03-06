@@ -3,7 +3,6 @@ package com.jhc.fruit.service.impl;
 import com.jhc.fruit.config.MinioConfig;
 import com.jhc.fruit.service.FileService;
 import io.minio.*;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -54,7 +55,7 @@ public class FileServiceImpl implements FileService {
                     .build();
             minioClient.putObject(putObjectArgs) ;
 
-            return minioProperties.getEndpoint() + "/" + minioProperties.getBucketName() + "/" + fileName ;
+            return fileName;
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -115,6 +116,47 @@ public class FileServiceImpl implements FileService {
             //返回图片数据流
             return minioClient.getObject(getArgs);
         }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<String> uploads(List<MultipartFile> files) {
+        try {
+            // 创建一个Minio的客户端对象
+            MinioClient minioClient = MinioClient.builder()
+                    .endpoint(minioProperties.getEndpoint())
+                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                    .build();
+
+            // 判断桶是否存在
+            boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioProperties.getBucketName()).build());
+            if (!found) {       // 如果不存在，那么此时就创建一个新的桶
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioProperties.getBucketName()).build());
+                log.info("Bucket '{}' not exists.create Now!", minioProperties.getBucketName());
+            }
+
+            List<String> paths = new ArrayList<>();
+
+            for (MultipartFile file : files) {
+                // 设置存储对象名称
+                String extFileName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+                String fileName = UUID.randomUUID().toString().replace("-" , "") + extFileName;
+
+                PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                        .bucket(minioProperties.getBucketName())
+                        .stream(file.getInputStream(), file.getSize(), -1)
+                        .object(fileName)
+                        .build();
+                minioClient.putObject(putObjectArgs) ;
+
+                paths.add(fileName);
+            }
+
+
+            return paths;
+
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

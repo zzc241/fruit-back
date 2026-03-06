@@ -1,10 +1,8 @@
 package com.jhc.fruit.entity.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.Value;
 
 /**
 * @author : zyr
@@ -32,4 +30,8 @@ public class FruitTreeVo {
     private String img;
     @ApiModelProperty(value = "区域名")
     private String areaName;
+    @ApiModelProperty(value = "健康状态")
+    private Long healthCondition;
+    @ApiModelProperty(value = "成熟度")
+    private Double ripeDegree;
 }

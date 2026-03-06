@@ -374,4 +374,11 @@ public class EmployeeController {
     public R<String> deleteList(@RequestBody List<Long> ids){
         return employeeService.deleteList(ids);
     }
+
+    @ApiOperation("根据果园id查询员工姓名")
+    @GetMapping("/getEmpNameByOrchardIds")
+    public R<List<String>> getEmpNameByOrchardId(@RequestParam Long orchardId){
+        List<String> empNames = employeeService.getEmpNameByOrchardId(orchardId);
+        return R.success(empNames);
+    }
 }

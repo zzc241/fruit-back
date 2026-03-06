@@ -43,6 +43,10 @@ public class LoginCheckFilter implements Filter {
                 "/employee/logout",
                 //放行游客浏览新闻方法
                 "/news/**",
+                "/api/employee/getOpenId",
+                "/api/employee/login",    
+                "/api/employee/logout",   
+                "/api/news/**",
                 //放行Swagger
                 "/swagger-ui.html/**",
                 "/webjars/**",
