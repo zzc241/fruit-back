@@ -73,10 +73,10 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("果园项目API文档")
-                .description("果园项目后端API接口文档")
+                .title(txtConfig.getDescriptionConfig().getTitle())
+                .description(txtConfig.getDescriptionConfig().getDescription())
                 .version(txtConfig.getDescriptionConfig().getVersion())
-                .contact(new Contact("开发团队", "", "1660985901@qq.com"))
+                .contact(new Contact(txtConfig.getDescriptionConfig().getName(), txtConfig.getDescriptionConfig().getUrl(), txtConfig.getDescriptionConfig().getEmail()))
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .build();
