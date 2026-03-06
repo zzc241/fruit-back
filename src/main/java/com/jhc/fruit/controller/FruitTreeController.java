@@ -232,6 +232,7 @@ public class FruitTreeController {
         }
         return R.success(fruitTreeList);
     }
+
     @GetMapping("/area/{areaId}")
     @ApiOperation("区域果树详情信息")
     public R<List<FruitTreeVo>> myTreeInfo(@PathVariable Long areaId){ 

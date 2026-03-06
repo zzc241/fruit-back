@@ -20,4 +20,6 @@ public interface EmpGroupDao extends BaseMapper<EmpGroup> {
     Long getGroupIdByName(String groupName);
 
     String getGroupNameByGroupId(Long id);
+
+    void addEmployee(Long empId, Long groupId);
 }

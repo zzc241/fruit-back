@@ -4,29 +4,21 @@
     <parameterMap id="parameterMap" type="com.jhc.fruit.entity.EmpGroup" >
         <!-- property对应实体类的属性名称，column为数据库字段名 -->
         <parameter property="id" jdbcType="BIGINT" />
-        <parameter property="groupId" jdbcType="BIGINT" />
-        <parameter property="empId" jdbcType="BIGINT" />
         <parameter property="groupName" jdbcType="VARCHAR" />
         <parameter property="description" jdbcType="VARCHAR" />
+        <parameter property="orchardId" jdbcType="INTEGER" />
         <parameter property="createTime" jdbcType="DATETIMEOFFSET" />
         <parameter property="updateTime" jdbcType="DATETIMEOFFSET" />
-        <parameter property="content" jdbcType="VARCHAR" />
-        <parameter property="isFinish" jdbcType="INTEGER" />
-        <parameter property="infoId" jdbcType="BIGINT" />
     </parameterMap>
 
     <resultMap id="resultMap" type="com.jhc.fruit.entity.EmpGroup" >
         <!-- property对应实体类的属性名称，column为数据库字段名 -->
         <result column="id" property="id" jdbcType="BIGINT" />
-        <result column="group_id" property="groupId" jdbcType="BIGINT" />
-        <result column = "emp_id" property="empId" jdbcType="BIGINT" />
         <result column="group_name" property="groupName" jdbcType="VARCHAR" />
         <result column="description" property="description" jdbcType="VARCHAR" />
         <result column="create_time" property="createTime" jdbcType="DATETIMEOFFSET" />
         <result column="update_time" property="updateTime" jdbcType="DATETIMEOFFSET" />
-        <result column="content" property="content" jdbcType="VARCHAR" />
-        <result column="is_finish" property="isFinish" jdbcType="INTEGER" />
-        <result column="info_id" property="infoId" jdbcType="BIGINT" />
+        <result column="orchard_id" property="orchardId" jdbcType="INTEGER" />
     </resultMap>
 
 
@@ -43,9 +35,13 @@
         SELECT group_id AS groupId,content,GROUP_CONCAT(emp_id) AS empId , GROUP_CONCAT(info_id) AS infoId FROM emp_group WHERE group_id = #{groupId} GROUP BY content ;
     </select>
     <insert id ="save" parameterMap="parameterMap">
-        insert into emp_group(group_id,emp_id,content,info_id) values #{groupId},#{empId},#{content},#{infoId}
+        insert into emp_group(group_id,emp_id,content,info_id) values (#{groupId},#{empId},#{content},#{infoId})
     </insert>
-<!--    去重，防止重复获取组-->
+    <insert id="addEmployee">
+        INSERT INTO fruit.empgroup_emp(fruit.empgroup_emp.group_id, fruit.empgroup_emp.emp_id)
+        VALUES (#{empId}, #{groupId})
+    </insert>
+    <!--    去重，防止重复获取组-->
     <select id="getGroupsByEmp" resultMap = "resultMap">
         select DISTINCT group_id,content from emp_group where emp_id = #{empId}
     </select>

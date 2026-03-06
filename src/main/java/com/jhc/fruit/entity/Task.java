@@ -59,8 +59,8 @@ public class Task {
     private LocalDateTime postTime;
     @ApiModelProperty(value = "任务状态")
     private Integer status;
-    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "创建用户")
     private Long createUser;
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(value = "更新用户")
     private Long updateUser;
 }

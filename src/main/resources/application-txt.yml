@@ -1,0 +1,8 @@
+txt-config:
+  descriptionConfig:
+    email: test@qq.com
+    title: 果园项目后端API接口文档
+    version: default
+    description: 果园项目后端API接口文档
+    name: 开发团队
+    url: url

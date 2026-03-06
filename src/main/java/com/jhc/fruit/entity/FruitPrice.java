@@ -1,8 +1,6 @@
 package com.jhc.fruit.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -33,9 +31,11 @@ public class FruitPrice {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date priceDate;
     @ApiModelProperty("更新时间（自动更新）")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private Date updateTime;
     @ApiModelProperty("创建时间（自动填充）")
+    @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private Date createTime;
 }
