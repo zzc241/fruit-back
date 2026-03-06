@@ -243,4 +243,20 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             return R.error("操作失败");
         }
     }
+
+    @Override
+    public Long getOrchardIdByEmpId(Long empId) {
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Employee::getId, empId);
+        Employee employee = employeeDao.selectOne(queryWrapper);
+        return employee.getOrchardId();
+    }
+
+    @Override
+    public List<String> getEmpNameByOrchardId(Long orchardId){
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Employee::getOrchardId, orchardId);
+        List<Employee> employees = employeeDao.selectList(queryWrapper);
+        return employees.stream().map(Employee::getName).collect(Collectors.toList());
+    }
 }

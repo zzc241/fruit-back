@@ -181,6 +181,14 @@ public class AreaController {
         return R.success(areaByType);
     }
 
+    @GetMapping("/selectByOrchardId")
+    @ApiOperation("根据果园id筛选")
+    @ApiImplicitParam(name = "orchardId",value = "果园id")
+    public R<List<Area>> selectByOrchardId(Long orchardId){
+        List<Area> areaByOrchardId = areaServiceImpl.selectByOrchardId(orchardId);
+        return R.success(areaByOrchardId);
+    }
+
 
 }
 

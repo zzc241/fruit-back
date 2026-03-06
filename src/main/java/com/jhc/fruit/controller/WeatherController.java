@@ -1,15 +1,29 @@
 package com.jhc.fruit.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.IpUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.common.WeatherUtil;
 import com.jhc.fruit.entity.WeatherInfo;
+import com.jhc.fruit.service.impl.EmployeeServiceImpl;
 import com.jhc.fruit.service.impl.WeatherServiceImpl;
+
+import io.swagger.annotations.ApiOperation;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author ：lcy
@@ -21,36 +35,120 @@ import javax.servlet.http.HttpServletRequest;
 public class WeatherController {
     @Autowired
     WeatherServiceImpl weatherServiceImpl;
+    @Autowired
+    private EmployeeServiceImpl employeeServiceImpl;
 
     //存储当日天气
     @PostMapping
+    @ApiOperation("保存天气信息")
     public R<String> saveWeather() throws Exception{
         for(int i = 1;i<=6;i++){
             if(weatherServiceImpl.getById(i) != null){
                 weatherServiceImpl.removeById(i);
             }
         }
-        //获取当前地理位置
-        //1.获取当前请求访问的请求Ip
-        String ip = IpUtil.getV4IP();
-        System.out.println(ip);
-        //2.获取地理位置
-        JSONArray json = IpUtil.readJsonFromUrl("http://freeapi.ipip.net/"+ip);
-        String province = (String)json.get(2);
-        //获取json格式的天气数据
-        String weatherData = WeatherUtil.getWeatherData(province);
-        //获取昨天天气数据
-        WeatherInfo yesterday = WeatherUtil.GetYesterdayWeather(weatherData);
-        yesterday.setId(1L);
-        weatherServiceImpl.save(yesterday);
-        for(int i = 0;i <= 4; i ++){
-            WeatherInfo info = WeatherUtil.GetWeather(i,weatherData);
-            info.setId((long) (i + 2));
-            weatherServiceImpl.save(info);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build();
+        
+        try {
+            // 1. 构建请求
+            Request request = new Request.Builder()
+                    .url("https://uapis.cn/api/v1/misc/weather") // 确保这是正确的URL
+                    .get()
+                    .addHeader("Content-Type", "application/json")
+                    // 如果需要API密钥，在这里添加
+                    // .addHeader("Authorization", "Bearer YOUR_API_KEY")
+                    .build();
+            
+            // 2. 发送同步请求
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return R.error("天气接口调用失败，状态码：" + response.code());
+                }
+                
+                // 3. 解析响应
+                String responseBody = response.body().string();
+                WeatherInfo weatherInfo = parseWeatherInfo(responseBody);
+                LocalDate today = LocalDate.now();
+                
+                // 格式化日期为 yyyy-MM-dd
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String dateStr = today.format(dateFormatter);
+                
+                // 获取星期几（数字表示，1=周一，7=周日）
+                DayOfWeek dayOfWeek = today.getDayOfWeek();
+                int dayOfWeekNumber = dayOfWeek.getValue();
+                weatherInfo.setDate(dateStr);
+                weatherInfo.setWeek(dayOfWeekNumber);
+                //添加果园id
+                Long userId = BaseContext.getId();
+                Long orchardId = employeeServiceImpl.getOrchardIdByEmpId(userId);
+                weatherInfo.setOrchardId(orchardId);
+                weatherServiceImpl.save(weatherInfo);
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return R.error("天气信息获取异常：" + e.getMessage());
         }
-        return R.success("获取天气成功");
+        return R.success("添加天气成功");
+    }
+    @GetMapping("/getWeather/add")
+    @ApiOperation("获取天气信息")
+    public R<WeatherInfo> getWeather() throws Exception {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build();
+        
+        try {
+            // 1. 构建请求
+            Request request = new Request.Builder()
+                    .url("https://uapis.cn/api/v1/misc/weather") // 确保这是正确的URL
+                    .get()
+                    .addHeader("Content-Type", "application/json")
+                    // 如果需要API密钥，在这里添加
+                    // .addHeader("Authorization", "Bearer YOUR_API_KEY")
+                    .build();
+            
+            // 2. 发送同步请求
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return R.error("天气接口调用失败，状态码：" + response.code());
+                }
+                
+                // 3. 解析响应
+                String responseBody = response.body().string();
+                WeatherInfo weatherInfo = parseWeatherInfo(responseBody);
+    
+                return R.success(weatherInfo);
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return R.error("天气信息获取异常：" + e.getMessage());
+        }
     }
 
+    private WeatherInfo parseWeatherInfo(String jsonResponse) {
+        // 使用Jackson或Gson解析JSON
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            // 如果返回格式直接就是WeatherInfo
+            return mapper.readValue(jsonResponse, WeatherInfo.class);
+            
+            // 如果返回格式有嵌套，需要先获取data字段
+            // JsonNode root = mapper.readTree(jsonResponse);
+            // JsonNode dataNode = root.path("data");
+            // return mapper.treeToValue(dataNode, WeatherInfo.class);
+            
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("天气数据解析失败");
+        }
+}
     //对获取到的天气数据进行处理
     @GetMapping("/{id}")
     public R<WeatherInfo> getWeather(@PathVariable int id){

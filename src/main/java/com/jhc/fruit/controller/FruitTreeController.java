@@ -124,6 +124,7 @@ public class FruitTreeController {
         FruitTreeVo fruitTreeVo = new FruitTreeVo();
         BeanUtils.copyProperties(fruitTree, fruitTreeVo);
         fruitTreeVo.setType(fruitTypeService.getTypeById(fruitTree.getType()));
+        
         if(fruitTreeVo != null){
             return R.success(fruitTreeVo);
         }

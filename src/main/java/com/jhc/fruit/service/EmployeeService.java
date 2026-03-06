@@ -25,4 +25,8 @@ public interface EmployeeService extends IService<Employee> {
     R<Employee> login(loginEmployeeVo loginEmployeeVo, HttpServletRequest request);
 
     R<String> deleteList(List<Long> ids);
+
+    public Long getOrchardIdByEmpId(Long empId);
+
+    public List<String> getEmpNameByOrchardId(Long orchardId);
 }

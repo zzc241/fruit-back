@@ -63,6 +63,9 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         if(pickInfoVo.getSenderId() != null){
             queryWrapper.eq(AnnounceInfo::getSenderId, pickInfoVo.getSenderId());
         }
+        if(pickInfoVo.getOrchardId() != null){
+            queryWrapper.eq(AnnounceInfo::getOrchardId, pickInfoVo.getOrchardId());
+        }
 
         if (pickInfoVo.getIsFinish() != null) {
             //如果isFinish为true是已完成1，否则为未完成0
