@@ -41,6 +41,8 @@ public class LoginCheckFilter implements Filter {
                 "/employee/getOpenId",
                 "/employee/login",
                 "/employee/logout",
+                //放行扫描二维码
+                "/fruitTree/showTree",
                 //放行游客浏览新闻方法
                 "/news/**",
                 "/api/employee/getOpenId",
