@@ -83,9 +83,8 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         InputStream inputStream = fileService.getMinioFileInputStream(url);
 
         //查找果树信息
-        FruitTree fruitTree = fruitTreeDao.selectById(QRCodeUtil.readTreeQRCode(inputStream));
-        FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
-        return R.success(fruitTreeVo);
+        R<FruitTreeVo> result = treeInfo(QRCodeUtil.readTreeQRCode(inputStream));
+        return result;
     }
 
     @Override

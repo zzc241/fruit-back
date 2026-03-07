@@ -23,9 +23,25 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class FileServiceImpl implements FileService {
 
+    //配置类由Spring注入
     @Autowired
     private MinioConfig minioProperties;
 
+    //全局单例MinioClient
+    private final MinioClient minioClient;
+
+    //通过构造器注入 + @Autowired，保证MinioConfig加载完成后初始化MinioClient
+    // （Spring会先注入minioProperties，再执行构造函数）
+    @Autowired
+    public FileServiceImpl(MinioConfig minioProperties) {
+        this.minioProperties = minioProperties;
+        // 初始化MinioClient（仅执行一次，全局复用）
+        this.minioClient = MinioClient.builder()
+                .endpoint(minioProperties.getEndpoint())
+                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .build();
+        log.info("MinioClient 单例初始化完成，Endpoint：{}", minioProperties.getEndpoint());
+    }
     /**
      * 上传图片到minio
      * @param file
@@ -34,11 +50,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public String upload(MultipartFile file) {
         try {
-            // 创建一个Minio的客户端对象
-            MinioClient minioClient = MinioClient.builder()
-                    .endpoint(minioProperties.getEndpoint())
-                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                    .build();
 
             // 判断桶是否存在
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioProperties.getBucketName()).build());
@@ -105,12 +116,6 @@ public class FileServiceImpl implements FileService {
      */
     public InputStream getMinioFileInputStream(String fileName){
         try {
-            // 1. 创建MinIO客户端
-            MinioClient minioClient = MinioClient.builder()
-                    .endpoint(minioProperties.getEndpoint())
-                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                    .build();
-
             // 2. 获取文件流
             GetObjectArgs getArgs = GetObjectArgs.builder()
                     .bucket(minioProperties.getBucketName())
@@ -126,11 +131,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<String> uploads(List<MultipartFile> files) {
         try {
-            // 创建一个Minio的客户端对象
-            MinioClient minioClient = MinioClient.builder()
-                    .endpoint(minioProperties.getEndpoint())
-                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                    .build();
 
             // 判断桶是否存在
             boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioProperties.getBucketName()).build());
@@ -167,11 +167,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public String getImageUrl(String fileName) {
         try {
-            // 创建一个Minio的客户端对象
-            MinioClient minioClient = MinioClient.builder()
-                    .endpoint(minioProperties.getEndpoint())
-                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                    .build();
 
             // 生成预签名URL，有效期30分钟（可根据需求调整）
             String presignedUrl = minioClient.getPresignedObjectUrl(
@@ -193,11 +188,6 @@ public class FileServiceImpl implements FileService {
     public List<String> getImageUrls(List<String> files) {
         List<String> urls = new ArrayList<>();
         try {
-            // 创建一个Minio的客户端对象
-            MinioClient minioClient = MinioClient.builder()
-                    .endpoint(minioProperties.getEndpoint())
-                    .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                    .build();
 
             for (String fileName : files) {
                 // 生成预签名URL，有效期30分钟
@@ -206,7 +196,7 @@ public class FileServiceImpl implements FileService {
                                 .method(Method.GET)
                                 .bucket(minioProperties.getBucketName())
                                 .object(fileName)
-                                .expiry(30, TimeUnit.MINUTES) // URL过期时间
+                                .expiry(604800, TimeUnit.SECONDS) // URL过期时间
                                 .build()
                 );
                 urls.add(presignedUrl);
@@ -220,6 +210,54 @@ public class FileServiceImpl implements FileService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public String save(MultipartFile file, String path) {
+        try {
+
+            // 判断桶是否存在
+            boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioProperties.getBucketName()).build());
+            if (!found) {       // 如果不存在，那么此时就创建一个新的桶
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioProperties.getBucketName()).build());
+                log.info("Bucket '{}' not exists.create Now!", minioProperties.getBucketName());
+            }
+
+            // 设置存储对象名称
+            String extFileName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            String fileName = UUID.randomUUID().toString().replace("-" , "") + extFileName;
+            String minioPath;
+            if (path != null) {
+                minioPath = path + "/" + fileName;
+            }else {
+                minioPath = fileName;
+            }
+
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(minioProperties.getBucketName())
+                    .stream(file.getInputStream(), file.getSize(), -1)
+                    .object(minioPath)
+                    .build();
+            minioClient.putObject(putObjectArgs) ;
+
+            // 生成预签名URL，有效期30分钟
+            String presignedUrl = minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(minioProperties.getBucketName())
+                            .object(minioPath)
+                            .expiry(604800, TimeUnit.SECONDS) // URL过期时间,7天
+                            .build()
+            );
+
+            return presignedUrl;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Boolean remove(String fileName) {
+        return null;
     }
 
 }
