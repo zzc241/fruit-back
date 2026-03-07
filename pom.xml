@@ -11,18 +11,19 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.3</version>
+        <!-- 修复：升级为支持JDK17的2.7.18版本（2.x最后一个稳定版） -->
+        <version>2.7.18</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
+        <!-- 修复：删除冲突的spring-boot.version，统一使用parent的版本 -->
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -57,7 +58,6 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -67,7 +67,8 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.47</version>
+            <!-- 修复：升级mysql驱动版本以兼容JDK17和高版本Spring Boot -->
+            <version>8.0.33</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -76,7 +77,8 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.5</version>
         </dependency>
-<!--        Swagger的所需依赖-->
+
+        <!-- Swagger的所需依赖 -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -87,6 +89,7 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
@@ -97,59 +100,80 @@
             <artifactId>core</artifactId>
             <version>3.4.0</version>
         </dependency>
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.7</version>
         </dependency>
 
-        <!--处理JSON格式-->
-        <dependency>
+        <!-- 处理JSON格式 -->
+        <!-- 修复：删除低版本fastjson1，避免与fastjson2冲突 -->
+        <!-- <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.3</version>
+        </dependency> -->
+
+        <!-- 恢复fastjson 1.x，适配现有代码 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version> <!-- 选高版本，修复漏洞，兼容你的代码 -->
         </dependency>
-        <!-- FastJSON2 核心依赖（必选） -->
+
+        <!-- fastjson2 保留（如果后续要迁移代码用） -->
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
-            <version>2.0.49</version> <!-- 2026年最新稳定版，兼容Java 8+ -->
+            <version>2.0.49</version>
         </dependency>
-
-        <!-- 可选：若需要兼容 fastjson 1.x 的 API（比如旧代码用 com.alibaba.fastjson） -->
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2-extension</artifactId>
             <version>2.0.49</version>
         </dependency>
+
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.10.2</version>
         </dependency>
+
         <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
             <version>7.2.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-mock</artifactId>
             <version>2.0.8</version>
         </dependency>
+
         <dependency>
             <groupId>com.github.sarxos</groupId>
             <artifactId>webcam-capture</artifactId>
             <version>0.3.12</version>
         </dependency>
+
+        <!-- JWT依赖 -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacv-platform</artifactId>
             <version>1.4.4</version>
         </dependency>
-        <!-- http请求工具包依赖 -->
 
-<!--        httpClient-->
+        <!-- http请求工具包依赖 -->
+        <!-- httpClient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -160,7 +184,8 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.6</version>
         </dependency>
-<!--        Mybatis Plus代码生成-->
+
+        <!-- Mybatis Plus代码生成 -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
@@ -171,42 +196,29 @@
             <artifactId>velocity-engine-core</artifactId>
             <version>2.1</version>
         </dependency>
-<!--        aop-->
+
+        <!-- aop -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
-<!--minio-->
+
+        <!-- minio -->
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>8.5.2</version>
         </dependency>
-<!--远程调用-->
+
+        <!-- 修正：okhttp 4.x版本的正确坐标 -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>4.12.0</version> <!-- 2026年最新稳定版，兼容Java 8+ -->
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
+            <artifactId>okhttp</artifactId> <!-- 核心修正：okhttp3 → okhttp -->
+            <version>4.12.0</version>
         </dependency>
     </dependencies>
-<!-- springboot 打包插件-->
+
+    <!-- springboot 打包插件 -->
     <build>
         <plugins>
             <plugin>
@@ -222,7 +234,8 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.3.7.RELEASE</version>
+                <!-- 修复：同步升级插件版本，与parent的Spring Boot版本一致 -->
+                <version>2.7.18</version>
                 <configuration>
                     <mainClass>com.jhc.fruit.FruitApplication</mainClass>
                 </configuration>
@@ -237,7 +250,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-
 </project>

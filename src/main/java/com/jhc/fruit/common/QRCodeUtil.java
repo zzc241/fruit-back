@@ -26,6 +26,7 @@ import java.util.UUID;
 public class QRCodeUtil {
 
     private static final String treeUrl = "https://127.0.0.1:3388/fruitTree/";
+    private static final String fruitUrl = "https://127.0.0.1:3388/fruit/";
 
     //生成二维码方法
     public static MultipartFile createTreeQRCode(Long id){
@@ -52,6 +53,45 @@ public class QRCodeUtil {
             MultipartFile multipartFile = new MockMultipartFile(
                     "QRPath",                // 请求中的字段名（可自定义）
                     "fruitTree_" + id + ".png", // 文件名
+                    "image/png",             // 文件MIME类型
+                    inputStream              // 二维码字节输入流
+            );
+
+            return multipartFile;
+        } catch (WriterException e) {
+            throw new RuntimeException("二维码生成失败：" + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new RuntimeException("字节流处理失败：" + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("二维码生成异常：" + e.getMessage(), e);
+        }
+    }
+
+    //生成果实二维码方法
+    public static MultipartFile createFruitQRCode(Long id){
+        //1.定义二维码属性
+        int width = 300;    //定义图片宽度
+        int height = 300;   //定义图片高度
+        String format = "png";  //定义图片格式
+        String content = fruitUrl + id; //定义二维码内容，也可以是图片或者字符串
+
+        //2.定义二维码中参数
+        HashMap hashMap = new HashMap<>();
+        hashMap.put(EncodeHintType.CHARACTER_SET,"utf-8");  //设置编码
+        hashMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);   //设置容错等级，等级越高，容量越小
+        hashMap.put(EncodeHintType.MARGIN,2);   //设置边距
+
+        //3.生成二维码图片
+        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
+            //生成矩阵                                          存入二维码的内容    格式              宽     高
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE,width,height,hashMap);
+            //将二维码写入字节输出流
+            MatrixToImageWriter.writeToStream(bitMatrix, format, outputStream);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            // 构建 MockMultipartFile（参数：字段名、文件名、文件类型、输入流）
+            MultipartFile multipartFile = new MockMultipartFile(
+                    "QRPath",                // 请求中的字段名（可自定义）
+                    "fruit_" + id + ".png", // 文件名
                     "image/png",             // 文件MIME类型
                     inputStream              // 二维码字节输入流
             );
@@ -129,6 +169,33 @@ public class QRCodeUtil {
 /*            System.out.println("解析结果：" + result.toString());
             System.out.println("二维码格式类型："+result.getBarcodeFormat());//BarcodeFormat   条形码格式
             System.out.println("二维码文本内容："+result.getText());*/
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException("未识别到二维码，请上传有效的二维码图片", e);
+        }
+    }
+
+    //解析果实二维码方法
+    public static Long readFruitQRCode(InputStream inputStream){
+        try{
+            /**
+             * MultiFormatReader 多格式读取
+             */
+            MultiFormatReader formatReader = new MultiFormatReader();
+            //转换数据类型
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
+
+            //BinaryBitmap-二进制位图                    HybridBinarizer 混合二值化器      BufferedImageLuminanceSource-图像缓存区
+            BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(bufferedImage)));
+            //定义二维码参数
+            HashMap hashMap = new HashMap();
+            hashMap.put(EncodeHintType.CHARACTER_SET, "utf-8");//编码方式
+            //解码,然后获取内容
+            String qrContent = formatReader.decode(binaryBitmap,hashMap).getText();
+            //提取果实id
+            Integer index = qrContent.lastIndexOf("/");
+            Long fruitId = Long.parseLong(qrContent.substring(index + 1));
+            return fruitId;
         }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException("未识别到二维码，请上传有效的二维码图片", e);

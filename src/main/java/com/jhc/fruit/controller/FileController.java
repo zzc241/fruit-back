@@ -74,4 +74,18 @@ public class FileController {
         String path = QRCodeUtil.readQRCode(fileService.getMinioFileInputStream(qr));
         return R.success(path);
     }
+
+    @ApiOperation("生成果实二维码")
+    @PostMapping("/createFruitQR")
+    public R<String> createFruitQR(@RequestParam Long id) {
+        String fileName = fileService.upload(QRCodeUtil.createFruitQRCode(id));
+        return R.success(fileName);
+    }
+
+    @ApiOperation("解析果实二维码")
+    @PostMapping("/readFruitQR")
+    public R<Long> readFruitQR(@RequestParam String qr) {
+        Long fruitId = QRCodeUtil.readFruitQRCode(fileService.getMinioFileInputStream(qr));
+        return R.success(fruitId);
+    }
 }
