@@ -357,7 +357,6 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
             return R.error("果树列表为空");
         }
         for (Long id : ids) {
-            //查询创建时间最晚的那个，也就是最新生成的二维码
             String ulr = fruitTreeDao.selectQR(id);
             urls.add(ulr);
         }
