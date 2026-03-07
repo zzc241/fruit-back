@@ -14,4 +14,8 @@ public interface FileService {
     InputStream getMinioFileInputStream(String fileName);
 
     List<String> uploads(List<MultipartFile> files);
+
+    String getImageUrl(String fileName);
+
+    List<String> getImageUrls(List<String> files);
 }
