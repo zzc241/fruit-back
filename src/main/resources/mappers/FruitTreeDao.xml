@@ -88,6 +88,8 @@
         FROM fruit_emp
         WHERE emp_id = #{userId} AND tree_id = #{treeId}
     </select>
+
+    <!--只查询最新的-->
     <select id="selectQR" resultType="java.lang.String">
         SELECT qr_tree.url
         FROM qr_tree
