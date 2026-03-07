@@ -89,6 +89,7 @@
         WHERE emp_id = #{userId} AND tree_id = #{treeId}
     </select>
 
+
     <select id="selectQR" resultType="java.lang.String">
         SELECT qr_tree.url
         FROM qr_tree
