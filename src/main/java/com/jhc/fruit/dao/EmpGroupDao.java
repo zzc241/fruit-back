@@ -2,6 +2,8 @@ package com.jhc.fruit.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jhc.fruit.entity.EmpGroup;
+import com.jhc.fruit.entity.Task;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -22,4 +24,6 @@ public interface EmpGroupDao extends BaseMapper<EmpGroup> {
     String getGroupNameByGroupId(Long id);
 
     void addEmployee(Long empId, Long groupId);
+
+    List<Task> getTasksByEmpId(Long empId);
 }

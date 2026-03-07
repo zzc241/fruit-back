@@ -88,14 +88,7 @@ public class FruitTreeController {
         FruitTree fruitTreeSave = new FruitTree();
         BeanUtils.copyProperties(fruitTree, fruitTreeSave);
         //添加果蔬
-        boolean treeSave = fruitTreeService.save(fruitTreeSave);
-        if(!treeSave){
-           return R.error("新增失败");
-        }
-        //创建新果树生长对象
-        FruitGrow fruitGrow = new FruitGrow();
-        fruitGrow.setId(fruitTree.getId());
-        fruitGrowService.save(fruitGrow);
+        fruitTreeService.save(fruitTreeSave);
         return R.success("新增果树成功");
     }
 

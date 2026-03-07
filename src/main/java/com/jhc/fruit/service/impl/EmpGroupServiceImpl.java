@@ -6,7 +6,7 @@ import com.jhc.fruit.dao.EmpGroupDao;
 import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.entity.EmpGroup;
 import com.jhc.fruit.entity.Employee;
-import com.jhc.fruit.entity.vo.TaskVo;
+import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.service.EmpGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +45,14 @@ public class EmpGroupServiceImpl extends ServiceImpl<EmpGroupDao, EmpGroup> impl
         }
         return groupId;
 
+    }
+
+
+    @Override
+    public List<Task> getTasks(Long empId) {
+
+        List<Task> tasks = empGroupDao.getTasksByEmpId(empId);
+        return tasks;
     }
 
 }

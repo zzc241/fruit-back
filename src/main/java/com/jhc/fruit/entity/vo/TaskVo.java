@@ -38,7 +38,7 @@ public class TaskVo {
     @ApiModelProperty(value = "任务标题")
     private String taskTitle;
     @ApiModelProperty(value = "任务类型")
-    private Integer taskType;
+    private String taskType;
     
     @ApiModelProperty(value = "任务范围")
     private Long groupId;
@@ -76,4 +76,7 @@ public class TaskVo {
     private String groupDescription;
     @ApiModelProperty(value = "员工组内容")
     private String groupContent;
+
+    @ApiModelProperty(value = "接收者id")
+    private Long receiverId;
 }

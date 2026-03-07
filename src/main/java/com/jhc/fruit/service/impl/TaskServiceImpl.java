@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -162,31 +163,31 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     //    条件查询
     @Override
     public List<TaskVo> queryTasks(TaskVo taskVo) {
-        Task task = voToTask(taskVo);
-    //当对应条件不为空时，拼接查询条件
-        LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-        //任务id
-        queryWrapper.eq(task.getId() != null, Task::getId, task.getId());
-        //创建人id
-        queryWrapper.eq(task.getCreatorId() != null, Task::getCreatorId, task.getCreatorId());
-        //果园id
-        queryWrapper.eq(task.getOrchardId() != null, Task::getOrchardId, task.getOrchardId());
-        //任务类型
-        queryWrapper.eq(task.getTaskType() != null, Task::getTaskType, task.getTaskType());
-        //任务范围
-        if(task.getGroupId() != null){
-            queryWrapper.eq(Task::getGroupId, task.getGroupId());
 
+        List<Task> tasks = empGroupService.getTasks(taskVo.getReceiverId());
+        if (tasks == null || tasks.isEmpty()) {
+            return new ArrayList<>();
         }
-        //任务状态
-        queryWrapper.eq(task.getStatus() != null, Task::getStatus, task.getStatus());
-        //发布时间
-        List<Task> tasks = this.list(queryWrapper);
+        Task task = voToTask(taskVo);
+        List<Long> taskIds = tasks.stream()
+            .map(Task::getId)
+            .collect(Collectors.toList());
+        LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(Task::getId, taskIds);
+        
+        // 添加其他筛选条件（从 taskVo 来）
+        queryWrapper.eq(task.getId() != null, Task::getId, task.getId())
+                    .eq(task.getCreatorId() != null, Task::getCreatorId, task.getCreatorId())
+                    .eq(task.getOrchardId() != null, Task::getOrchardId, task.getOrchardId())
+                    .eq(task.getTaskType() != null, Task::getTaskType, task.getTaskType())
+                    .eq(task.getStatus() != null, Task::getStatus, task.getStatus());
 
+        if (task.getGroupId() != null) {
+            queryWrapper.eq(Task::getGroupId, task.getGroupId());
+        }
         List<TaskVo> taskVos = tasks.stream()
                 .map(this::taskToVo)
                 .collect(Collectors.toList());
-
         Iterator<TaskVo> iterator = taskVos.iterator();
         while(iterator.hasNext()){
             TaskVo taskVoCurr = iterator.next();

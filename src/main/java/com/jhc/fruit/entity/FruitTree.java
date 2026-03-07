@@ -18,6 +18,7 @@ import lombok.Data;
 @Data
 @TableName("fruit_tree")
 public class FruitTree {
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty("果树id")
     private Long id;
     @ApiModelProperty("果园id")
