@@ -35,4 +35,8 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     List<FruitTree> myTree(Long id);
 
     boolean checkEmpOfTree(Long userId, Long treeId);
+
+    void saveQRUrl(Long id, String url);
+
+    String selectQR(Long id);
 }

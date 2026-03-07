@@ -21,6 +21,11 @@
         <result column="ripe_num" property="ripeNum" jdbcType="INTEGER"/>
         <result column="name" property="areaName" jdbcType="INTEGER"/>
     </resultMap>
+    <insert id="saveQRUrl">
+        INSERT INTO
+        fruit.qr_tree(tree_id, url)
+        VALUES (#{id}, #{url})
+    </insert>
     <!-- <update id = "updateById" parameterType="com.jhc.fruit.entity.FruitTree">
         UPDATE fruit_tree  SET type=#{type}, count_num=#{countNum}, ripe_num=#{ripeNum}, img=#{img} WHERE id=#{id}
     </update> -->
@@ -82,5 +87,12 @@
         SELECT *
         FROM fruit_emp
         WHERE emp_id = #{userId} AND tree_id = #{treeId}
+    </select>
+    <select id="selectQR" resultType="java.lang.String">
+        SELECT qr_tree.url
+        FROM qr_tree
+        WHERE tree_id = #{id}
+        ORDER BY qr_tree.create_time DESC
+        LIMIT 1
     </select>
 </mapper>

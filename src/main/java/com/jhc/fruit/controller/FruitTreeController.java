@@ -284,33 +284,14 @@ public class FruitTreeController {
     @ApiOperation("批量生成展示果树详情消息的二维码")
     @ApiImplicitParam(name = "ids", value = "果树id集合")
     public R<List<String>> createTreeQR(@RequestBody List<Long> ids){
-        //先判断该id对应的果树是否存在
-        List<FruitTree> fruitTrees = fruitTreeService.getByIds(ids);
-        if (fruitTrees == null || fruitTrees.isEmpty()) {
-            return  R.error("目标果树不存在");
-        }
+        R<List<String>> QRUrl = fruitTreeService.createTreeQR(ids);
+        return QRUrl;
+    }
 
-        //校验「传入的ID数量」和「查询到的数量」是否一致（避免部分ID不存在）
-        if (fruitTrees.size() != ids.size()) {
-            //找出不存在的ID
-            Set<Long> existIds = fruitTrees.stream()
-                    .map(FruitTree::getId)
-                    .collect(Collectors.toSet());
-            Set<Long> notExistIds = ids.stream()
-                    .filter(id -> !existIds.contains(id))
-                    .collect(Collectors.toSet());
-            return R.error("部分果树不存在，不存在的ID：" + notExistIds);
-        }
-        //如果果树都存在
-        String treeUrl = "https://127.0.0.1:3388/fruitTree/";
-        List<String> urls = new ArrayList<>();
-        for (FruitTree fruitTree : fruitTrees) {
-            urls.add(treeUrl + fruitTree.getId());
-        }
-        //上传二维码并上传到minio
-        List<String> QRPaths = fileService.uploads(QRCodeUtil.createQRList(urls));
-        //返回图片在minio上的路径
-        return R.success(QRPaths);
+    @PostMapping("/selectQR")
+    @ApiOperation("/查询果树二维码url")
+    public R<List<String>> selectQR(@RequestBody List<Long> ids){
+        return fruitTreeService.selectQR(ids);
     }
 
     @PostMapping("/showTree")
@@ -337,11 +318,9 @@ public class FruitTreeController {
     @PostMapping("/AIRipe")
     public R<List<Integer>> AIripe(@RequestParam MultipartFile file,
                                   @ApiParam(value = "conf", defaultValue = "0.25")
-                                    @RequestParam(required = false)
-                                  @DefaultValue("0.25") double conf,
+                                  double conf,
                                   @ApiParam(value = "iou", defaultValue = "0.5")
-                                      @RequestParam(required = false)
-                                  @DefaultValue("0.5") double iou) {
+                                  double iou) {
 
         return fruitTreeService.AIOfRipeness(file, conf, iou);
     }

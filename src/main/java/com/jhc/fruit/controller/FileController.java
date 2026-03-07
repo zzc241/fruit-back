@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * @author :zyr
@@ -62,16 +63,39 @@ public class FileController {
     }
 
     @ApiOperation("生成二维码")
-    @PostMapping("/createQROfUrl")
-    public R<String> createQROfUrl(@RequestParam String url) {
-        String fileName = fileService.upload(QRCodeUtil.createQROfURL(url));
+    @PostMapping("/createQROfString")
+    public R<String> createQROfUrl(@RequestBody String str) {
+        String fileName = fileService.upload(QRCodeUtil.createQROfString(str));
         return R.success(fileName);
     }
 
     @ApiOperation("解析二维码")
     @PostMapping("/readQR")
-    public R<String> readQR(@RequestParam String qr) {
+    public R<String> readQR(@RequestBody String qr) {
         String path = QRCodeUtil.readQRCode(fileService.getMinioFileInputStream(qr));
         return R.success(path);
+    }
+
+
+    /**
+     * 获取图片临时访问URL
+     * @param fileName MinIO中的图片文件名
+     * @return 带过期时间的预签名URL
+     */
+    @ApiOperation("获取图片临时访问URL")
+    @GetMapping("/image/url/{fileName}")
+    public R<String> getImageUrl(@PathVariable String fileName) {
+        String url = fileService.getImageUrl(fileName);
+        return R.success(url);
+    }
+
+    @ApiOperation("批量获取url")
+    @PostMapping("/image/url/files")
+    public R<List<String>> getImageUrl(@RequestBody List<String> files) {
+        List<String> urls = fileService.getImageUrls(files);
+        if (urls == null || urls.size() == 0){
+            return R.error("无数据");
+        }
+        return R.success(urls);
     }
 }
