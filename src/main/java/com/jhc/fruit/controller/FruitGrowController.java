@@ -49,7 +49,7 @@ public class FruitGrowController {
     })
     public R<String> updateGrow(Long id, @RequestParam("imgFile")MultipartFile multipartFile,int termNum){
         LambdaQueryWrapper<FruitGrow> growWrapper = new LambdaQueryWrapper();
-        growWrapper.eq(FruitGrow::getTreeId,id);
+        growWrapper.eq(FruitGrow::getId,id);
         FruitGrow fruitGrow = fruitGrowService.getOne(growWrapper);
         if(fruitGrow == null){
             return R.error("无历史数据");

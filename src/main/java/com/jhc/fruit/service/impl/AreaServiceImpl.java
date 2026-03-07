@@ -82,7 +82,11 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
         LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Area::getId, areaId);
         Area area = areaDao.selectOne(queryWrapper);
+
         String areaName = area.getName();
+        if(areaName == null){
+            return "DefaultArea";
+        }
         return areaName;
     }
     public Long getAreaIdByName(String areaName){

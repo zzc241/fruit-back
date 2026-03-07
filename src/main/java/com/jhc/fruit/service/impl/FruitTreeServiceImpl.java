@@ -324,15 +324,24 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     }
 
     @Override
-    public R<FruitTreeVo> treeInfo(Long treeId) { 
-        FruitTree fruitTree = fruitTreeDao.selectById(treeId);
-        FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
-        LambdaQueryWrapper<FertWater> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(FertWater::getTreeId, treeId);
-        List<FertWater> fertWaters = fertWaterDao.selectList(queryWrapper);
-        fruitTreeVo.setLogs(fertWaters);
-        fruitTreeVo.setAreaManagerName(areaServiceImpl.getAreaNameById(fruitTree.getAreaId()));
-        return R.success(fruitTreeVo);
+    public R<FruitTreeVo> treeInfo(Long treeId) {
+        try{
+            FruitTree fruitTree = fruitTreeDao.selectById(treeId);
+            FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
+
+            LambdaQueryWrapper<FertWater> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(FertWater::getTreeId, treeId);
+            List<FertWater> fertWaters = fertWaterDao.selectList(queryWrapper);
+
+            fruitTreeVo.setLogs(fertWaters);
+            fruitTreeVo.setAreaManagerName(areaServiceImpl.getAreaNameById(fruitTree.getAreaId()));
+            return R.success(fruitTreeVo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return R.error("数据查询失败");
+        }
+
+
     }
     public R<List<String>> createTreeQR(List<Long> ids) {
         //先判断该id对应的果树是否存在
