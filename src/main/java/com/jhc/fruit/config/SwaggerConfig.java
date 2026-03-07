@@ -32,6 +32,8 @@ import springfox.documentation.service.Contact; // 修改导入的Contact类
 public class SwaggerConfig {
     @Autowired
     private TypeResolver typeResolver;
+    @Autowired
+    private TxtConfig txtConfig;
     //返回一个Docket Bean即可
     @Bean
     public Docket createRestApi(){
@@ -71,10 +73,10 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("果园项目API文档")
-                .description("码上增产—山地果园单株溯源与AI决策系统项目后端API接口文档")
-                .version("1.0")
-                .contact(new Contact("开发团队", "", "1660985901@qq.com"))
+                .title(txtConfig.getDescriptionConfig().getTitle())
+                .description(txtConfig.getDescriptionConfig().getDescription())
+                .version(txtConfig.getDescriptionConfig().getVersion())
+                .contact(new Contact(txtConfig.getDescriptionConfig().getName(), txtConfig.getDescriptionConfig().getUrl(), txtConfig.getDescriptionConfig().getEmail()))
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .build();

@@ -35,9 +35,9 @@ public class Task {
     private String taskTitle;
     @ApiModelProperty(value = "任务类型")
     private Integer taskType;
-    
     @ApiModelProperty(value = "任务范围")
-    private Long taskScope;
+    @TableField("group_id")
+    private Long groupId;
 
     /*绑定员工组empGroup的groupId，用来表示发布范围*/
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -59,8 +59,8 @@ public class Task {
     private LocalDateTime postTime;
     @ApiModelProperty(value = "任务状态")
     private Integer status;
-    @TableField(fill = FieldFill.INSERT)
+    @ApiModelProperty(value = "创建用户")
     private Long createUser;
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ApiModelProperty(value = "更新用户")
     private Long updateUser;
 }

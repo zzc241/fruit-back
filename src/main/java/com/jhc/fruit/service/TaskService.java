@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public interface TaskService extends IService<Task> {
 
-   void addTask(TaskVo taskVo);
+   Long addTask(TaskVo taskVo);
 
    void updateTask(TaskVo taskVo);
 

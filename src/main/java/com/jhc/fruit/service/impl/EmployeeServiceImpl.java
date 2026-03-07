@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.JsonUtil;
+import com.jhc.fruit.common.JwtUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.entity.Employee;
@@ -155,7 +156,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             //账户类型
             request.getSession().setAttribute("isAdmin", employee.getIsAdmin());
 
-            return R.success(emp,request);
+            return R.success(emp);
         }
 
         //登录成功，将用户id存入Session
@@ -169,7 +170,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
 
         //清空openId
         openId = null;
-        return R.success(emp,request);
+        return R.success(emp);
     }
 
     //用户密码登录
@@ -210,6 +211,11 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         //账户类型
         request.getSession().setAttribute("isAdmin", employee.getIsAdmin());
 
+        Map<String, Object> claim = new HashMap<>();
+        claim.put("id", employee.getId());
+        claim.put("username", employee.getUsername());
+        String jwt = JwtUtil.generateJwt(claim);
+
         //获取用户微信id
         if(getOpenId(code, request) != null){
             String openId = getOpenId(code, request);
@@ -218,14 +224,15 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
 
             //存入该员工的openId
             employee.setOpenId(openId);
-            //防止重复登录，账号状态禁用
-            //TODO:测试阶段，用户状态先注释掉
-            // employee.setStatus(0);
-            //更新用户信息
-            employeeDao.updateById(employee);
+
 
         }
-        return R.success(employee,request);
+        //防止重复登录，账号状态禁用
+        //TODO:测试阶段，用户状态先注释掉
+        // employee.setStatus(0);
+        //更新用户信息
+        employeeDao.updateById(employee);
+        return R.success(employee,jwt);
     }
 
     @Override
@@ -253,10 +260,10 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     }
 
     @Override
-    public List<String> getEmpNameByOrchardId(Long orchardId){
+    public List<Employee> getEmpByOrchardId(Long orchardId){
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Employee::getOrchardId, orchardId);
         List<Employee> employees = employeeDao.selectList(queryWrapper);
-        return employees.stream().map(Employee::getName).collect(Collectors.toList());
+        return employees;
     }
 }

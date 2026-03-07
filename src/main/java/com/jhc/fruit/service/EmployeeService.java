@@ -28,5 +28,5 @@ public interface EmployeeService extends IService<Employee> {
 
     public Long getOrchardIdByEmpId(Long empId);
 
-    public List<String> getEmpNameByOrchardId(Long orchardId);
+    public List<Employee> getEmpByOrchardId(Long orchardId);
 }

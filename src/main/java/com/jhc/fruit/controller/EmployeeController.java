@@ -377,8 +377,8 @@ public class EmployeeController {
 
     @ApiOperation("根据果园id查询员工姓名")
     @GetMapping("/getEmpNameByOrchardIds")
-    public R<List<String>> getEmpNameByOrchardId(@RequestParam Long orchardId){
-        List<String> empNames = employeeService.getEmpNameByOrchardId(orchardId);
-        return R.success(empNames);
+    public R<List<Employee>> getEmpNameByOrchardId(@RequestParam Long orchardId){
+        List<Employee> employees = employeeService.getEmpByOrchardId(orchardId);
+        return R.success(employees);
     }
 }

@@ -31,7 +31,7 @@ public class TaskVo {
     private Integer taskType;
     
     @ApiModelProperty(value = "任务范围")
-    private Long taskScope;
+    private Long groupId;
     @ApiModelProperty(value = "任务图片组id")
     private Long imgId;
     @ApiModelProperty(value = "复数图片URL")
@@ -57,4 +57,13 @@ public class TaskVo {
     private Long empgroupId;
     @ApiModelProperty(value = "用户组id列表")
     private List<Long> empIds;
+    @ApiModelProperty(value = "员工姓名列表")
+    private List<String> empNames;
+
+    @ApiModelProperty(value = "员工组名称")
+    private String groupName;
+    @ApiModelProperty(value = "员工组描述")
+    private String groupDescription;
+    @ApiModelProperty(value = "员工组内容")
+    private String groupContent;
 }

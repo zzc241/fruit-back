@@ -232,6 +232,7 @@ public class FruitTreeController {
         }
         return R.success(fruitTreeList);
     }
+
     @GetMapping("/area/{areaId}")
     @ApiOperation("区域果树详情信息")
     public R<List<FruitTreeVo>> myTreeInfo(@PathVariable Long areaId){ 
@@ -282,7 +283,7 @@ public class FruitTreeController {
     @PostMapping("/createTreeQRList")
     @ApiOperation("批量生成展示果树详情消息的二维码")
     @ApiImplicitParam(name = "ids", value = "果树id集合")
-    public R<List<String>> createTreeQR(@RequestParam List<Long> ids){
+    public R<List<String>> createTreeQR(@RequestBody List<Long> ids){
         //先判断该id对应的果树是否存在
         List<FruitTree> fruitTrees = fruitTreeService.getByIds(ids);
         if (fruitTrees == null || fruitTrees.isEmpty()) {
@@ -343,5 +344,10 @@ public class FruitTreeController {
                                   @DefaultValue("0.5") double iou) {
 
         return fruitTreeService.AIOfRipeness(file, conf, iou);
+    }
+    @GetMapping("/treeInfo/{treeId}")
+    @ApiOperation("果树详情信息")
+    public R<FruitTreeVo> treeInfo(@PathVariable Long treeId){
+        return fruitTreeService.treeInfo(treeId);
     }
 }

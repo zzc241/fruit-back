@@ -2,10 +2,7 @@ package com.jhc.fruit.entity;
 
 import java.sql.Date;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +17,6 @@ import lombok.Data;
 @TableName("fruit_tree")
 public class FruitTree {
     @ApiModelProperty("果树id")
-    @TableId(type = IdType.AUTO)
     private Long id;
     @ApiModelProperty("果园id")
     private String orchardId;
@@ -38,9 +34,15 @@ public class FruitTree {
     @TableField("health_condition")
     private Long healthCondition;
     @ApiModelProperty("更新时间（自动更新）")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private Date updateTime;
     @ApiModelProperty("创建时间（自动填充）")
+    @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private Date createTime;
+    @ApiModelProperty(value = "创建用户")
+    private Long createUser;
+    @ApiModelProperty(value = "更新用户")
+    private Long updateUser;
 }

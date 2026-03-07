@@ -10,7 +10,9 @@ import com.jhc.fruit.common.JsonUtil;
 import com.jhc.fruit.common.QRCodeUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.config.AIConfig;
+import com.jhc.fruit.dao.FertWaterDao;
 import com.jhc.fruit.dao.FruitTreeDao;
+import com.jhc.fruit.entity.FertWater;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
@@ -35,7 +37,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 /**
  * @author ：lcy
  * @description：TODO
@@ -51,6 +52,10 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     private FileService fileService;
     @Autowired
     private AIConfig aiConfig;
+    @Autowired
+    private AreaServiceImpl areaServiceImpl;
+    @Autowired
+    private FertWaterDao fertWaterDao;
     //创建客户端实例
     private final OkHttpClient client = new OkHttpClient().newBuilder()
             .connectTimeout(60, TimeUnit.SECONDS)  // 连接超时
@@ -313,6 +318,17 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
                 tempFile.delete();
             }
         }
+    }
+
+    @Override
+    public R<FruitTreeVo> treeInfo(Long treeId) { 
+        FruitTree fruitTree = fruitTreeDao.selectById(treeId);
+        FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
+        FertWater fertWater = fertWaterDao.selectById(treeId);
+        fruitTreeVo.setOperationMethod(fertWater.getOperationMethod());
+        fruitTreeVo.setOperationTime(fertWater.getOperationTime());
+        fruitTreeVo.setAreaManagerName(areaServiceImpl.getAreaNameById(fruitTree.getAreaId()));
+        return R.success(fruitTreeVo);
     }
 
 
