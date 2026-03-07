@@ -61,6 +61,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                 empGroup.setGroupName(taskVo.getGroupName());
                 empGroup.setDescription(taskVo.getGroupDescription());
                 Long groupId = empGroupService.saveEmpGroup(taskVo.getEmpIds() , empGroup);
+                task.setGroupId(groupId);
                 return groupId;
             }
             return taskVo.getOrchardId();

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 @ApiModel
-public class Fert_water {
+public class FertWater {
 
     @ApiModelProperty(value = "id")
     private Long id;
@@ -40,4 +40,6 @@ public class Fert_water {
     private Long createUser;
     @ApiModelProperty(value = "更新用户")
     private Long updateUser;
+    @ApiModelProperty(value = "备注")
+    private String content;
 }

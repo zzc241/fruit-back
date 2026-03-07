@@ -7,7 +7,9 @@ import com.jhc.fruit.common.JsonUtil;
 import com.jhc.fruit.common.JwtUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.EmployeeDao;
+import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Employee;
+import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
 import com.jhc.fruit.service.EmployeeService;
 
@@ -22,6 +24,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -38,6 +41,8 @@ import javax.servlet.http.HttpServletRequest;
 public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> implements EmployeeService {
     @Autowired
     private EmployeeDao employeeDao;
+    @Autowired
+    private AreaServiceImpl areaServiceImpl;
 
 
     @Override
@@ -260,10 +265,17 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     }
 
     @Override
-    public List<Employee> getEmpByOrchardId(Long orchardId){
+    public List<EmployeeVo> getEmpByOrchardId(Long orchardId){
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Employee::getOrchardId, orchardId);
         List<Employee> employees = employeeDao.selectList(queryWrapper);
-        return employees;
+        List<EmployeeVo> employeeVos = new ArrayList<>();
+        for (Employee employee : employees) {
+            EmployeeVo employeeVo = new EmployeeVo();
+            BeanUtils.copyProperties(employee, employeeVo);
+            employeeVo.setAreaId(areaServiceImpl.getAreaIdByEmpId(employee.getId()));
+            employeeVos.add(employeeVo);
+        }
+        return employeeVos;
     }
 }

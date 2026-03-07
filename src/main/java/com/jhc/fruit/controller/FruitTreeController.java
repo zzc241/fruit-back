@@ -1,35 +1,22 @@
 package com.jhc.fruit.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jhc.fruit.aop.Log;
 import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
-import com.jhc.fruit.entity.vo.QRTreeVo;
 import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.FruitGrowService;
 import com.jhc.fruit.service.FruitTreeService;
 import com.jhc.fruit.service.FruitTypeService;
-import com.jhc.fruit.service.impl.*;
 import io.swagger.annotations.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -112,24 +99,6 @@ public class FruitTreeController {
         return R.success("新增果树成功");
     }
 
-    /**
-     * 根据id查询果树信息
-     * @param id
-     * @return
-     */
-    @GetMapping("/{id}")
-    @ApiOperation("根据id查询果树信息，用于修改果树时回溯信息")
-    public R<FruitTreeVo> getById(@PathVariable Long id){
-        FruitTree fruitTree = fruitTreeService.getById(id);
-        FruitTreeVo fruitTreeVo = new FruitTreeVo();
-        BeanUtils.copyProperties(fruitTree, fruitTreeVo);
-        fruitTreeVo.setType(fruitTypeService.getTypeById(fruitTree.getType()));
-        
-        if(fruitTreeVo != null){
-            return R.success(fruitTreeVo);
-        }
-        return R.error("没有查询到对应果树信息");
-    }
 
     /**
      * 根据id修改用户信息
@@ -155,7 +124,7 @@ public class FruitTreeController {
     }
 
     /**
-     * 根据id删除摄像头
+     * 根据id删除果树信息
      * @param id
      * @return
      */
@@ -163,33 +132,7 @@ public class FruitTreeController {
     @ApiOperation("根据id删除果树")
     @ApiImplicitParam(name="id",value ="要删除果树的对应id")
     public R<String> delete(@PathVariable Long id){
-        FruitTree fruitTree = fruitTreeService.getById(id);
-        if(fruitTree == null){
-            return R.error("找不到当前果树");
-        }
-        //删除对应图片
-        QiniuUtils.deleteFileFromQiniu(fruitTree.getImg());
-        FruitGrow fruitGrow = fruitGrowService.getById(id);
-        if(fruitGrow != null){
-/*            String firstTerm = fruitGrow.getFirstTerm();
-
-            //删除服务器上的图片
-            if(firstTerm != null){
-                QiniuUtils.deleteFileFromQiniu(firstTerm);
-                String secondTerm = fruitGrow.getSecondTerm();
-                if(secondTerm != null){
-                    QiniuUtils.deleteFileFromQiniu(secondTerm);
-                    String thirdTerm = fruitGrow.getThirdTerm();
-                    if(thirdTerm != null){
-                        QiniuUtils.deleteFileFromQiniu(thirdTerm);
-                    }
-                }
-            }*/
-            //删除对应生长过程
-            fruitGrowService.removeById(fruitGrow.getTreeId());
-            fruitTreeService.removeById(id);
-        }
-//        fruitTreeServiceImpl.removeById(id);
+        fruitTreeService.removeById(id);
         return R.success("删除成功");
     }
 
@@ -323,5 +266,10 @@ public class FruitTreeController {
                                   double iou) {
 
         return fruitTreeService.AIOfRipeness(file, conf, iou);
+    }
+    @GetMapping("/treeInfo/{treeId}")
+    @ApiOperation("果树详情信息")
+    public R<FruitTreeVo> treeInfo(@PathVariable Long treeId){
+        return fruitTreeService.treeInfo(treeId);
     }
 }

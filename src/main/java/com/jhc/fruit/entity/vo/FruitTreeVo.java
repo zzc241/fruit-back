@@ -1,5 +1,10 @@
 package com.jhc.fruit.entity.vo;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import com.jhc.fruit.entity.FertWater;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,4 +39,11 @@ public class FruitTreeVo {
     private Long healthCondition;
     @ApiModelProperty(value = "成熟度")
     private Double ripeDegree;
+
+
+    @ApiModelProperty(value = "区域负责人姓名")
+    private String areaManagerName;
+    @ApiModelProperty(value = "fertWater")
+    private List<FertWater> logs;
+
 }
