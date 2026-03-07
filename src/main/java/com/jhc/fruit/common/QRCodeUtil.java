@@ -67,12 +67,12 @@ public class QRCodeUtil {
     }
 
     //生成二维码方法(定向到指定网页)
-    public static MultipartFile createQROfURL(String url){
+    public static MultipartFile createQROfString(String str){
         //1.定义二维码属性
         int width = 300;    //定义图片宽度
         int height = 300;   //定义图片高度
         String format = "png";  //定义图片格式
-        String content = url; //定义二维码内容
+        String content = str; //定义二维码内容
 
         //2.定义二维码中参数
         HashMap hashMap = new HashMap<>();
@@ -160,10 +160,10 @@ public class QRCodeUtil {
         }
     }
 
-    public static List<MultipartFile> createQRList(List<String> urls) {
+    public static List<MultipartFile> createQRList(List<String> strs) {
         List<MultipartFile> files = new ArrayList<>();
-        for (String url : urls) {
-            files.add(createQROfURL(url));
+        for (String str : strs) {
+            files.add(createQROfString(str));
         }
         return files;
     }

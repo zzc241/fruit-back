@@ -36,6 +36,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -332,6 +333,51 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         fruitTreeVo.setLogs(fertWaters);
         fruitTreeVo.setAreaManagerName(areaServiceImpl.getAreaNameById(fruitTree.getAreaId()));
         return R.success(fruitTreeVo);
+    }
+    public R<List<String>> createTreeQR(List<Long> ids) {
+        //先判断该id对应的果树是否存在
+        List<FruitTree> fruitTrees = getByIds(ids);
+        if (fruitTrees == null || fruitTrees.isEmpty()) {
+            return  R.error("目标果树不存在");
+        }
+
+        //校验「传入的ID数量」和「查询到的数量」是否一致（避免部分ID不存在）
+        if (fruitTrees.size() != ids.size()) {
+            //找出不存在的ID
+            Set<Long> existIds = fruitTrees.stream()
+                    .map(FruitTree::getId)
+                    .collect(Collectors.toSet());
+            Set<Long> notExistIds = ids.stream()
+                    .filter(id -> !existIds.contains(id))
+                    .collect(Collectors.toSet());
+            return R.error("部分果树不存在，不存在的ID：" + notExistIds);
+        }
+        //如果果树都存在
+        List<String> QRUrls = new ArrayList<>();
+        for (FruitTree fruitTree : fruitTrees) {
+            Long id = fruitTree.getId();
+            String fileName = fileService.upload(
+                    QRCodeUtil.createQROfString(
+                            String.valueOf(id)));
+            String url = fileService.getImageUrl(fileName);
+            QRUrls.add(url);
+            fruitTreeDao.saveQRUrl(id, url);
+        }
+
+        return R.success(QRUrls);
+    }
+
+    @Override
+    public R<List<String>> selectQR(List<Long> ids) {
+        List<String> urls = new ArrayList<>();
+        if (ids == null || ids.isEmpty()) {
+            return R.error("果树列表为空");
+        }
+        for (Long id : ids) {
+            String ulr = fruitTreeDao.selectQR(id);
+            urls.add(ulr);
+        }
+        return R.success(urls);
     }
 
 
