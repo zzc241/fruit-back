@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 /**
  * @author ：lcy
  * @description：TODO
@@ -56,9 +57,9 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     @Autowired
     private AIConfig aiConfig;
     @Autowired
-    private AreaServiceImpl areaServiceImpl;
-    @Autowired
     private FertWaterDao fertWaterDao;
+    @Autowired
+    private AreaServiceImpl areaServiceImpl;
     //创建客户端实例
     private final OkHttpClient client = new OkHttpClient().newBuilder()
             .connectTimeout(60, TimeUnit.SECONDS)  // 连接超时
