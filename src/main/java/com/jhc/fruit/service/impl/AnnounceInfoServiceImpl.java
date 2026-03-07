@@ -6,6 +6,7 @@ import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.AnnounceInfoDao;
 import com.jhc.fruit.entity.AnnounceInfo;
+import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.vo.AnnounceInfoVo;
 import com.jhc.fruit.service.EmpGroupService;
 import com.jhc.fruit.service.EmployeeService;
@@ -261,8 +262,8 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         info.setIsFinish(true);
         return this.updateById(info) ? "完成成功" : "完成失败";
     }
-    public String saveDeployInfo(AnnounceInfoVo pickInfoVo){
-        Long senderId = pickInfoVo.getSenderId();
+    public String saveDeployInfo(AnnounceInfoVo announceInfoVo){
+        Long senderId = announceInfoVo.getSenderId();
         Long userId = BaseContext.getId();
         if(senderId != userId){
             return R.error("当前用户传来的不是登录用户，请检查登录状态").toString();
@@ -278,8 +279,15 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         } catch (Exception e) {
             return R.error("未获取到当前员工信息，请检查empId是否正常").toString();
         }
+        //判断员工的is_admin是否为2，如果是2就将status改成1（已审核），如果是3就将status改为0（未审核）
+        Employee employee = employeeService.getById(senderId);
+        
+        announceInfoVo.setStatus(0); // 未审核
+        if (employee != null && employee.getIsAdmin() == 2) {
+            announceInfoVo.setStatus(1); // 已审核
+        }
         try {
-            Long orchardId = pickInfoVo.getOrchardId();
+            Long orchardId = announceInfoVo.getOrchardId();
             if(orchardId == null){
                 return R.error("请选择果园").toString();
             }
@@ -291,9 +299,9 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
             return R.error("未获取到当前果园信息，请检查orchardId是否正常").toString();
         }
         
-        AnnounceInfo pickInfo = new AnnounceInfo();
-        BeanUtils.copyProperties(pickInfoVo, pickInfo);
-        this.save(pickInfo);
+        AnnounceInfo announceInfo = new AnnounceInfo();
+        BeanUtils.copyProperties(announceInfoVo, announceInfo);
+        this.save(announceInfo);
         return "发布成功";
     }
 }

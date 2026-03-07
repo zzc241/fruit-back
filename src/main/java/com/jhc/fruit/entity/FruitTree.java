@@ -1,6 +1,7 @@
 package com.jhc.fruit.entity;
 
 import java.sql.Date;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;

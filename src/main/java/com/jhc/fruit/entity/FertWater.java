@@ -42,4 +42,6 @@ public class FertWater {
     private Long createUser;
     @ApiModelProperty(value = "更新用户")
     private Long updateUser;
+    @ApiModelProperty(value = "备注")
+    private String content;
 }

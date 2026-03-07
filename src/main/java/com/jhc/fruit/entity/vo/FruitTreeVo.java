@@ -1,7 +1,9 @@
 package com.jhc.fruit.entity.vo;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.jhc.fruit.entity.FertWater;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,9 +43,7 @@ public class FruitTreeVo {
 
     @ApiModelProperty(value = "区域负责人姓名")
     private String areaManagerName;
-    @ApiModelProperty(value = "操作方法")
-    private String operationMethod;
-    @ApiModelProperty(value = "操作时间")
-    private LocalDateTime operationTime;
+    @ApiModelProperty(value = "fertWater")
+    private List<FertWater> logs;
 
 }

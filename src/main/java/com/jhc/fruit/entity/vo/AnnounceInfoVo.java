@@ -53,4 +53,9 @@ public class AnnounceInfoVo {
 
     private Long createUser;
     private Long updateUser;
+
+    //消息状态：0未审核，1已审核，2已撤销，3未通过
+    private Integer status;
+    //薪资
+    private Long salary;
 }
