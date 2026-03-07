@@ -92,5 +92,7 @@
         SELECT qr_tree.url
         FROM qr_tree
         WHERE tree_id = #{id}
+        ORDER BY qr_tree.create_time DESC
+        LIMIT 1
     </select>
 </mapper>
