@@ -218,7 +218,7 @@ public class FruitTreeController {
         }
         //如果果树存在
         //上传二维码并上传到minio
-        String QRPath = fileService.upload(QRCodeUtil.createTreeQRCode(id));
+        String QRPath = fileService.save(QRCodeUtil.createTreeQRCode(id), "TreeQR");
         //返回图片在minio上的路径
         return R.success(QRPath);
     }
@@ -226,8 +226,8 @@ public class FruitTreeController {
     @PostMapping("/createTreeQRList")
     @ApiOperation("批量生成展示果树详情消息的二维码")
     @ApiImplicitParam(name = "ids", value = "果树id集合")
-    public R<List<String>> createTreeQR(@RequestBody List<Long> ids){
-        R<List<String>> QRUrl = fruitTreeService.createTreeQR(ids);
+    public R<List<String>> createTreeQRList(@RequestBody List<Long> ids){
+        R<List<String>> QRUrl = fruitTreeService.createTreeQRList(ids);
         return QRUrl;
     }
 

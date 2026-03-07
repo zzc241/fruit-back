@@ -194,13 +194,13 @@ public class FileServiceImpl implements FileService {
         try {
 
             for (String fileName : files) {
-                // 生成预签名URL，有效期30分钟
+                // 生成预签名URL
                 String presignedUrl = minioClient.getPresignedObjectUrl(
                         GetPresignedObjectUrlArgs.builder()
                                 .method(Method.GET)
                                 .bucket(minioProperties.getBucketName())
                                 .object(fileName)
-                                .expiry(604800, TimeUnit.SECONDS) // URL过期时间
+                                .expiry(604800, TimeUnit.SECONDS) // URL过期时间,七天
                                 .build()
                 );
                 urls.add(presignedUrl);
@@ -243,17 +243,7 @@ public class FileServiceImpl implements FileService {
                     .build();
             minioClient.putObject(putObjectArgs) ;
 
-            // 生成预签名URL，有效期30分钟
-            String presignedUrl = minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .method(Method.GET)
-                            .bucket(minioProperties.getBucketName())
-                            .object(minioPath)
-                            .expiry(604800, TimeUnit.SECONDS) // URL过期时间,7天
-                            .build()
-            );
-
-            return presignedUrl;
+            return minioPath;
 
         } catch (Exception e) {
             throw new RuntimeException(e);

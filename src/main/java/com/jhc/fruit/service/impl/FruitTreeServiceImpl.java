@@ -343,7 +343,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
 
 
     }
-    public R<List<String>> createTreeQR(List<Long> ids) {
+    public R<List<String>> createTreeQRList(List<Long> ids) {
         //先判断该id对应的果树是否存在
         List<FruitTree> fruitTrees = getByIds(ids);
         if (fruitTrees == null || fruitTrees.isEmpty()) {
@@ -365,10 +365,8 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         List<String> QRUrls = new ArrayList<>();
         for (FruitTree fruitTree : fruitTrees) {
             Long id = fruitTree.getId();
-            String fileName = fileService.upload(
-                    QRCodeUtil.createQROfString(
-                            String.valueOf(id)));
-            String url = fileService.getImageUrl(fileName);
+            String url = fileService.save(
+                    QRCodeUtil.createQROfString(String.valueOf(id)), "QRtree");
             QRUrls.add(url);
             fruitTreeDao.saveQRUrl(id, url);
         }
