@@ -12,8 +12,7 @@ import lombok.Data;
 @Data
 @TableName("fruit_grow")
 public class FruitGrow {
-    @TableId(value = "tree_id")
-    private Long treeId;
+    private Long id;
     private String firstTerm;
     private String secondTerm;
     private String thirdTerm;

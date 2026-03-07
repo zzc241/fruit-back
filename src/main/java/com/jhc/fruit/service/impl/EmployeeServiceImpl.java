@@ -267,7 +267,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     @Override
     public List<EmployeeVo> getEmpByOrchardId(Long orchardId){
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Employee::getOrchardId, orchardId);
+        queryWrapper.eq(Employee::getOrchardId, orchardId).last("LIMIT 1");
         List<Employee> employees = employeeDao.selectList(queryWrapper);
         List<EmployeeVo> employeeVos = new ArrayList<>();
         for (Employee employee : employees) {

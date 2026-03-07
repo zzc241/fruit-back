@@ -94,7 +94,7 @@ public class FruitTreeController {
         }
         //创建新果树生长对象
         FruitGrow fruitGrow = new FruitGrow();
-        fruitGrow.setTreeId(fruitTree.getId());
+        fruitGrow.setId(fruitTree.getId());
         fruitGrowService.save(fruitGrow);
         return R.success("新增果树成功");
     }

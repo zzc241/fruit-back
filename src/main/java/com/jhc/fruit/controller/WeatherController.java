@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +49,9 @@ public class WeatherController {
         queryWrapper.orderByDesc(WeatherInfo::getReportTime);
         queryWrapper.last("LIMIT 1");
         WeatherInfo existingWeather = weatherServiceImpl.getOne(queryWrapper);
-        if(existingWeather != null){
+        LocalDateTime now = LocalDateTime.now();
+        //如果数据库中已有当天的天气信息，则直接返回
+        if(existingWeather != null && existingWeather.getDate().equals(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))){
             return R.success(existingWeather);
         }
         OkHttpClient client = new OkHttpClient.Builder()
@@ -75,6 +78,19 @@ public class WeatherController {
                 // 3. 解析响应
                 String responseBody = response.body().string();
                 WeatherInfo weatherInfo = parseWeatherInfo(responseBody);
+                LocalDate today = LocalDate.now();
+                
+                // 格式化日期为 yyyy-MM-dd
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String dateStr = today.format(dateFormatter);
+                
+                // 获取星期几（数字表示，1=周一，7=周日）
+                DayOfWeek dayOfWeek = today.getDayOfWeek();
+                int dayOfWeekNumber = dayOfWeek.getValue();
+                weatherInfo.setDate(dateStr);
+                weatherInfo.setWeek(dayOfWeekNumber);
+                weatherInfo.setOrchardId(orchardId);
+                weatherServiceImpl.save(weatherInfo);
     
                 return R.success(weatherInfo);
             }
