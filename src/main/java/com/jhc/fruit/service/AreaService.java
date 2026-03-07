@@ -22,4 +22,5 @@ public interface AreaService extends IService<Area> {
     public Long getAreaIdByName(String areaName);
 
     public List<Area> selectByOrchardId(Long orchardId);
+    public Long getAreaIdByEmpId (Long empId);
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Employee;
+import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,5 +29,5 @@ public interface EmployeeService extends IService<Employee> {
 
     public Long getOrchardIdByEmpId(Long empId);
 
-    public List<Employee> getEmpByOrchardId(Long orchardId);
+    public List<EmployeeVo> getEmpByOrchardId(Long orchardId);
 }

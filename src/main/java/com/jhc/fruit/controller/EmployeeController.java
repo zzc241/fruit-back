@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.aop.Log;
 import com.jhc.fruit.common.*;
 import com.jhc.fruit.entity.Employee;
+import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
 import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.impl.EmployeeServiceImpl;
@@ -377,8 +378,8 @@ public class EmployeeController {
 
     @ApiOperation("根据果园id查询员工姓名")
     @GetMapping("/getEmpNameByOrchardIds")
-    public R<List<Employee>> getEmpNameByOrchardId(@RequestParam Long orchardId){
-        List<Employee> employees = employeeService.getEmpByOrchardId(orchardId);
+    public R<List<EmployeeVo>> getEmpNameByOrchardId(@RequestParam Long orchardId){
+        List<EmployeeVo> employees = employeeService.getEmpByOrchardId(orchardId);
         return R.success(employees);
     }
 }

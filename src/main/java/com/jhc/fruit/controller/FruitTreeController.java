@@ -267,4 +267,9 @@ public class FruitTreeController {
 
         return fruitTreeService.AIOfRipeness(file, conf, iou);
     }
+    @GetMapping("/treeInfo/{treeId}")
+    @ApiOperation("果树详情信息")
+    public R<FruitTreeVo> treeInfo(@PathVariable Long treeId){
+        return fruitTreeService.treeInfo(treeId);
+    }
 }
