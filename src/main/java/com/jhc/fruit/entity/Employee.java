@@ -1,7 +1,9 @@
 package com.jhc.fruit.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +13,6 @@ import java.time.LocalDateTime;
 @Data
 @ApiModel
 public class Employee{
-
     @ApiModelProperty(value = "员工id")
     private Long id;
 
