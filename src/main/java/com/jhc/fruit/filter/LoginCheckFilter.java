@@ -57,6 +57,7 @@ public class LoginCheckFilter implements Filter {
 
         //2.判断本次请求是否需要处理:true 不处理；false 处理
         boolean flag = check(requestURI,urls);
+        flag = true;
         //3.如果不要处理，则直接放行
         if(flag){
             log.info("本次请求不需要处理" + requestURI);

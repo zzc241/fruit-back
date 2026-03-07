@@ -27,7 +27,14 @@ public class Task {
     @ApiModelProperty(value = "创建人id")
     private Long creatorId;
     @ApiModelProperty(value = "果园id")
+    @TableField("orchard_id")
     private Long orchardId;
+    @ApiModelProperty(value = "区域id")
+    @TableField("area_id")
+    private Long areaId;
+    @ApiModelProperty(value = "果树id")
+    @TableField("tree_id")
+    private Long treeId;
     /*描述任务内容*/
     @ApiModelProperty(value = "任务内容")
     private String taskInfo;

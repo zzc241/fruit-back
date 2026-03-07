@@ -1,5 +1,6 @@
 package com.jhc.fruit.entity.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,9 +18,18 @@ public class TaskVo {
     @ApiModelProperty(value = "创建人id")
     private Long creatorId;
     @ApiModelProperty(value = "果园id")
+    @TableField("orchard_id")
     private Long orchardId;
+    @ApiModelProperty(value = "区域id")
+    @TableField("area_id")
+    private Long areaId;
+    @ApiModelProperty(value = "果树id")
+    @TableField("tree_id")
+    private Long treeId;
     @ApiModelProperty(value = "果园名称")
     private String orchardName;
+    @ApiModelProperty(value = "区域名称")
+    private String areaName;
     @ApiModelProperty(value = "创建人姓名")
     private String username;
     /*描述任务内容*/
