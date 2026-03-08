@@ -78,5 +78,16 @@ public class TaskController {
             return R.error("查询失败");
         }
     }
+    @PostMapping("/queryCreaterId")
+    @ApiOperation(value = "通过发布者id条件查询任务")
+    public R<List<TaskVo>> queryTasksBackend(@RequestBody TaskVo taskVo) {
+        try{
+            List<TaskVo> taskList = taskService.queryTasksBackend(taskVo);
+            return R.success(taskList);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return R.error("查询失败");
+        }
+    }
     
 }
