@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.jhc.fruit.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -28,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,6 +45,8 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     private EmployeeDao employeeDao;
     @Autowired
     private AreaServiceImpl areaServiceImpl;
+    @Autowired
+    private FileService fileService;
 
 
     @Override
@@ -277,5 +281,11 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             employeeVos.add(employeeVo);
         }
         return employeeVos;
+    }
+
+    @Override
+    public String saveHeadImg(MultipartFile file, String headImg) {
+        String url = fileService.save(file, headImg);
+        return url;
     }
 }

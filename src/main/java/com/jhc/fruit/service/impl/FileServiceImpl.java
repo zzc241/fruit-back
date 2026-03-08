@@ -1,5 +1,6 @@
 package com.jhc.fruit.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.config.MinioConfig;
 import com.jhc.fruit.service.FileService;
@@ -14,13 +15,16 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -171,20 +175,25 @@ public class FileServiceImpl implements FileService {
     @Override
     public String getImageUrl(String fileName) {
         try {
-
-            // 生成预签名URL
-            String presignedUrl = minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .method(Method.GET)
-                            .bucket(minioProperties.getBucketName())
-                            .object(fileName)
-                            .expiry(7, TimeUnit.DAYS) // URL过期时间
-                            .build()
-            );
-            return presignedUrl;
+            //如果文件存在
+            if (exits(fileName)){
+                // 生成预签名URL
+                String presignedUrl = minioClient.getPresignedObjectUrl(
+                        GetPresignedObjectUrlArgs.builder()
+                                .method(Method.GET)
+                                .bucket(minioProperties.getBucketName())
+                                .object(fileName)
+                                .expiry(7, TimeUnit.DAYS) // URL过期时间
+                                .build()
+                );
+                return presignedUrl;
+            }
+            //不存在
+            return "文件不存在";
         } catch (Exception e) {
             e.printStackTrace();
-            return "获取图片URL失败：" + e.getMessage();
+            log.info(e.getMessage());
+            return "获取图片URL失败";
         }
     }
 
@@ -192,7 +201,6 @@ public class FileServiceImpl implements FileService {
     public List<String> getImageUrls(List<String> files) {
         List<String> urls = new ArrayList<>();
         try {
-
             for (String fileName : files) {
                 // 生成预签名URL
                 String presignedUrl = minioClient.getPresignedObjectUrl(
@@ -205,7 +213,7 @@ public class FileServiceImpl implements FileService {
                 );
                 urls.add(presignedUrl);
             }
-            if (urls.size() > 0) {
+            if (!urls.isEmpty()) {
                 return urls;
             }else {
                 return null;
@@ -275,11 +283,98 @@ public class FileServiceImpl implements FileService {
                             .object(fileName)
                             .build()
             );
+            //存在
             return true;
         }catch (Exception e){
             e.printStackTrace();
             return false;
         }
+    }
+
+
+    // MinIO 过期时间参数名（固定）
+    private static final String EXPIRIES_PARAM = "X-Amz-Expires";
+    // MinIO 起始时间参数名（固定）
+    private static final String DATE_PARAM = "X-Amz-Date";
+    // MinIO 时间格式（固定）
+    private static final DateTimeFormatter AMZ_DATE_FORMAT = DateTimeFormatter
+            .ofPattern("yyyyMMdd'T'HHmmss'Z'")
+            .withZone(ZoneId.of("UTC"));
+
+    /**
+     * 判断 MinIO 临时访问链接是否过期
+     * @param presignedUrl MinIO 生成的 Presigned URL
+     * @return true=已过期，false=未过期
+     */
+    public boolean isPresignedUrlExpired(String presignedUrl) {
+        try {
+            // 1. 校验入参
+            if (StringUtils.isBlank(presignedUrl)) {
+                throw new IllegalArgumentException("Presigned URL 不能为空");
+            }
+
+            // 2. 解析 URL，提取查询参数
+            URI uri = new URI(presignedUrl);
+            String query = uri.getQuery();
+            if (StringUtils.isBlank(query)) {
+                throw new IllegalArgumentException("Presigned URL 缺少查询参数");
+            }
+
+            // 3. 解析查询参数（key=value 形式）
+            Map<String, String> paramMap = parseQueryParams(query);
+            String expiresStr = paramMap.get(EXPIRIES_PARAM);
+            String dateStr = paramMap.get(DATE_PARAM);
+
+            // 4. 校验必要参数
+            if (StringUtils.isBlank(expiresStr) || StringUtils.isBlank(dateStr)) {
+                throw new IllegalArgumentException("Presigned URL 缺少过期时间相关参数");
+            }
+
+            // 5. 解析过期时长（秒）
+            long expiresSeconds;
+            try {
+                expiresSeconds = Long.parseLong(expiresStr);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("X-Amz-Expires 参数格式错误：" + expiresStr, e);
+            }
+
+            // 6. 解析起始时间（转为时间戳，单位：秒）
+            Instant startTime;
+            try {
+                startTime = Instant.from(AMZ_DATE_FORMAT.parse(dateStr));
+            } catch (Exception e) {
+                throw new IllegalArgumentException("X-Amz-Date 参数格式错误：" + dateStr, e);
+            }
+
+            // 7. 计算过期时间戳（秒）
+            long expireTimestamp = startTime.getEpochSecond() + expiresSeconds;
+            // 8. 获取当前时间戳（秒）
+            long currentTimestamp = Instant.now().getEpochSecond();
+
+            // 9. 对比判断是否过期
+            return currentTimestamp > expireTimestamp;
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info(e.getMessage());
+            return true;
+        }
+    }
+
+    /**
+     * 解析 URL 查询参数为 Map
+     */
+    private static Map<String, String> parseQueryParams(String query) {
+        Map<String, String> paramMap = new HashMap<>();
+        String[] params = query.split("&");
+        for (String param : params) {
+            String[] keyValue = param.split("=", 2); // 分割为key和value（避免value含=）
+            if (keyValue.length == 2) {
+                String key = keyValue[0];
+                String value = URLDecoder.decode(keyValue[1], StandardCharsets.UTF_8); // 解码URL编码的value
+                paramMap.put(key, value);
+            }
+        }
+        return paramMap;
     }
 
 

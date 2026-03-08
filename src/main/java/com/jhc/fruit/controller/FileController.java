@@ -86,6 +86,11 @@ public class FileController {
     @GetMapping("/image/url/{fileName}")
     public R<String> getImageUrl(@PathVariable String fileName) {
         String url = fileService.getImageUrl(fileName);
+        if (url.equals("文件不存在")){
+            return R.error(url);
+        } else if (url.startsWith("获取")) {
+            return R.error(url);
+        }
         return R.success(url);
     }
 
@@ -97,12 +102,5 @@ public class FileController {
             return R.error("无数据");
         }
         return R.success(urls);
-    }
-
-    @ApiOperation("保存用户头像")
-    @PostMapping("/saveHeadImg")
-    public R<String> saveHeadImg(@RequestParam("file") MultipartFile file) {
-        String fileUrl = fileService.save(file, "headImg");
-        return R.success(fileUrl);
     }
 }

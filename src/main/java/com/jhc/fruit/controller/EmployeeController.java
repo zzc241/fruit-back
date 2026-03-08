@@ -44,7 +44,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/employee")
-@Api(tags = "后台：用户管理接口")
+@Api(tags = "用户管理接口")
 public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
@@ -76,7 +76,7 @@ public class EmployeeController {
     /**
      * 用户通过openId登录
      */
-    @GetMapping("/unBind")
+//    @GetMapping("/unBind")
     @ApiOperation("用户登录时获取openId方法")
     @ApiImplicitParams({
     })
@@ -134,7 +134,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/add")
-    @ApiOperation("后：新增用户方法")
+    @ApiOperation("新增用户方法")
     public R<String> save(@RequestBody Employee employee){
         log.info("新增员工，员工信息：",employee.toString());
         //用户名校验
@@ -148,6 +148,8 @@ public class EmployeeController {
         //设置初始密码123456，使用md5加密处理
         if(employee.getPassword() == null || "".equals(employee.getPassword())){
             employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        }else {
+            employee.setPassword(DigestUtils.md5DigestAsHex(employee.getPassword().getBytes()));
         }
         if(employee.getUsername() == null || "".equals(employee.getUsername())){
             employee.setUsername("newUser" + UUID.randomUUID().toString().replace("-", ""));
@@ -248,18 +250,6 @@ public class EmployeeController {
         return R.success("成功修改密码");
     }
 
-    @ApiOperation("个人信息展示方法")
-    @GetMapping("/getPeople")
-    public R<Employee> getPeople(){
-        Long id = BaseContext.getId();
-        System.out.println("个人信息展示获取的id：" + id);
-        //1.获取员工id
-        Long employeeId = id;
-        //2.根据员工id查询员工个人信息
-        Employee employee = employeeService.getById(employeeId);
-        return R.success(employee);
-    }
-
     /**
      * 根据员工id查询员工信息;用于在修改员工信息时的回溯信息
      * @param id
@@ -296,40 +286,12 @@ public class EmployeeController {
         if(emp == null){
             return R.error("找不到用户，刷新后再试");
         }
-        String headImg = emp.getHeadImg();
-        //删除服务器当中存储的员工头像信息
-        QiniuUtils.deleteFileFromQiniu(headImg);
         //删除数据库中的对应员工数据
         boolean isRemove = employeeService.removeById(id);
         if(isRemove){
             return R.success("删除成功");
         }
         return R.error("删除失败");
-    }
-
-    /**
-     * 上传图片
-     * @param imgFile 将图片上传到七牛云服务器上
-     * @return
-     */
-    @PostMapping("/upload/{id}")
-    @ApiOperation("用户修改头像方法")
-    @ApiImplicitParam(name = "imgFile",value = "传入的图片对象")
-    public R<String> updateHead(@RequestParam("imgFile") MultipartFile imgFile,@PathVariable Long id){
-        System.out.println(id);
-        Employee emp = employeeService.getById(id);
-        if(emp == null){
-            return R.error("找不到用户");
-        }
-        String headImg = emp.getHeadImg();
-        if(headImg != null){
-            //删除用户原有的头像避免内存浪费
-            QiniuUtils.deleteFileFromQiniu(headImg);
-        }
-        String fileName = QiniuUtils.formatUpload(imgFile);
-        emp.setHeadImg(fileName);
-        employeeService.updateById(emp);
-        return R.success(fileName);
     }
 
 
@@ -382,4 +344,12 @@ public class EmployeeController {
         List<EmployeeVo> employees = employeeService.getEmpByOrchardId(orchardId);
         return R.success(employees);
     }
+
+    @ApiOperation("保存用户头像")
+    @PostMapping("/saveHeadImg")
+    public R<String> saveHeadImg(@RequestParam("file") MultipartFile file) {
+        String fileUrl = employeeService.saveHeadImg(file, "headImg");
+        return R.success(fileUrl);
+    }
+
 }

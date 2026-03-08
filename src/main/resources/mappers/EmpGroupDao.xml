@@ -22,26 +22,23 @@
     </resultMap>
 
 
-    <select id="getEmpId" resultType="Long">
+ <!--   <select id="getEmpId" resultType="Long">
         SELECT emp_id from emp_group where group_id = #{groupId}
     </select>
     <delete id="deleteGroup" parameterType="Long">
         DELETE from emp_group where group_id = #{id}
     </delete>
-<!--    <select id="getGroupByContentEmp" resultType="java.util.Map">-->
-<!--        SELECT group_id AS groupId,content,GROUP_CONCAT(emp_id) AS empId , GROUP_CONCAT(info_id) AS infoId FROM emp_group WHERE emp_id = #{empId} GROUP BY content ;-->
-<!--    </select>-->
+&lt;!&ndash;    <select id="getGroupByContentEmp" resultType="java.util.Map">&ndash;&gt;
+&lt;!&ndash;        SELECT group_id AS groupId,content,GROUP_CONCAT(emp_id) AS empId , GROUP_CONCAT(info_id) AS infoId FROM emp_group WHERE emp_id = #{empId} GROUP BY content ;&ndash;&gt;
+&lt;!&ndash;    </select>&ndash;&gt;
     <select id="getGroupByContent" resultType="java.util.Map">
         SELECT group_id AS groupId,content,GROUP_CONCAT(emp_id) AS empId , GROUP_CONCAT(info_id) AS infoId FROM emp_group WHERE group_id = #{groupId} GROUP BY content ;
     </select>
     <insert id ="save" parameterMap="parameterMap">
         insert into emp_group(group_id,emp_id,content,info_id) values (#{groupId},#{empId},#{content},#{infoId})
     </insert>
-    <insert id="addEmployee">
-        INSERT INTO fruit.empgroup_emp(fruit.empgroup_emp.group_id, fruit.empgroup_emp.emp_id)
-        VALUES (#{groupId}, #{empId})
-    </insert>
-    <!--    去重，防止重复获取组-->
+
+    &lt;!&ndash;    去重，防止重复获取组&ndash;&gt;
     <select id="getGroupsByEmp" resultMap = "resultMap">
         select DISTINCT group_id,content from emp_group where emp_id = #{empId}
     </select>
@@ -53,12 +50,16 @@
     </select>
     <select id="getGroupNameByGroupId" resultType="java.lang.String">
         select emp_group.group_name from emp_group where emp_group.group_id = #{id}
-    </select>
+    </select>-->
     <select id="getTasksByEmpId" resultType="com.jhc.fruit.entity.Task">
-        SELECT task.* from task,emp_group,empgroup_emp 
-        where 
-        empgroup_emp.emp_id = #{empId} 
+        SELECT task.* from task,emp_group,empgroup_emp
+        where
+        empgroup_emp.emp_id = #{empId}
         and empgroup_emp.group_id = emp_group.id
         and task.group_id = emp_group.id
     </select>
+    <insert id="addEmployee">
+        INSERT INTO fruit.empgroup_emp(fruit.empgroup_emp.group_id, fruit.empgroup_emp.emp_id)
+        VALUES (#{groupId}, #{empId})
+    </insert>
 </mapper>

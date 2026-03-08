@@ -5,6 +5,7 @@ import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.Report;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.service.ReportService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/report")
+@Api("上报接口")
 public class ReportController {
 
     @Autowired
@@ -61,14 +63,5 @@ public class ReportController {
     public R<List<Report>> select(@RequestBody List<Long> ids) {
         List<Report> reportList = reportService.listByIds(ids);
         return R.success(reportList);
-    }
-
-    private FruitTreeVo fruitToVo(FruitTree fruitTree) {
-        FruitTreeVo fruitTreeVo = new FruitTreeVo();
-        fruitTreeVo.setId(fruitTree.getId());
-        Double ripeDegree = fruitTree.getRipeNum() * 1.0 / fruitTree.getCountNum();
-        fruitTreeVo.setRipeDegree(ripeDegree);
-        fruitTreeVo.setHealthCondition(fruitTree.getHealthCondition());
-        return fruitTreeVo;
     }
 }

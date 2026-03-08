@@ -18,4 +18,6 @@ public interface OrchardService extends IService<Orchard>{
     public String getOrchardNameById(Long orchardId);
 
     R<String> updateByOrchardVo(OrchardVo orchardVo);
+
+    Boolean removeOrchard(Long id);
 }

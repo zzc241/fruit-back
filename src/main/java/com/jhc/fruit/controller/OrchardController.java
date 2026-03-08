@@ -1,6 +1,7 @@
 package com.jhc.fruit.controller;
 import java.util.List;
 
+import com.jhc.fruit.service.OrchardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +29,12 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "果园管理接口")
 public class OrchardController {
     @Autowired
-    private OrchardServiceImpl orchardServiceImpl;
+    private OrchardService orchardService;
+
     @PostMapping("/list")
     @ApiOperation("后台：查看全部果园")
     public R<Page<OrchardVo>> getInfo(@RequestBody OrchardVo orchardVo){
-        Page<OrchardVo> pageInfo = orchardServiceImpl.getPageInfo(orchardVo);
+        Page<OrchardVo> pageInfo = orchardService.getPageInfo(orchardVo);
         return R.success(pageInfo);
     }
     @PostMapping("/employee/my-orchard")
@@ -44,14 +46,14 @@ public class OrchardController {
         }
         orchardVo.setEmpId(currentEmpId);
         // 固定查询当前员工的通知
-        List<OrchardVo> result = orchardServiceImpl.getInfo(orchardVo);
+        List<OrchardVo> result = orchardService.getInfo(orchardVo);
         return R.success(result);
     }
 
     @PostMapping("/add")
     @ApiOperation("添加果园")
     public R<String> deployInfo(@RequestBody OrchardVo orchardVo){
-        String result = orchardServiceImpl.saveOrchardInfo(orchardVo);
+        String result = orchardService.saveOrchardInfo(orchardVo);
         return R.success(result);
     }
 
@@ -63,7 +65,7 @@ public class OrchardController {
             return R.error("果园ID必须为正数");
         }
         try {
-            String result = orchardServiceImpl.changeInfo(orchardVo);
+            String result = orchardService.changeInfo(orchardVo);
             return R.success(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,7 +75,7 @@ public class OrchardController {
     @DeleteMapping("/delete/{id}")
     @ApiOperation("删除果园")
     public R<Boolean> deleteOrchard(@PathVariable Long id){
-        Boolean result = orchardServiceImpl.removeById(id);
+        Boolean result = orchardService.removeOrchard(id);
         return R.success(result);
     }
 

@@ -39,4 +39,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     void saveQRUrl(Long id, String url);
 
     String selectQR(Long id);
+
+    void deleteByAreaId(Long id);
 }
