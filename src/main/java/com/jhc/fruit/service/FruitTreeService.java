@@ -38,4 +38,6 @@ public interface FruitTreeService extends IService<FruitTree> {
     R<List<String>> createTreeQRList(List<Long> ids);
 
     R<List<String>> selectQR(List<Long> ids);
+
+    FruitTreeVo fruitToVo(FruitTree fruitTree);
 }

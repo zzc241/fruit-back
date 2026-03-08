@@ -172,13 +172,13 @@ public class FileServiceImpl implements FileService {
     public String getImageUrl(String fileName) {
         try {
 
-            // 生成预签名URL，有效期30分钟（可根据需求调整）
+            // 生成预签名URL
             String presignedUrl = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Method.GET)
                             .bucket(minioProperties.getBucketName())
                             .object(fileName)
-                            .expiry(30, TimeUnit.MINUTES) // URL过期时间
+                            .expiry(7, TimeUnit.DAYS) // URL过期时间
                             .build()
             );
             return presignedUrl;

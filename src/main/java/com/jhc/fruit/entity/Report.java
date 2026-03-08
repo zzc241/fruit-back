@@ -21,8 +21,6 @@ public class Report {
     private Long treeId;
     @ApiModelProperty(value = "报告内容")
     private String content;
-    @ApiModelProperty(value = "上报类型")
-    private Integer type;
     @ApiModelProperty(value = "创建日期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)

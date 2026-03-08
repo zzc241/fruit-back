@@ -188,18 +188,11 @@ public class FruitTreeController {
         }
         List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
         fruitTreeList.forEach(fruitTree -> {
-            fruitTreeVoList.add(fruitToVo(fruitTree));
+            fruitTreeVoList.add(fruitTreeService.fruitToVo(fruitTree));
         });
         return R.success(fruitTreeVoList);
     }
-    private FruitTreeVo fruitToVo(FruitTree fruitTree) { 
-        FruitTreeVo fruitTreeVo = new FruitTreeVo();
-        fruitTreeVo.setId(fruitTree.getId());
-        Double ripeDegree = fruitTree.getRipeNum() * 1.0 / fruitTree.getCountNum();
-        fruitTreeVo.setRipeDegree(ripeDegree);
-        fruitTreeVo.setHealthCondition(fruitTree.getHealthCondition());
-        return fruitTreeVo;
-    }
+
 
     /**
      * 生成二维码后生成到minio上，

@@ -2,7 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jhc.fruit.dao.ReportDao">
     <insert id="saveImg">
-        INSERT INTO report_img(img, report_id)
-        VALUES (#{url}, #{id})
+        INSERT INTO report_img(img, report_id, type)
+        VALUES (#{url}, #{id}, #{type})
     </insert>
+    <delete id="deleteImgs">
+        DELETE FROM report_img
+        WHERE report_img.report_id = #{id}
+    </delete>
 </mapper>

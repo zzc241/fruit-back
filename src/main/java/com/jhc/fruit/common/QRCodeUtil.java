@@ -90,7 +90,7 @@ public class QRCodeUtil {
             // 构建 MockMultipartFile（参数：字段名、文件名、文件类型、输入流）
             MultipartFile multipartFile = new MockMultipartFile(
                     "QRPath",                // 请求中的字段名（可自定义）
-                    "QR" + UUID.randomUUID().toString().replace("-" , "") + ".png", // 文件名
+                    UUID.randomUUID().toString().replace("-" , "") + ".png", // 文件名
                     "image/png",             // 文件MIME类型
                     inputStream              // 二维码字节输入流
             );
