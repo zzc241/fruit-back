@@ -12,10 +12,13 @@ import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.OrchardService;
 import com.jhc.fruit.service.TaskImgService;
 import com.jhc.fruit.service.TaskService;
+
+import kotlin.jvm.internal.Lambda;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -220,5 +223,35 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                 employeeService.getEmpNameById(
                         task.getCreatorId()));
         return taskVo;
+    }
+
+    public List<TaskVo> queryTasksBackend(TaskVo taskVo){
+        LambdaQueryWrapper<Task> queryWrapperTask = new LambdaQueryWrapper<>();
+        queryWrapperTask.eq(Task::getCreatorId, taskVo.getCreatorId());
+        List<Task> tasks = this.list(queryWrapperTask);
+        if (tasks == null || tasks.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Long> taskIds = tasks.stream()
+            .map(Task::getId)
+            .collect(Collectors.toList());
+        LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(Task::getId, taskIds);
+        if (taskVo.getOrchardId() != null) {
+            queryWrapper.eq(Task::getOrchardId, taskVo.getOrchardId());
+        }
+        if (taskVo.getGroupId() != null) {
+            queryWrapper.eq(Task::getGroupId, taskVo.getGroupId());
+        }
+        List<TaskVo> taskVos = tasks.stream()
+                .map(this::taskToVo)
+                .collect(Collectors.toList());
+        Iterator<TaskVo> iterator = taskVos.iterator();
+        while(iterator.hasNext()){
+            TaskVo taskVoCurr = iterator.next();
+            Long taskId = taskVoCurr.getId();
+            taskVoCurr.setImgsURL(taskImgService.getImg(taskId));
+        }
+        return taskVos;
     }
 }
