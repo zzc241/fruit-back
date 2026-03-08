@@ -189,11 +189,132 @@ spring:
 ##### 3.test如何通过mvn测试
 
 ```
-
+暂时还没找到解决方案，选择跳过直接打包
+mvn clean package "-Dmaven.test.skip=true"
 ```
 
 
 
-### 2.寒假时
 
-### 3.寒假后
+
+### 2.寒假后
+
+##### 解决时间问题
+
+推荐用LocalDateTime，前后端都不用时区
+
+| java.time.LocalDateTime | java.util.Date | java.sql.Date |
+| ----------------------- | -------------- | ------------- |
+| 高级                    | 低级           | 低级          |
+| 无时区                  | 有时区         |               |
+
+##### 解决数据库自增还是雪花算法
+
+```sql
+//数据库自增：
+@TableId(type = IdType.AUTO)
+
+//数据库自增从0开始：
+ALTER TABLE 表名 AUTO_INCREMENT = 0;
+//注意：如果表里有id就会从id中最大的开始自增防止重复
+
+//雪花算法：
+@TableId(type = IdType.ASSIGN_ID)
+```
+
+##### 经典数据库报错
+
+###### json格式错误
+
+```
+1|fruit2   | 2026-03-08 09:59:13.862  WARN 2922 --- [nio-3388-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected character ('"' (code 34)): was expecting comma to separate Object entries; nested exception is com.fasterxml.jackson.core.JsonParseException: Unexpected character ('"' (code 34)): was expecting comma to separate Object entries<EOL> at [Source: (PushbackInputStream); line: 12, column: 4]]
+//出现JsonParseException就是json格式错误
+```
+
+###### 空指针异常
+
+```
+0|fruit  | ==>  Preparing: SELECT id,orchard_id,name,size,type_id,create_time,update_time,description,create_user,update_user,emp_id FROM area_info WHERE (emp_id = ?) 
+0|fruit  | ==> Parameters: 0(Long)
+0|fruit  | <==      Total: 0
+0|fruit  | Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@581a1cbb]
+0|fruit  | 2026-03-07 17:01:36.742 ERROR 25992 --- [nio-3388-exec-9] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.NullPointerException: Cannot invoke "com.jhc.fruit.entity.Area.getId()" because "area" is null] with root cause
+0|fruit  | java.lang.NullPointerException: Cannot invoke "com.jhc.fruit.entity.Area.getId()" because "area" is null
+0|fruit  | 	at com.jhc.fruit.service.impl.AreaServiceImpl.getAreaIdByEmpId(AreaServiceImpl.java:106) ~[classes!/:0.0.1-SNAPSHOT]
+```
+
+###### 语句不完整（一般会在插入的时候出现）
+
+```
+[org.apache.ibatis.session.defaults.DefaultSqlSession@6c170276]
+2026-03-07 21:15:00.861 ERROR 28496 --- [nio-3388-exec-9] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is org.springframework.jdbc.BadSqlGrammarException:
+//这里出现BadSqlGrammarException
+### Error updating database.  Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+### The error may exist in com/jhc/fruit/dao/FruitGrowDao.java (best guess)
+### The error may involve com.jhc.fruit.dao.FruitGrowDao.insert-Inline
+### The error occurred while setting parameters
+### SQL: INSERT INTO fruit_grow    VALUES
+### Cause: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+; bad SQL grammar []; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1] with root cause
+```
+
+
+
+##### 前后端联调报错
+
+###### 前端登录被拦截
+
+```
+0|fruit  | 2026-03-06 09:52:35.781  INFO 20631 --- [io-3388-exec-10] com.jhc.fruit.filter.LoginCheckFilter    : 用户未登录拦截到请求/api/employee/login
+```
+
+原因：后端只放行employee/login，没有放行/api/employee/login
+
+```
+String[] urls = new String[]{
+                //放行登录页面请求
+                "/static/**",
+                "/index.html",
+                //放行用户登录登出方法
+                "/employee/getOpenId",
+                "/employee/login",
+                "/employee/logout",
+                //放行游客浏览新闻方法
+                "/news/**",
+                //放行Swagger
+                "/swagger-ui.html/**",
+                "/webjars/**",
+                "/v2/**",
+                "/swagger-resources/**",
+                "/null/swagger-resources/**"
+        };
+```
+
+解决方法：放行
+
+```
+String[] urls = new String[]{
+                //放行登录页面请求
+                "/static/**",
+                "/index.html",
+                //放行用户登录登出方法
+                "/employee/getOpenId",
+                "/employee/login",
+                "/employee/logout",
+                //放行扫描二维码
+                "/fruitTree/showTree",
+                //放行游客浏览新闻方法
+                "/news/**",
+                "/api/employee/getOpenId",
+                "/api/employee/login",    
+                "/api/employee/logout",   
+                "/api/news/**",
+                //放行Swagger
+                "/swagger-ui.html/**",
+                "/webjars/**",
+                "/v2/**",
+                "/swagger-resources/**",
+                "/null/swagger-resources/**"
+        };
+```
+

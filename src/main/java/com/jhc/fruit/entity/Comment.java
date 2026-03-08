@@ -2,7 +2,10 @@ package com.jhc.fruit.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,9 +13,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@ApiModel
+@ApiModel(value = "评论表")
+@TableName("comment")
 public class Comment {
     @ApiModelProperty
+
     private Long id;
     @ApiModelProperty(value = "用户id")
     private Long userId;
@@ -28,4 +33,13 @@ public class Comment {
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime createTime;
+    @ApiModelProperty(value = "更新时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
+    private LocalDateTime updateTime;
+    @ApiModelProperty(value = "创建用户")
+    private Long createUser;
+    @ApiModelProperty(value = "更新用户")
+    private Long updateUser;
+
 }
