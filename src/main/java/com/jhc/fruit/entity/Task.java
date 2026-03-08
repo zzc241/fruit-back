@@ -48,21 +48,21 @@ public class Task {
     private Long groupId;
 
     /*绑定员工组empGroup的groupId，用来表示发布范围*/
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @ApiModelProperty(value = "完成时间")
     private LocalDateTime completionTime;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @ApiModelProperty(value = "任务结束时间")
     private LocalDateTime deadline;
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @ApiModelProperty(value = "发布时间")
     private LocalDateTime postTime;
     @ApiModelProperty(value = "任务状态")

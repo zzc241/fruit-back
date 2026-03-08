@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class FruitPriceServiceImpl extends ServiceImpl<FruitPriceDao, FruitPrice
                 if (!existFp.getPrice().equals(fp.getPrice())) {
                     // 价格变化 》 更新数据
                     //保留价格变更记录，插入新数据并标记更新时间
-                    fp.setUpdateTime(new Date());
+                    fp.setUpdateTime(LocalDateTime.now());
                     fruitPriceDao.insert(fp);
                 }
                 // 价格无变化 》 直接跳过，不做任何操作

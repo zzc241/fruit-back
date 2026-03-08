@@ -1,5 +1,7 @@
 package com.jhc.fruit.service.impl;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.R;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -379,6 +382,80 @@ public class FileServiceImpl implements FileService {
         return paramMap;
     }
 
+    /**
+     * 解析MinIO临时访问URL，返回关键信息Map
+     * @param presignedUrl MinIO生成的预签名URL（如：http://192.168.123.92:9000/my-bucket/test.jpg?X-Amz-Algorithm=...&X-Amz-Expires=3600...）
+     * @return 解析结果Map，key包含：
+     *         - endpoint: MinIO服务地址（如http://192.168.123.92:9000）
+     *         - bucket: 存储桶名称
+     *         - objectPath: 对象完整路径（URL解码后）
+     *         - expiresSeconds: 过期时长（秒）
+     *         - expireTime: 过期时间（Date类型，当前时间+过期时长）
+     *         - queryParams: 所有URL查询参数（含签名参数）
+     * @throws Exception 解析失败时抛出异常（如URL格式非法）
+     */
+    public static Map<String, Object> parsePresignedUrl(String presignedUrl) throws Exception {
+        // 1. 空值校验
+        if (StrUtil.isBlank(presignedUrl)) {
+            throw new IllegalArgumentException("MinIO预签名URL不能为空");
+        }
 
+        // 2. 解析URL基础结构
+        URL url = new URL(presignedUrl);
+        URI uri = new URI(presignedUrl);
+        Map<String, Object> result = new HashMap<>();
+
+        // 3. 解析MinIO服务地址（endpoint）
+        String endpoint = url.getProtocol() + "://" + url.getHost() + (url.getPort() != -1 ? ":" + url.getPort() : "");
+        result.put("endpoint", endpoint);
+
+        // 4. 解析Bucket名称和对象路径
+        String path = uri.getPath();
+        if (StrUtil.isBlank(path) || path.equals("/")) {
+            throw new IllegalArgumentException("URL路径为空，不符合MinIO预签名URL格式");
+        }
+        // 切割路径：/bucket/object/path → bucket=第一个部分，objectPath=剩余部分
+        String[] pathParts = path.split("/", 3); // 按/切割为3部分，避免对象路径含/
+        if (pathParts.length < 2) {
+            throw new IllegalArgumentException("URL路径格式错误，无法解析Bucket和对象路径：" + path);
+        }
+        String bucket = pathParts[1]; // 第2部分是Bucket名（path以/开头，第1部分为空）
+        String objectPath = pathParts.length == 3 ? pathParts[2] : "";
+        // URL解码对象路径（处理空格、特殊字符等）
+        objectPath = URLDecoder.decode(objectPath, StandardCharsets.UTF_8);
+        result.put("bucket", bucket);
+        result.put("objectPath", objectPath);
+
+        // 5. 解析所有查询参数（含签名、过期时间等）
+        String query = uri.getQuery();
+        Map<String, String> queryParams = new HashMap<>();
+        if (StrUtil.isNotBlank(query)) {
+            String[] queryParts = query.split("&");
+            for (String part : queryParts) {
+                String[] keyValue = part.split("=", 2);
+                if (keyValue.length == 2) {
+                    String key = keyValue[0];
+                    String value = URLDecoder.decode(keyValue[1], StandardCharsets.UTF_8);
+                    queryParams.put(key, value);
+                }
+            }
+        }
+        result.put("queryParams", queryParams);
+
+        // 6. 解析过期时长和过期时间（MinIO预签名URL的过期参数为X-Amz-Expires）
+        String expiresSecondsStr = queryParams.get("X-Amz-Expires");
+        if (StrUtil.isNotBlank(expiresSecondsStr)) {
+            long expiresSeconds = Long.parseLong(expiresSecondsStr);
+            result.put("expiresSeconds", expiresSeconds);
+            // 计算过期时间（当前时间 + 过期时长）
+            Date expireTime = DateUtil.offsetSecond(new Date(), (int) expiresSeconds);
+            result.put("expireTime", expireTime);
+        } else {
+            result.put("expiresSeconds", null);
+            result.put("expireTime", null);
+        }
+
+        return result;
+    }
 
 }

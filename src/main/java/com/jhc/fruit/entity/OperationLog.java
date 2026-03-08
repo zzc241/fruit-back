@@ -2,6 +2,7 @@ package com.jhc.fruit.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class OperationLog {
 //    操作内容
     private String operationContent;
 //    操作时间，默认为系统时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime operationTime;
 //    操作者IP
     private String operationIp;

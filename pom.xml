@@ -205,6 +205,12 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+        <!--用于解码url-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.26</version>
+        </dependency>
     </dependencies>
 <!-- springboot 打包插件-->
     <build>

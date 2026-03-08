@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -211,8 +212,8 @@ public class PriceUtil {
                     price.setMarket("惠农网");
 
                     // 设置创建/更新时间
-                    price.setCreateTime(currentDate);
-                    price.setUpdateTime(currentDate);
+                    price.setCreateTime(LocalDateTime.now());
+                    price.setUpdateTime(LocalDateTime.now());
 
 
                     priceList.add(price);
@@ -243,8 +244,8 @@ public class PriceUtil {
         mock1.setUnit("斤");
         mock1.setMarket("惠农网");
         mock1.setPriceDate(currentDate);
-        mock1.setCreateTime(currentDate);
-        mock1.setUpdateTime(currentDate);
+        mock1.setCreateTime(LocalDateTime.now());
+        mock1.setUpdateTime(LocalDateTime.now());
 
         FruitPrice mock2 = new FruitPrice();
         mock2.setFruitName("柑桔");
@@ -253,8 +254,8 @@ public class PriceUtil {
         mock2.setUnit("斤");
         mock2.setMarket("惠农网");
         mock2.setPriceDate(currentDate);
-        mock2.setCreateTime(currentDate);
-        mock2.setUpdateTime(currentDate);
+        mock2.setCreateTime(LocalDateTime.now());
+        mock2.setUpdateTime(LocalDateTime.now());
 
         mockList.add(mock1);
         mockList.add(mock2);
@@ -282,8 +283,8 @@ public class PriceUtil {
             price.setUnit("元/公斤");
             price.setMarket(markets[i]);
             price.setPriceDate(currentDate);
-            price.setCreateTime(currentDate);
-            price.setUpdateTime(currentDate);
+            price.setCreateTime(LocalDateTime.now());
+            price.setUpdateTime(LocalDateTime.now());
             priceList.add(price);
         }
 
@@ -330,8 +331,8 @@ public class PriceUtil {
             price.setOrigin(origins[i]);
             price.setMarket(markets[i]);
             price.setPriceDate(currentDate);
-            price.setCreateTime(currentDate);
-            price.setUpdateTime(currentDate);
+            price.setCreateTime(LocalDateTime.now());
+            price.setUpdateTime(LocalDateTime.now());
             priceList.add(price);
         }
 

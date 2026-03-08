@@ -4,6 +4,7 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.Report;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
+import com.jhc.fruit.entity.vo.ReportVo;
 import com.jhc.fruit.service.ReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -40,8 +41,8 @@ public class ReportController {
 
     @ApiOperation("修改")
     @PostMapping("/update")
-    public R<String> update(@RequestBody Report report) {
-        reportService.update(report);
+    public R<String> update(@RequestBody ReportVo reportVo) {
+        reportService.update(reportVo);
         return R.success();
     }
 
@@ -52,16 +53,11 @@ public class ReportController {
         return R.success();
     }
 
-    @ApiOperation("查询单个")
-    @GetMapping("/{id}")
-    public R<Report> get(@PathVariable Long id) {
-        return R.success(reportService.getById(id));
+    @ApiOperation("查询")
+    @PostMapping("/select")
+    public R<List<ReportVo>> select(@RequestBody List<Long> ids) {
+        R<List<ReportVo>> reportList = reportService.selectReport(ids);
+        return reportList;
     }
 
-    @ApiOperation("查询多个")
-    @PostMapping("/select")
-    public R<List<Report>> select(@RequestBody List<Long> ids) {
-        List<Report> reportList = reportService.listByIds(ids);
-        return R.success(reportList);
-    }
 }

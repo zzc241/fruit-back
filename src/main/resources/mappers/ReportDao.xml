@@ -9,4 +9,10 @@
         DELETE FROM report_img
         WHERE report_img.report_id = #{id}
     </delete>
+    <select id="selectImgs" resultType="java.lang.String">
+        SELECT report_img.img
+        FROM report_img
+        WHERE report_img.report_id = #{reportId}
+        AND report_img.type = #{typeId}
+    </select>
 </mapper>

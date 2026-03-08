@@ -40,11 +40,11 @@ public class Orchard {
     private Integer status;
     @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime createTime;
     @ApiModelProperty(value = "更新时间(自动填充)")
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime updateTime;
     @ApiModelProperty("创建人")
     @TableField(fill = FieldFill.INSERT)
