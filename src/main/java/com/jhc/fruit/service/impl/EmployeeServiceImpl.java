@@ -288,4 +288,17 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         String url = fileService.save(file, headImg);
         return url;
     }
+
+    @Override
+    public R<String> updateStatus(Employee employee) {
+        if (employee.getStatus() == 1) {
+            employee.setStatus(0);
+            return R.success("user:{} disable", employee.getUsername());
+        }else {
+            employee.setStatus(1);
+            return R.success("user:{} enable", employee.getUsername());
+        }
+    }
+
+
 }

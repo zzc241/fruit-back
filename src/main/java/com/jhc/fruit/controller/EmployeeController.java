@@ -352,4 +352,9 @@ public class EmployeeController {
         return R.success(fileUrl);
     }
 
+    @ApiOperation("修改账户状态")
+    @PutMapping("/status")
+    public R<String> updateStatus(@RequestBody Employee employee){
+        return employeeService.updateStatus(employee);
+    }
 }

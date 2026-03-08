@@ -383,7 +383,8 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
             Long id = fruitTree.getId();
             String url = fileService.save(
                     QRCodeUtil.createQROfString(String.valueOf(id)), "QRtree");
-            QRUrls.add(url);
+            String imageUrl = fileService.getImageUrl(url);
+            QRUrls.add(imageUrl);
             fruitTreeDao.saveQRUrl(id, url);
         }
 

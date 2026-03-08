@@ -33,4 +33,6 @@ public interface EmployeeService extends IService<Employee> {
     public List<EmployeeVo> getEmpByOrchardId(Long orchardId);
 
     String saveHeadImg(MultipartFile file, String headImg);
+
+    R<String> updateStatus(Employee employee);
 }
