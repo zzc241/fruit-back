@@ -99,14 +99,19 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
 
         /*根据id查询*/
     @Override
-    public TaskVo getById(Long id) {
-        Task task = taskDao.selectById(id);
-        Long taskId = task.getId();
-        TaskVo taskVo = taskToVo(task);
-        taskVo.setUsername(employeeService.getById(task.getCreateUser()).getUsername());
-        taskVo.setOrchardName(orchardService.getOrchardNameById(task.getOrchardId()));
-        taskVo.setImgsURL(taskImgService.getImg(taskId));
-        return taskVo;
+    public List<TaskVo> getByOrchardId(Long OrchardId) {
+        List<Task> tasks = taskDao.selectByOrchardId(OrchardId);
+        List<TaskVo> taskVos = tasks.stream()
+                .map(this::taskToVo)
+                .collect(Collectors.toList());
+        for (TaskVo taskVo : taskVos) {
+            Task task = taskDao.selectById(taskVo.getId());
+            taskVo.setUsername(employeeService.getById(task.getCreatorId()).getUsername());
+            taskVo.setOrchardName(orchardService.getOrchardNameById(task.getOrchardId()));
+            taskVo.setImgsURL(taskImgService.getImg(task.getId()));
+        }
+        
+        return taskVos;
     }
 
 

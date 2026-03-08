@@ -25,6 +25,7 @@ public class Task {
     @ApiModelProperty(value = "任务id")
     private Long id;
     @ApiModelProperty(value = "创建人id")
+    @TableField("creator_id")
     private Long creatorId;
     @ApiModelProperty(value = "果园id")
     @TableField("orchard_id")

@@ -10,4 +10,5 @@ import java.util.List;
 
 @Mapper
 public interface TaskDao extends BaseMapper<Task> {
+    List<Task> selectByOrchardId(Long OrchardId);
 }

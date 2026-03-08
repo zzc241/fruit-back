@@ -60,10 +60,10 @@ public class TaskController {
         return R.success(tasks);
     }
 
-    @GetMapping("/getById/{id}")
-    @ApiOperation(value = "根据id查询任务")
-    public R<TaskVo> getTaskById(@PathVariable Long id) {
-        TaskVo taskVo = taskService.getById(id);
+    @GetMapping("/getById/{OrchardId}")
+    @ApiOperation(value = "根据果园id查询任务")
+    public R<List<TaskVo>> getTaskByOrchardIdId(@PathVariable Long OrchardId) {
+        List<TaskVo> taskVo = taskService.getByOrchardId(OrchardId);
         return R.success(taskVo);
     }
 
