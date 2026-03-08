@@ -22,7 +22,7 @@ public class FruitTree {
     @ApiModelProperty("果树id")
     private Long id;
     @ApiModelProperty("果园id")
-    private String orchardId;
+    private Long orchardId;
     @ApiModelProperty("果树类型")
     @TableField("type")
     private Long type;

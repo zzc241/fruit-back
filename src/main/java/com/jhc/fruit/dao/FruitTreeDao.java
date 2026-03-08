@@ -43,4 +43,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     void deleteByAreaId(Long id);
 
     String getOrchardNameById(Long orchardId);
+
+    String getAreaManagerName(Long areaId);
 }

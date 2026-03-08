@@ -104,4 +104,10 @@
         FROM orchard
         WHERE orchard.id = #{orchardId}
     </select>
+    <select id="getAreaManagerName" resultType="java.lang.String">
+        SELECT employee.username
+        FROM employee, area_info
+        WHERE area_info.id = #{areaId}
+        AND area_info.emp_id = employee.id
+    </select>
 </mapper>

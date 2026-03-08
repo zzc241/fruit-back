@@ -350,7 +350,9 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
             List<FertWater> fertWaters = fertWaterDao.selectList(queryWrapper);
 
             fruitTreeVo.setLogs(fertWaters);
-            fruitTreeVo.setAreaManagerName(areaService.getAreaNameById(fruitTree.getAreaId()));
+            fruitTreeVo.setAreaName(areaService.getAreaNameById(fruitTree.getAreaId()));
+            fruitTreeVo.setAreaManagerName(fruitTreeDao.getAreaManagerName(fruitTree.getAreaId()));
+            fruitTreeVo.setOrchardName(fruitTreeDao.getOrchardNameById(fruitTree.getOrchardId()));
             return R.success(fruitTreeVo);
         }catch (Exception e){
             e.printStackTrace();

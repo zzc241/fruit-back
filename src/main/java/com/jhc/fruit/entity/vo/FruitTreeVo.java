@@ -35,6 +35,8 @@ public class FruitTreeVo {
     private String img;
     @ApiModelProperty(value = "区域名")
     private String areaName;
+    @ApiModelProperty(value = "果园名")
+    private String orchardName;
     @ApiModelProperty(value = "健康状态")
     private Long healthCondition;
     @ApiModelProperty(value = "成熟度")
