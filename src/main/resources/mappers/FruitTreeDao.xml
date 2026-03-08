@@ -99,4 +99,9 @@
         ORDER BY qr_tree.create_time DESC
         LIMIT 1
     </select>
+    <select id="getOrchardNameById" resultType="java.lang.String">
+        SELECT orchard.name
+        FROM orchard
+        WHERE orchard.id = #{orchardId}
+    </select>
 </mapper>

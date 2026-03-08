@@ -52,8 +52,6 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     private FileService fileService;
     @Autowired
     private FruitTreeDao fruitTreeDao;
-    @Autowired
-    private OrchardService orchardService;
 
 
     @Override
@@ -312,7 +310,8 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
 
     @Override
     public EmployeeVo getInfo(Employee employee) {
-        String orchardName = orchardService.getOrchardNameById(employee.getOrchardId());
+        Long orchardId = employee.getOrchardId();
+        String orchardName = fruitTreeDao.getOrchardNameById(orchardId);
         List<String> areaList = areaService.listName(employee.getId());
         EmployeeVo employeeVo = new EmployeeVo();
         BeanUtils.copyProperties(employee, employeeVo);
