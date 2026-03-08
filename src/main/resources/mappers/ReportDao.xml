@@ -5,9 +5,17 @@
         INSERT INTO report_img(img, report_id, type)
         VALUES (#{url}, #{id}, #{type})
     </insert>
+    <insert id="addUrl">
+        INSERT INTO report_img (img, report_id, type)
+        VALUES (#{url}, #{id}, #{typeId})
+    </insert>
     <delete id="deleteImgs">
         DELETE FROM report_img
         WHERE report_img.report_id = #{id}
+    </delete>
+    <delete id="deleteUrl">
+        DELETE FROM report_img
+        WHERE report_img.img = #{url}
     </delete>
     <select id="selectImgs" resultType="java.lang.String">
         SELECT report_img.img

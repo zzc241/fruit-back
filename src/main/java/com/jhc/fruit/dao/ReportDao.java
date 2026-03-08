@@ -14,4 +14,9 @@ public interface ReportDao extends BaseMapper<Report> {
     void deleteImgs(Long id);
 
     List<String> selectImgs(Long reportId, Long typeId);
+
+    void deleteUrl(String url);
+
+
+    void addUrl(String url, Long id, Long typeId);
 }

@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 public interface FileService {
     String upload(MultipartFile file);
@@ -22,4 +23,6 @@ public interface FileService {
     String save(MultipartFile file, String path);
 
     boolean isPresignedUrlExpired(String presignedUrl);
+
+    Map<String, Object> parsePresignedUrl(String presignedUrl);
 }

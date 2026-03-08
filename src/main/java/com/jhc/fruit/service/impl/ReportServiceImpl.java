@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,10 +43,51 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         reportDao.updateById(report);
         //更新图片
         Long id = reportVo.getId();
+        //查找已有的图片
         List<String> bcUrls = getUrlsByType(id, 2L);
         List<String> fertWaterUrls = getUrlsByType(id, 1L);
         List<String> ripeUrls = getUrlsByType(id, 3L);
         List<String> weedsUrls = getUrlsByType(id, 4L);
+        //更新图片，删除旧图片，增加新图片
+        handleUrl(reportVo.getBcUrlList(), bcUrls, id, 2L);
+        handleUrl(reportVo.getFertWaterUrlList(), fertWaterUrls, id, 1L);
+        handleUrl(reportVo.getRipeUrlList(), ripeUrls, id, 3L);
+        handleUrl(reportVo.getWeedsUrlList(), weedsUrls, id, 4L);
+    }
+
+    //更新图片
+    private void handleUrl(List<String> news,List<String> olds, Long id, Long typeId) {
+        //解析url，获取fileName
+        List<String> newFileNames = new ArrayList<>();
+        news.forEach(url -> {
+            Map<String, Object> map = fileService.parsePresignedUrl(url);
+            newFileNames.add(map.get("objectPath").toString());
+        });
+
+        List<String> oldFileNames = new ArrayList<>();
+        olds.forEach(url -> {
+            Map<String, Object> map = fileService.parsePresignedUrl(url);
+            oldFileNames.add(map.get("objectPath").toString());
+        });
+        // 对比旧URL和新URL，找出待删除/待新增的URL ==========
+        // 待删除URL：旧有但新的没有
+        List<String> toDeleteUrls = olds.stream()
+                .filter(url -> !newFileNames.contains(url) && url != null && !url.isEmpty())
+                .toList();
+
+        // 待新增URL：新的但旧有没有
+        List<String> toAddUrls = news.stream()
+                .filter(url -> !oldFileNames.contains(url) && url != null && !url.isEmpty())
+                .toList();
+
+        //删除旧url
+        toDeleteUrls.forEach(url -> {
+            reportDao.deleteUrl(url);
+        });
+        //增加新url
+        toAddUrls.forEach(url -> {
+            reportDao.addUrl(url, id, typeId);
+        });
     }
 
     @Override
