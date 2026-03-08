@@ -43,7 +43,7 @@ public class WeatherController {
     //存储当日天气
     @PostMapping
     @ApiOperation("获取天气信息")
-    public R<WeatherInfo> saveWeather(@RequestParam Long orchardId) throws Exception{
+    public R<WeatherInfo> saveWeather(@RequestBody Long orchardId) throws Exception{
         LambdaQueryWrapper<WeatherInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(WeatherInfo::getOrchardId, orchardId);
         queryWrapper.orderByDesc(WeatherInfo::getReportTime);
