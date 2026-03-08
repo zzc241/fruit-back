@@ -45,5 +45,7 @@ public class FruitTreeVo {
     private String areaManagerName;
     @ApiModelProperty(value = "fertWater")
     private List<FertWater> logs;
+    @ApiModelProperty(value = "二维码图片")
+    private String url;
 
 }

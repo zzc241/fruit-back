@@ -88,7 +88,18 @@ public class FruitTreeController {
         FruitTree fruitTreeSave = new FruitTree();
         BeanUtils.copyProperties(fruitTree, fruitTreeSave);
         //添加果蔬
+<<<<<<< HEAD
         fruitTreeService.save(fruitTreeSave);
+=======
+        boolean treeSave = fruitTreeService.save(fruitTreeSave);
+        if(!treeSave){
+           return R.error("新增失败");
+        }
+        //创建新果树生长对象
+        FruitGrow fruitGrow = new FruitGrow();
+        fruitGrow.setId(fruitTree.getId());
+        fruitGrowService.save(fruitGrow);
+>>>>>>> 6cb581ec88faa49fba70a95f907d87aa1dbd3dff
         return R.success("新增果树成功");
     }
 
@@ -181,18 +192,11 @@ public class FruitTreeController {
         }
         List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
         fruitTreeList.forEach(fruitTree -> {
-            fruitTreeVoList.add(fruitToVo(fruitTree));
+            fruitTreeVoList.add(fruitTreeService.fruitToVo(fruitTree));
         });
         return R.success(fruitTreeVoList);
     }
-    private FruitTreeVo fruitToVo(FruitTree fruitTree) { 
-        FruitTreeVo fruitTreeVo = new FruitTreeVo();
-        fruitTreeVo.setId(fruitTree.getId());
-        Double ripeDegree = fruitTree.getRipeNum() * 1.0 / fruitTree.getCountNum();
-        fruitTreeVo.setRipeDegree(ripeDegree);
-        fruitTreeVo.setHealthCondition(fruitTree.getHealthCondition());
-        return fruitTreeVo;
-    }
+
 
     /**
      * 生成二维码后生成到minio上，
@@ -211,7 +215,7 @@ public class FruitTreeController {
         }
         //如果果树存在
         //上传二维码并上传到minio
-        String QRPath = fileService.upload(QRCodeUtil.createTreeQRCode(id));
+        String QRPath = fileService.save(QRCodeUtil.createTreeQRCode(id), "TreeQR");
         //返回图片在minio上的路径
         return R.success(QRPath);
     }
@@ -219,8 +223,8 @@ public class FruitTreeController {
     @PostMapping("/createTreeQRList")
     @ApiOperation("批量生成展示果树详情消息的二维码")
     @ApiImplicitParam(name = "ids", value = "果树id集合")
-    public R<List<String>> createTreeQR(@RequestBody List<Long> ids){
-        R<List<String>> QRUrl = fruitTreeService.createTreeQR(ids);
+    public R<List<String>> createTreeQRList(@RequestBody List<Long> ids){
+        R<List<String>> QRUrl = fruitTreeService.createTreeQRList(ids);
         return QRUrl;
     }
 

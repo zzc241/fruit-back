@@ -39,7 +39,7 @@
     </insert>
     <insert id="addEmployee">
         INSERT INTO fruit.empgroup_emp(fruit.empgroup_emp.group_id, fruit.empgroup_emp.emp_id)
-        VALUES (#{empId}, #{groupId})
+        VALUES (#{groupId}, #{empId})
     </insert>
     <!--    去重，防止重复获取组-->
     <select id="getGroupsByEmp" resultMap = "resultMap">

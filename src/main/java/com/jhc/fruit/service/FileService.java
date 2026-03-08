@@ -18,4 +18,6 @@ public interface FileService {
     String getImageUrl(String fileName);
 
     List<String> getImageUrls(List<String> files);
+
+    String save(MultipartFile qrOfString, String fileName);
 }

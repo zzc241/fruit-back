@@ -35,7 +35,9 @@ public interface FruitTreeService extends IService<FruitTree> {
     R<List<Integer>> AIOfRipeness(MultipartFile file, double conf, double iou);
 
     R<FruitTreeVo> treeInfo(Long treeId);
-    R<List<String>> createTreeQR(List<Long> ids);
+    R<List<String>> createTreeQRList(List<Long> ids);
 
     R<List<String>> selectQR(List<Long> ids);
+
+    FruitTreeVo fruitToVo(FruitTree fruitTree);
 }

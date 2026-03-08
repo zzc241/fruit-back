@@ -98,4 +98,11 @@ public class FileController {
         }
         return R.success(urls);
     }
+
+    @ApiOperation("保存用户头像")
+    @PostMapping("/saveHeadImg")
+    public R<String> saveHeadImg(@RequestParam("file") MultipartFile file) {
+        String fileUrl = fileService.save(file, "headImg");
+        return R.success(fileUrl);
+    }
 }

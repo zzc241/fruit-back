@@ -4,6 +4,7 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.config.MinioConfig;
 import com.jhc.fruit.service.FileService;
 import io.minio.*;
+import io.minio.errors.*;
 import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -168,13 +172,13 @@ public class FileServiceImpl implements FileService {
     public String getImageUrl(String fileName) {
         try {
 
-            // 生成预签名URL，有效期30分钟（可根据需求调整）
+            // 生成预签名URL
             String presignedUrl = minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Method.GET)
                             .bucket(minioProperties.getBucketName())
                             .object(fileName)
-                            .expiry(30, TimeUnit.MINUTES) // URL过期时间
+                            .expiry(7, TimeUnit.DAYS) // URL过期时间
                             .build()
             );
             return presignedUrl;
@@ -190,13 +194,13 @@ public class FileServiceImpl implements FileService {
         try {
 
             for (String fileName : files) {
-                // 生成预签名URL，有效期30分钟
+                // 生成预签名URL
                 String presignedUrl = minioClient.getPresignedObjectUrl(
                         GetPresignedObjectUrlArgs.builder()
                                 .method(Method.GET)
                                 .bucket(minioProperties.getBucketName())
                                 .object(fileName)
-                                .expiry(604800, TimeUnit.SECONDS) // URL过期时间
+                                .expiry(604800, TimeUnit.SECONDS) // URL过期时间,七天
                                 .build()
                 );
                 urls.add(presignedUrl);
@@ -239,25 +243,45 @@ public class FileServiceImpl implements FileService {
                     .build();
             minioClient.putObject(putObjectArgs) ;
 
-            // 生成预签名URL，有效期30分钟
-            String presignedUrl = minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .method(Method.GET)
-                            .bucket(minioProperties.getBucketName())
-                            .object(minioPath)
-                            .expiry(604800, TimeUnit.SECONDS) // URL过期时间,7天
-                            .build()
-            );
-
-            return presignedUrl;
+            return minioPath;
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    //删除文件
     public Boolean remove(String fileName) {
-        return null;
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(minioProperties.getBucketName())
+                            .object(fileName)
+                            .build()
+            );
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
+    //判断文件是否存在
+    public Boolean exits(String fileName) {
+        try {
+            minioClient.statObject(
+                    StatObjectArgs.builder()
+                            .bucket(minioProperties.getBucketName())
+                            .object(fileName)
+                            .build()
+            );
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 
 }
