@@ -20,4 +20,6 @@ public interface FileService {
     List<String> getImageUrls(List<String> files);
 
     String save(MultipartFile qrOfString, String fileName);
+
+    boolean isPresignedUrlExpired(String presignedUrl);
 }

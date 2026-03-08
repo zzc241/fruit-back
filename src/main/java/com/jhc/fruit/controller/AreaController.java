@@ -45,7 +45,7 @@ public class AreaController {
 
 
     @PostMapping
-    @ApiOperation("后：地区增加方法")
+    @ApiOperation("地区增加方法")
     public R<Long> save(@RequestBody AreaVo areaVo){
         //获取新增区域的类型
         String type = areaVo.getType();
@@ -79,18 +79,14 @@ public class AreaController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("后：地区删除方法")
+    @ApiOperation("地区删除方法")
     @ApiImplicitParam(name = "id",value = "地区id")
-    public R<List<Camera>> delete(@PathVariable int id){
+    public R<List<Camera>> delete(@PathVariable Long id){
         //1.根据地区id删除对应的地区
-        areaServiceImpl.removeById(id);
-        //2.创建条件构造器，获取属于地区id的piece对象列表
-        LambdaQueryWrapper<Camera> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Camera::getAreaId,id);
-        List<Camera> cameras = cameraServiceImpl.list(lambdaQueryWrapper);
+        areaServiceImpl.removeArea(id);
 
-        //返回摄像头列表，进行修改摄像头信息
-        return R.success(cameras);
+
+        return R.success();
     }
 
     /**
@@ -100,7 +96,7 @@ public class AreaController {
      * @return
      */
     @GetMapping
-    @ApiOperation("后：查询所有地区以分页展示方法")
+    @ApiOperation("查询所有地区以分页展示方法")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page",value = "当前页码数"),
             @ApiImplicitParam(name = "pageSize",value = "最大页码数"),
@@ -128,7 +124,7 @@ public class AreaController {
      * @return
      */
     @GetMapping("/{id}")
-    @ApiOperation("后：根据id查询地区信息，用于修改地区信息时回溯信息")
+    @ApiOperation("根据id查询地区信息，用于修改地区信息时回溯信息")
     @ApiImplicitParam(name = "id",value = "地区id")
     public R<Area> getById(@PathVariable int id){
         Area area = areaServiceImpl.getById(id);
@@ -136,7 +132,7 @@ public class AreaController {
     }
 
     @PutMapping
-    @ApiOperation("后：修改地区信息")
+    @ApiOperation("修改地区信息")
     public R<String> update(@RequestBody Area area){
         areaServiceImpl.updateById(area);
         return R.success("修改地区成功");
@@ -151,7 +147,7 @@ public class AreaController {
     }
 
     @GetMapping("/getType")
-    @ApiOperation("移动端：根据果蔬类型id查找对应果蔬类型,用于筛选时果蔬类别的展示")
+    @ApiOperation("根据果蔬类型id查找对应果蔬类型,用于筛选时果蔬类别的展示")
     public R<List<String>> selectType(){
         List<String> type = areaServiceImpl.getTypeById();
         if(type == null && type.size() == 0){
@@ -161,7 +157,7 @@ public class AreaController {
     }
 
     @GetMapping("/getId")
-    @ApiOperation("移动端：根据区块id查找对应区块,用于筛选时区块编号的展示")
+    @ApiOperation("根据区块id查找对应区块,用于筛选时区块编号的展示")
     public R<List<Integer>> selectId(){
         List<Integer> idList = areaServiceImpl.getId();
         if(idList == null && idList.size() == 0){

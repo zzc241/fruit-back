@@ -86,6 +86,11 @@ public class FileController {
     @GetMapping("/image/url/{fileName}")
     public R<String> getImageUrl(@PathVariable String fileName) {
         String url = fileService.getImageUrl(fileName);
+        if (url.equals("文件不存在")){
+            return R.error(url);
+        } else if (url.startsWith("获取")) {
+            return R.error(url);
+        }
         return R.success(url);
     }
 

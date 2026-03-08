@@ -196,10 +196,21 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         fruitTreeVo.setType(fruitTreeDao.selectByType(fruitTree.getType()));
         fruitTreeVo.setAreaName(fruitTreeDao.selectByAreaId(fruitTree.getAreaId()));
         if(fruitTreeDao.selectQR(fruitTree.getId()) != null){
+
             String url = fileService.getImageUrl(fruitTreeDao.selectQR(fruitTree.getId()));
-            fruitTreeVo.setUrl(url);
+            if(fileService.isPresignedUrlExpired(url)){
+                fruitTreeVo.setUrl("URLExpired");
+            }else {
+                fruitTreeVo.setUrl(url);
+            }
+
         }
         return fruitTreeVo;
+    }
+
+    @Override
+    public void removeByAreaId(Long id) {
+        fruitTreeDao.deleteByAreaId(id);
     }
 
     public FruitTree voToFruitTree(FruitTreeVo fruitTreeVo) {

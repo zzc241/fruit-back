@@ -9,6 +9,7 @@ import com.jhc.fruit.entity.vo.AreaVo;
 import com.jhc.fruit.service.AreaService;
 
 
+import com.jhc.fruit.service.FruitTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ import java.util.List;
 public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaService {
     @Autowired
     private AreaDao areaDao;
+    @Autowired
+    private FruitTreeService fruitTreeService;
 
     @Override
     public Page<AreaVo> page(Page<AreaVo> page) {
@@ -115,5 +118,10 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
             return null;
         }
         return areaId;
+    }
+
+    public void removeArea(Long id) {
+        fruitTreeService.removeByAreaId(id);
+        areaDao.deleteById(id);
     }
 }
