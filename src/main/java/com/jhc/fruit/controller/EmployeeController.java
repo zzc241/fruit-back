@@ -312,16 +312,8 @@ public class EmployeeController {
      */
     @PostMapping("/auth")
     @ApiOperation("实名认证")
-    public R<Employee> authentication(@RequestBody Employee employee){
-        //实名认证的前提是已经有账户了
-        Long id = employee.getId();
-        if(id == null){
-            //说明账户不存在
-            return R.error("账户不存在");
-        }
-        //账户存在
-        employeeService.updateById(employee);
-        return R.success();
+    public R<String> authentication(@RequestBody Employee employee){
+        return employeeService.auth(employee);
     }
 
     @ApiOperation("用户列表")

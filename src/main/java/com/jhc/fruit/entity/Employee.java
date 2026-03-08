@@ -31,7 +31,7 @@ public class Employee{
     @ApiModelProperty(value = "性别(1男0女)")
     private Long sex;
     @ApiModelProperty(value = "身份证号")
-    private String id_card;
+    private String idCard;
     @ApiModelProperty(value = "员工状态(可用：1，禁用：0)")
     private Integer status;
     @ApiModelProperty(value = "创建时间(自动填充)")

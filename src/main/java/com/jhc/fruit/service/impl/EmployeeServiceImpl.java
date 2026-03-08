@@ -2,6 +2,7 @@ package com.jhc.fruit.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.JsonUtil;
 import com.jhc.fruit.common.JwtUtil;
@@ -17,6 +18,7 @@ import com.jhc.fruit.service.EmployeeService;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.jhc.fruit.service.FileService;
@@ -318,6 +320,93 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         employeeVo.setOrchardName(orchardName);
         employeeVo.setAreaList(areaList);
         return employeeVo;
+    }
+
+    @Override
+    public R<String> auth(Employee employee) {
+        //实名认证的前提是已经有账户了
+        Long id = employee.getId();
+        if(id == null){
+            //说明账户不存在
+            return R.error("账户不存在");
+        }
+        //账户存在
+        //校验手机号和身份证
+        if (isValidPhone(employee.getPhone())) {
+            if (isValidIdCard(employee.getIdCard())){
+                employeeDao.updateById(employee);
+                return R.success("认证成功");
+            }else {
+                return R.error("身份证校验失败");
+            }
+        }else {
+            return R.error("手机号校验失败");
+        }
+
+    }
+
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
+
+    /**
+     * 校验手机号是否合法
+     * @param phone 手机号（支持空字符串、null、带空格/横线的格式）
+     * @return true=合法，false=不合法
+     */
+    public static boolean isValidPhone(String phone) {
+        // 1. 空值/空白校验
+        if (StringUtils.isBlank(phone)) {
+            return false;
+        }
+        // 2. 去除空格、横线等干扰字符
+        String cleanPhone = phone.replaceAll("\\s+|-", "");
+        // 3. 正则匹配
+        return PHONE_PATTERN.matcher(cleanPhone).matches();
+    }
+
+    private static final Pattern ID_CARD_PATTERN = Pattern.compile("^[1-9]\\d{5}(19|20)\\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$");
+    /**
+     * 身份证号校验码权重
+     */
+    private static final int[] ID_CARD_WEIGHT = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+    /**
+     * 身份证号校验码对应值
+     */
+    private static final char[] ID_CARD_CHECK_CODE = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
+
+    /**
+     * 校验18位身份证号是否合法（含格式+校验码双重校验）
+     * @param idCard 身份证号（支持空字符串、null、带空格的格式）
+     * @return true=合法，false=不合法
+     */
+    public static boolean isValidIdCard(String idCard) {
+        // 1. 空值/空白校验
+        if (StringUtils.isBlank(idCard)) {
+            return false;
+        }
+        // 2. 去除空格
+        String cleanIdCard = idCard.trim();
+        // 3. 格式正则校验
+        if (!ID_CARD_PATTERN.matcher(cleanIdCard).matches()) {
+            return false;
+        }
+
+        // 4. 校验码验证（核心：防止伪造身份证号）
+        try {
+            // 前17位数字求和
+            int sum = 0;
+            for (int i = 0; i < 17; i++) {
+                sum += (cleanIdCard.charAt(i) - '0') * ID_CARD_WEIGHT[i];
+            }
+            // 计算校验码
+            int mod = sum % 11;
+            char checkCode = ID_CARD_CHECK_CODE[mod];
+            // 对比最后一位（忽略大小写）
+            char lastChar = cleanIdCard.charAt(17);
+            return Character.toUpperCase(lastChar) == checkCode;
+        } catch (Exception e) {
+            // 数字转换异常（理论上不会触发，因正则已校验）
+            return false;
+        }
     }
 
 

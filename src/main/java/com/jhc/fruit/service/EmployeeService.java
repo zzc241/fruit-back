@@ -37,4 +37,6 @@ public interface EmployeeService extends IService<Employee> {
     R<String> updateStatus(Long id);
 
     EmployeeVo getInfo(Employee employee);
+
+    R<String> auth(Employee employee);
 }
