@@ -35,4 +35,6 @@ public interface EmployeeService extends IService<Employee> {
     String saveHeadImg(MultipartFile file, String headImg);
 
     R<String> updateStatus(Long id);
+
+    EmployeeVo getInfo(Employee employee);
 }

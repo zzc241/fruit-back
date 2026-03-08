@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @ApiModel
@@ -17,6 +18,10 @@ public class EmployeeVo{
 
     @ApiModelProperty(value = "果园id")
     private Long orchardId;
+    @ApiModelProperty(value = "果园名称")
+    private String orchardName;
+    @ApiModelProperty(value = "负责区域")
+    private List<String> areaList;
 
     @ApiModelProperty(value = "账号" , example = "zzc")
     private String username;

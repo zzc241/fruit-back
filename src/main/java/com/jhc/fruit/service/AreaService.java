@@ -26,4 +26,6 @@ public interface AreaService extends IService<Area> {
     public Long getAreaIdByEmpId (Long empId);
 
     void removeArea(Long id);
+
+    List<String> listName(Long id);
 }

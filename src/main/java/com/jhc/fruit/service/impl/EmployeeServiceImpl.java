@@ -7,10 +7,12 @@ import com.jhc.fruit.common.JsonUtil;
 import com.jhc.fruit.common.JwtUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.EmployeeDao;
+import com.jhc.fruit.dao.FruitTreeDao;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
+import com.jhc.fruit.service.AreaService;
 import com.jhc.fruit.service.EmployeeService;
 
 import java.time.LocalDateTime;
@@ -18,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.jhc.fruit.service.FileService;
+import com.jhc.fruit.service.OrchardService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -44,9 +47,13 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     @Autowired
     private EmployeeDao employeeDao;
     @Autowired
-    private AreaServiceImpl areaServiceImpl;
+    private AreaService areaService;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private FruitTreeDao fruitTreeDao;
+    @Autowired
+    private OrchardService orchardService;
 
 
     @Override
@@ -277,7 +284,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         for (Employee employee : employees) {
             EmployeeVo employeeVo = new EmployeeVo();
             BeanUtils.copyProperties(employee, employeeVo);
-            employeeVo.setAreaId(areaServiceImpl.getAreaIdByEmpId(employee.getId()));
+            employeeVo.setAreaId(areaService.getAreaIdByEmpId(employee.getId()));
             employeeVos.add(employeeVo);
         }
         return employeeVos;
@@ -301,6 +308,17 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             employeeDao.updateById(employee);
             return R.success("user:" + employee.getUsername() + " enable");
         }
+    }
+
+    @Override
+    public EmployeeVo getInfo(Employee employee) {
+        String orchardName = orchardService.getOrchardNameById(employee.getOrchardId());
+        List<String> areaList = areaService.listName(employee.getId());
+        EmployeeVo employeeVo = new EmployeeVo();
+        BeanUtils.copyProperties(employee, employeeVo);
+        employeeVo.setOrchardName(orchardName);
+        employeeVo.setAreaList(areaList);
+        return employeeVo;
     }
 
 

@@ -13,6 +13,7 @@ import com.jhc.fruit.service.FruitTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -124,5 +125,17 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
     public void removeArea(Long id) {
         areaDao.removeIncludeTree(id);
         areaDao.deleteById(id);
+    }
+
+    @Override
+    public List<String> listName(Long id) {
+        LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Area::getEmpId, id);
+        List<Area> areaList = areaDao.selectList(queryWrapper);
+        List<String> areaNameList = new ArrayList<>();
+        areaList.forEach(area -> {
+            areaNameList.add(area.getName());
+        });
+        return areaNameList;
     }
 }

@@ -256,13 +256,14 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/{id}")
-    @ApiOperation("根据id查询员工信息，用于修改员工时回溯信息")
+    @ApiOperation("根据id查询员工信息")
     @ApiImplicitParam(name = "id", value = "要修改员工对应的id")
-    public R<Employee> getById(@PathVariable Long id){
+    public R<EmployeeVo> getById(@PathVariable Long id){
         log.info("根据id查询员工信息");
         Employee employee = employeeService.getById(id);
+        EmployeeVo employeeVo = employeeService.getInfo(employee);
         if(employee != null){
-            return R.success(employee);
+            return R.success(employeeVo);
         }
         return R.error("没有查询到对应员工信息");
     }
