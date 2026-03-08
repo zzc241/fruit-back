@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.entity.Area;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -314,5 +315,19 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implem
         BeanUtils.copyProperties(orchardVo, orchard);
         orchardDao.insert(orchard);
         return R.success("修改成功");
+    }
+
+    public Boolean removeOrchard(Long id) {
+        try {
+            List<Area> areaList = areaService.selectByOrchardId(id);
+            for(Area area : areaList){
+                areaService.removeArea(area.getId());
+            }
+            orchardDao.deleteById(id);
+            return true;
+        }catch (Exception e){
+            log.info(e.getMessage());
+            return false;
+        }
     }
 }

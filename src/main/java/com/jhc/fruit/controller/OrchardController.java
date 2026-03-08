@@ -73,7 +73,7 @@ public class OrchardController {
     @DeleteMapping("/delete/{id}")
     @ApiOperation("删除果园")
     public R<Boolean> deleteOrchard(@PathVariable Long id){
-        Boolean result = orchardServiceImpl.removeById(id);
+        Boolean result = orchardServiceImpl.removeOrchard(id);
         return R.success(result);
     }
 
