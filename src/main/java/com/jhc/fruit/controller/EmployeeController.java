@@ -354,7 +354,7 @@ public class EmployeeController {
 
     @ApiOperation("修改账户状态")
     @PutMapping("/status")
-    public R<String> updateStatus(@RequestBody Employee employee){
-        return employeeService.updateStatus(employee);
+    public R<String> updateStatus(@RequestBody Long id){
+        return employeeService.updateStatus(id);
     }
 }

@@ -290,13 +290,16 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     }
 
     @Override
-    public R<String> updateStatus(Employee employee) {
+    public R<String> updateStatus(Long id) {
+        Employee employee = employeeDao.selectById(id);
         if (employee.getStatus() == 1) {
             employee.setStatus(0);
-            return R.success("user:{} disable", employee.getUsername());
+            employeeDao.updateById(employee);
+            return R.success("user:" + employee.getUsername() + " disable");
         }else {
             employee.setStatus(1);
-            return R.success("user:{} enable", employee.getUsername());
+            employeeDao.updateById(employee);
+            return R.success("user:" + employee.getUsername() + " enable");
         }
     }
 
