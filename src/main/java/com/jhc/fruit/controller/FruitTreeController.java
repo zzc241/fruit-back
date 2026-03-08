@@ -88,9 +88,6 @@ public class FruitTreeController {
         FruitTree fruitTreeSave = new FruitTree();
         BeanUtils.copyProperties(fruitTree, fruitTreeSave);
         //添加果蔬
-<<<<<<< HEAD
-        fruitTreeService.save(fruitTreeSave);
-=======
         boolean treeSave = fruitTreeService.save(fruitTreeSave);
         if(!treeSave){
            return R.error("新增失败");
@@ -99,7 +96,6 @@ public class FruitTreeController {
         FruitGrow fruitGrow = new FruitGrow();
         fruitGrow.setId(fruitTree.getId());
         fruitGrowService.save(fruitGrow);
->>>>>>> 6cb581ec88faa49fba70a95f907d87aa1dbd3dff
         return R.success("新增果树成功");
     }
 
