@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Service
-public class OrchardServiceImpl extends ServiceImpl<OrchardDao , Orchard> implements OrchardService{
+public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> implements OrchardService{
     @Autowired
     private AreaService areaService;
     @Autowired

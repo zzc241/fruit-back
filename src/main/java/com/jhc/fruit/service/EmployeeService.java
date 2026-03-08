@@ -9,6 +9,7 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,4 +31,6 @@ public interface EmployeeService extends IService<Employee> {
     public Long getOrchardIdByEmpId(Long empId);
 
     public List<EmployeeVo> getEmpByOrchardId(Long orchardId);
+
+    String saveHeadImg(MultipartFile file, String headImg);
 }

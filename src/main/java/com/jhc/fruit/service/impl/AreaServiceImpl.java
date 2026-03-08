@@ -24,8 +24,9 @@ import java.util.List;
 public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaService {
     @Autowired
     private AreaDao areaDao;
-    @Autowired
-    private FruitTreeService fruitTreeService;
+    //这里禁用fruitTreeService，否则会导致依赖循环引用
+//    @Autowired
+//    private FruitTreeService fruitTreeService;
 
     @Override
     public Page<AreaVo> page(Page<AreaVo> page) {
@@ -121,7 +122,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
     }
 
     public void removeArea(Long id) {
-        fruitTreeService.removeByAreaId(id);
+        areaDao.removeIncludeTree(id);
         areaDao.deleteById(id);
     }
 }

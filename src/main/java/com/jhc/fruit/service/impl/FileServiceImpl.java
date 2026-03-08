@@ -213,7 +213,7 @@ public class FileServiceImpl implements FileService {
                 );
                 urls.add(presignedUrl);
             }
-            if (urls.size() > 0) {
+            if (!urls.isEmpty()) {
                 return urls;
             }else {
                 return null;

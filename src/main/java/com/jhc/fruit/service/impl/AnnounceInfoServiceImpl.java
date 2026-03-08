@@ -12,6 +12,7 @@ import com.jhc.fruit.service.EmpGroupService;
 import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.AnnounceInfoService;
 
+import com.jhc.fruit.service.OrchardService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +49,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
     @Autowired
     private EmpGroupService empGroupService;
     @Autowired
-    private OrchardServiceImpl orchardServiceImpl;
+    private OrchardService orchardService;
     @Override
     public Page<AnnounceInfoVo> getPageInfo(AnnounceInfoVo pickInfoVo) { 
         Page<AnnounceInfo> pageInfo = new Page<>(pickInfoVo.getPage(), pickInfoVo.getPageSize());
@@ -226,7 +227,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         try {
             Long orchardId = pickInfoVo.getOrchardId();
             if(orchardId != null){
-                String orchardName = orchardServiceImpl.getOrchardNameById(orchardId);
+                String orchardName = orchardService.getOrchardNameById(orchardId);
                 if(orchardName == null){
                     return "未获取到当前果园信息，请检查orchardId是否正常";
                 }
@@ -291,7 +292,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
             if(orchardId == null){
                 return R.error("请选择果园").toString();
             }
-            String orchardName = orchardServiceImpl.getOrchardNameById(orchardId);
+            String orchardName = orchardService.getOrchardNameById(orchardId);
             if(orchardName == null){
                 return R.error("未获取到当前果园信息，请检查orchardId是否正常").toString();
             }

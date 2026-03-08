@@ -32,6 +32,7 @@ import java.util.List;
 public class AnnounceInfoController {
     @Autowired
     private AnnounceInfoService announceInfoService;
+
     @PostMapping("/list")
     @ApiOperation("后台：查看全部通知")
     public R<Page<AnnounceInfoVo>> getInfo(@RequestBody AnnounceInfoVo pickInfoVo){

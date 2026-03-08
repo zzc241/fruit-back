@@ -22,6 +22,10 @@
         <result column="update_time" property="updateTime" jdbcType="DATE" />
         <result column="emp_id" property="empId" jdbcType="BIGINT" />
     </resultMap>
+    <delete id="removeIncludeTree">
+        DELETE FROM fruit.fruit_tree
+        WHERE fruit_tree.area_id = #{id}
+    </delete>
     <!-- <update id="updateById" parameterType="com.jhc.fruit.entity.Area">
         UPDATE area_info  SET name=#{name}, size=#{size}, type_id=#{typeId},  update_time=#{updateTime}, description=#{description},  update_user=#{updateUser}, emp_id=#{empId}  WHERE id= #{id}
     </update> -->

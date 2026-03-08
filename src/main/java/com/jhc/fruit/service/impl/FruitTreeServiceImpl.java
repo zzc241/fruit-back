@@ -17,6 +17,7 @@ import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.entity.vo.QRTreeVo;
+import com.jhc.fruit.service.AreaService;
 import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.FruitTreeService;
 
@@ -59,7 +60,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     @Autowired
     private FertWaterDao fertWaterDao;
     @Autowired
-    private AreaServiceImpl areaServiceImpl;
+    private AreaService areaService;
     //创建客户端实例
     private final OkHttpClient client = new OkHttpClient().newBuilder()
             .connectTimeout(60, TimeUnit.SECONDS)  // 连接超时
@@ -349,7 +350,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
             List<FertWater> fertWaters = fertWaterDao.selectList(queryWrapper);
 
             fruitTreeVo.setLogs(fertWaters);
-            fruitTreeVo.setAreaManagerName(areaServiceImpl.getAreaNameById(fruitTree.getAreaId()));
+            fruitTreeVo.setAreaManagerName(areaService.getAreaNameById(fruitTree.getAreaId()));
             return R.success(fruitTreeVo);
         }catch (Exception e){
             e.printStackTrace();

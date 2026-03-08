@@ -250,18 +250,6 @@ public class EmployeeController {
         return R.success("成功修改密码");
     }
 
-    @ApiOperation("个人信息展示方法")
-    @GetMapping("/getPeople")
-    public R<Employee> getPeople(){
-        Long id = BaseContext.getId();
-        System.out.println("个人信息展示获取的id：" + id);
-        //1.获取员工id
-        Long employeeId = id;
-        //2.根据员工id查询员工个人信息
-        Employee employee = employeeService.getById(employeeId);
-        return R.success(employee);
-    }
-
     /**
      * 根据员工id查询员工信息;用于在修改员工信息时的回溯信息
      * @param id
@@ -298,9 +286,6 @@ public class EmployeeController {
         if(emp == null){
             return R.error("找不到用户，刷新后再试");
         }
-        String headImg = emp.getHeadImg();
-        //删除服务器当中存储的员工头像信息
-        QiniuUtils.deleteFileFromQiniu(headImg);
         //删除数据库中的对应员工数据
         boolean isRemove = employeeService.removeById(id);
         if(isRemove){
@@ -359,4 +344,12 @@ public class EmployeeController {
         List<EmployeeVo> employees = employeeService.getEmpByOrchardId(orchardId);
         return R.success(employees);
     }
+
+    @ApiOperation("保存用户头像")
+    @PostMapping("/saveHeadImg")
+    public R<String> saveHeadImg(@RequestParam("file") MultipartFile file) {
+        String fileUrl = employeeService.saveHeadImg(file, "headImg");
+        return R.success(fileUrl);
+    }
+
 }
