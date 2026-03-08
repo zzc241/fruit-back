@@ -29,12 +29,6 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     private FileService fileService;
 
     @Override
-    public Long add(Report report) {
-        Long id = (long) reportDao.insert(report);
-        return id;
-    }
-
-    @Override
     public void update(ReportVo reportVo) {
         //情况：文本数据更新/图片更新
         //更新文本部分

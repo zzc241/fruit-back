@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ReportService extends IService<Report> {
-    Long add(Report report);
 
     void update(ReportVo reportVo);
 
