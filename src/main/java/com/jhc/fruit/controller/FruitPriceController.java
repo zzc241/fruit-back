@@ -7,6 +7,7 @@ import com.jhc.fruit.service.FruitPriceService;
 import com.jhc.fruit.service.impl.FruitPriceServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,9 @@ public class FruitPriceController {
      */
     @ApiOperation("获取指定水果的实时收购价格")
     @PostMapping("/realtime")
-    public R<List<FruitPrice>> getRealtimePrice(@RequestParam String fruitName) {
+    public R<List<FruitPrice>> getRealtimePrice(
+            @ApiParam(defaultValue = "柑桔")
+            @RequestParam String fruitName) {
         if(null==fruitName||"".equals(fruitName)){
             return R.error("请指定获取水果类型");
         }

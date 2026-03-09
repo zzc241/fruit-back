@@ -83,10 +83,11 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
 
     @Override
     public R<Long> addImg(Report report,
-                       List<MultipartFile> bcImgs,
-                       List<MultipartFile> fertWaterImgs,
-                       List<MultipartFile> ripeImgs,
-                       List<MultipartFile> weedsImgs) {
+                          List<MultipartFile> bcImgs,
+                          List<MultipartFile> fertWaterImgs,
+                          List<MultipartFile> ripeImgs,
+                          List<MultipartFile> weedsImgs){
+
         // 前置校验：report不能为空
         if (report == null) {
             log.error("新增报告失败：report对象为空");
@@ -285,6 +286,15 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             }else {
                 reportDao.deleteById(id);
                 reportDao.deleteImgs(id);
+                //关联删除图片
+                List<String> fileNames = reportDao.getImgs(id);
+                if(fileNames != null && !fileNames.isEmpty()) {
+                    for (String fileName : fileNames) {
+                        if(fileService.exits(fileName)){
+                            fileService.remove(fileName);
+                        }
+                    }
+                }
             }
         }
         if (noExitsIds.isEmpty()) {
@@ -321,9 +331,14 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             //获取相对路径
             List<String> fileNames = reportDao.selectImgs(reportId, typeId);
             //获取临时访问url
-            fileNames.forEach(fileName -> {
-                urls.add(fileService.getImageUrl(fileName));
-            });
+            //判断文件是否存在
+            for (String fileName : fileNames) {
+                if (fileService.exits(fileName)){
+                    urls.add(fileService.getImageUrl(fileName));
+                }else {
+                    urls.add("文件不存在");
+                }
+            }
             return urls;
         }catch (Exception e){
             log.error(e.getMessage());
