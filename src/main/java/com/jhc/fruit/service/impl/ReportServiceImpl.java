@@ -83,10 +83,11 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
 
     @Override
     public R<Long> addImg(Report report,
-                       List<MultipartFile> bcImgs,
-                       List<MultipartFile> fertWaterImgs,
-                       List<MultipartFile> ripeImgs,
-                       List<MultipartFile> weedsImgs) {
+                          List<MultipartFile> bcImgs,
+                          List<MultipartFile> fertWaterImgs,
+                          List<MultipartFile> ripeImgs,
+                          List<MultipartFile> weedsImgs){
+
         // 前置校验：report不能为空
         if (report == null) {
             log.error("新增报告失败：report对象为空");

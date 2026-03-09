@@ -1,13 +1,10 @@
 package com.jhc.fruit.controller;
 
 import com.jhc.fruit.common.R;
-import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.Report;
-import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.entity.vo.ReportVo;
 import com.jhc.fruit.service.ReportService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -31,23 +28,17 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @ApiOperation("新增(带图片文件，存在bug)")
+    @ApiOperation("新增(带图片文件)")
     @PostMapping(value = "/addImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public R<Long> addImg(
-            @ApiParam(value = "报告", required = true)
-            @RequestPart Report report,  // 直接接收ID
-
-            @ApiParam(value = "bcImgs", defaultValue = "null")
+            // 接收业务参数（JSON格式，form-data中以File类型上传JSON文件）
+            @RequestPart("report") Report report,
+            // 接收各类图片文件列表（form-data中以File类型上传）
             @RequestPart(required = false) List<MultipartFile> bcImgs,
-
-            @ApiParam(value = "fertWaterImgs", defaultValue = "null")
             @RequestPart(required = false) List<MultipartFile> fertWaterImgs,
-
-            @ApiParam(value = "ripeImgs", defaultValue = "null")
             @RequestPart(required = false) List<MultipartFile> ripeImgs,
-
-            @ApiParam(value = "weedsImgs", defaultValue = "null")
-            @RequestPart(required = false) List<MultipartFile> weedsImgs) {
+            @RequestPart(required = false) List<MultipartFile> weedsImgs
+    ) {
 
         return reportService.addImg(report, bcImgs, fertWaterImgs, ripeImgs, weedsImgs);
     }

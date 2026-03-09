@@ -246,21 +246,14 @@ public class FruitTreeController {
 
     private AIConfig aiConfig;
 
-    @ApiOperation("AI识别果实成熟度")
-    @PostMapping("/AIRipe")
-    public R<List<Integer>> AIripe(@RequestParam MultipartFile file,
-                                  @ApiParam(value = "conf", defaultValue = "0.25")
-                                  double conf,
-                                  @ApiParam(value = "iou", defaultValue = "0.5")
-                                  double iou) {
 
-        return fruitTreeService.AIOfRipeness(file, conf, iou);
-    }
+
     @GetMapping("/treeInfo/{treeId}")
     @ApiOperation("果树详情信息")
     public R<FruitTreeVo> treeInfo(@PathVariable Long treeId){
         return fruitTreeService.treeInfo(treeId);
     }
+
     @GetMapping("/treeInfoSevenDays/{treeId}")
     @ApiOperation("果树近七天详情信息")
     public R<FruitTreeVo> treeInfoSevenDays(@PathVariable Long treeId){
