@@ -19,4 +19,6 @@ public interface ReportDao extends BaseMapper<Report> {
 
 
     void addUrl(String url, Long id, Long typeId);
+
+    List<String> getImgs(Long id);
 }

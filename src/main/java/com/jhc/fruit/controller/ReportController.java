@@ -79,19 +79,19 @@ public class ReportController {
         return reportService.saveBcImg(file);
     }
 
-    @ApiOperation("保存图片：病虫害")
+    @ApiOperation("保存图片：水肥")
     @PostMapping("/saveFertWaterImg")
     public R<String> saveFertWaterImg(@RequestParam MultipartFile file) {
         return reportService.saveFertWaterImg(file);
     }
 
-    @ApiOperation("保存图片：病虫害")
+    @ApiOperation("保存图片：成熟度")
     @PostMapping("/saveRipeImg")
     public R<String> saveRipeImg(@RequestParam MultipartFile file) {
         return reportService.saveRipeImg(file);
     }
 
-    @ApiOperation("保存图片：病虫害")
+    @ApiOperation("保存图片：杂草")
     @PostMapping("/saveWeedsImg")
     public R<String> saveWeedsImg(@RequestParam MultipartFile file) {
         return reportService.saveWeedsImg(file);

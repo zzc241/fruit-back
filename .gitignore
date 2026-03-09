@@ -35,5 +35,7 @@ build/
 
 # 排除特定的 application.yml 文件
 src/main/resources/application.yml
+src/main/resources/application-txt.yml
 src/main/resources/logback-spring.xml
 src/main/resources/static/
+src/main/resources/pfx-password.txt

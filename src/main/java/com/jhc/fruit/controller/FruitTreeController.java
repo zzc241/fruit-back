@@ -207,7 +207,7 @@ public class FruitTreeController {
         }
         //如果果树存在
         //上传二维码并上传到minio
-        String QRPath = fileService.save(QRCodeUtil.createTreeQRCode(id), "TreeQR");
+        String QRPath = fileService.save(QRCodeUtil.createTreeQRCode(id), "QRtree");
         //返回图片在minio上的路径
         return R.success(QRPath);
     }

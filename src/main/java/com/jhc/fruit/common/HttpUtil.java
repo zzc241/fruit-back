@@ -1,7 +1,9 @@
 package com.jhc.fruit.common;
 
 import okhttp3.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -205,6 +207,95 @@ public class HttpUtil {
         // 示例：使用Fastjson转JSON
         return com.alibaba.fastjson2.JSON.toJSONString(bodyParams);
         // 若用Jackson：return new ObjectMapper().writeValueAsString(bodyParams);
+    }
+
+    /**
+     * 文件上传专用 POST 方法（multipart/form-data）
+     * @param url 请求地址（可包含URL参数，比如?conf=0.5&iou=0.7）
+     * @param headers 请求头（可选，比如Token、Content-Type）
+     * @param fileParamName AI接口要求的文件参数名（比如你的场景是"file"）
+     * @param file 要上传的文件（MultipartFile 转 File）
+     * @return 响应体字符串/错误信息
+     */
+    public String doPostUpload(String url, Map<String, String> headers, String fileParamName, MultipartFile file) {
+        // 1. 前置校验
+        if (url == null || url.trim().isEmpty()) {
+            return "错误：请求URL不能为空";
+        }
+        if (file == null || file.isEmpty()) {
+            return "错误：上传文件不能为空";
+        }
+        if (fileParamName == null || fileParamName.trim().isEmpty()) {
+            fileParamName = "file"; // 默认文件参数名
+        }
+
+        // 2. 构建临时文件（避免文件流占用）
+        File tempFile = null;
+        try {
+            // 创建临时文件，后缀保留原文件名
+            tempFile = File.createTempFile("okhttp-upload-", file.getOriginalFilename());
+            file.transferTo(tempFile); // 把MultipartFile写入临时文件
+        } catch (IOException e) {
+            return "错误：创建临时文件失败，原因：" + e.getMessage();
+        }
+
+        // 3. 构建multipart/form-data请求体
+        MediaType mediaType = MediaType.parse(
+                file.getContentType() != null ? file.getContentType() : "application/octet-stream"
+        );
+        MultipartBody.Builder multipartBuilder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM); // 必须设置为FORM类型
+
+        // 添加文件参数
+        multipartBuilder.addFormDataPart(
+                fileParamName,
+                file.getOriginalFilename(),
+                RequestBody.create(tempFile, mediaType)
+        );
+
+        RequestBody requestBody = multipartBuilder.build();
+
+        // 4. 构建Request对象
+        Request.Builder requestBuilder = new Request.Builder()
+                .url(url)
+                .post(requestBody);
+
+        // 添加请求头
+        if (headers != null && !headers.isEmpty()) {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                if (entry.getKey() == null || entry.getValue() == null) {
+                    continue;
+                }
+                requestBuilder.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+
+        // 5. 执行请求+处理响应+资源释放
+        Response response = null;
+        try {
+            response = client.newCall(requestBuilder.build()).execute();
+
+            if (!response.isSuccessful()) {
+                return "错误：文件上传请求失败，HTTP状态码：" + response.code();
+            }
+
+            ResponseBody responseBody = response.body();
+            return responseBody != null ? responseBody.string() : "响应体为空";
+
+        } catch (IOException e) {
+            return "错误：网络请求失败，原因：" + e.getMessage();
+        } catch (Exception e) {
+            return "错误：文件上传异常，原因：" + e.getMessage();
+        } finally {
+            // 关键：关闭响应+删除临时文件
+            if (response != null) {
+                response.close();
+            }
+            // 临时文件用完即删，避免磁盘占用
+            if (tempFile != null && tempFile.exists()) {
+                tempFile.delete();
+            }
+        }
     }
 
 

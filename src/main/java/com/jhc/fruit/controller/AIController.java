@@ -19,8 +19,8 @@ public class AIController {
     @Autowired
     private AIService aiService;
 
-    @ApiOperation("AI识别果实成熟度")
-    @PostMapping("/AIRipe")
+    @ApiOperation("成熟果实数量统计")
+    @PostMapping("/RipeCount")
     public R<List<Integer>> AIripe(@RequestParam MultipartFile file,
                                    @ApiParam(value = "conf", defaultValue = "0.25")
                                    double conf,

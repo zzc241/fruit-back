@@ -286,6 +286,15 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             }else {
                 reportDao.deleteById(id);
                 reportDao.deleteImgs(id);
+                //关联删除图片
+                List<String> fileNames = reportDao.getImgs(id);
+                if(fileNames != null && !fileNames.isEmpty()) {
+                    for (String fileName : fileNames) {
+                        if(fileService.exits(fileName)){
+                            fileService.remove(fileName);
+                        }
+                    }
+                }
             }
         }
         if (noExitsIds.isEmpty()) {
