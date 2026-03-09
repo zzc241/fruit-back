@@ -27,4 +27,9 @@ public class Report {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+    @ApiModelProperty(value = "创建时间(自动填充)")
+    @TableField(fill = FieldFill.INSERT)
+    private Long createUser;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateUser;
 }

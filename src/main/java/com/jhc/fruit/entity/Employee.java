@@ -37,18 +37,14 @@ public class Employee{
     private Integer status;
     @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime createTime;
-
     @ApiModelProperty(value = "更新时间(自动填充)")
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime updateTime;
-
-    @ApiModelProperty(value = "创建者")
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;
-    @ApiModelProperty(value = "更新者")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 

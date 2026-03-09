@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.beans.Transient;
 import java.time.LocalDateTime;
 
 /**
@@ -30,24 +29,21 @@ public class Area {
     private int size;
     @ApiModelProperty("果树类型")
     private Long typeId;
-    @ApiModelProperty(value = "创建时间(自动填充)")
-    @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
-    private LocalDateTime createTime;
-
-    @ApiModelProperty(value = "更新时间(自动填充)")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
-    private LocalDateTime updateTime;
     @ApiModelProperty("描述")
     private String description;
-
-    @ApiModelProperty("创建人")
-    @TableField(fill = FieldFill.INSERT)
-    private Long createUser;
-    @ApiModelProperty("修改人")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateUser;
     @ApiModelProperty("负责人")
     private Long empId;
+
+    @ApiModelProperty(value = "创建时间(自动填充)")
+    @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime createTime;
+    @ApiModelProperty(value = "更新时间(自动填充)")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime updateTime;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createUser;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateUser;
 }

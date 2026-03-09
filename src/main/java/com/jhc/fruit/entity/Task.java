@@ -54,21 +54,21 @@ public class Task {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @ApiModelProperty(value = "任务结束时间")
     private LocalDateTime deadline;
-    @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
-    @ApiModelProperty(value = "创建时间")
-    private LocalDateTime createTime;
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
-    @ApiModelProperty(value = "更新时间")
-    private LocalDateTime updateTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @ApiModelProperty(value = "发布时间")
     private LocalDateTime postTime;
     @ApiModelProperty(value = "任务状态")
     private Integer status;
-    @ApiModelProperty(value = "创建用户")
+    @ApiModelProperty(value = "创建时间(自动填充)")
+    @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime createTime;
+    @ApiModelProperty(value = "更新时间(自动填充)")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime updateTime;
+    @TableField(fill = FieldFill.INSERT)
     private Long createUser;
-    @ApiModelProperty(value = "更新用户")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 }

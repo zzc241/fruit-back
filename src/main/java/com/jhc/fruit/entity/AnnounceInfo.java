@@ -23,19 +23,7 @@ public class AnnounceInfo {
     private Long id;
     private String title;
     private String content;
-    @ApiModelProperty(value = "创建时间(自动填充)")
-    @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime createTime;
-
-    @ApiModelProperty(value = "更新时间(自动填充)")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime updateTime;
-    @TableField(fill = FieldFill.INSERT)
-    private Long createUser;
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateUser;
+    
     //接收通知信息的用户id
     private Long empId;
     private Long needNumber;
@@ -56,4 +44,18 @@ public class AnnounceInfo {
     private Integer status;
     //薪资
     private Long salary;
+
+
+    @ApiModelProperty(value = "创建时间(自动填充)")
+    @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime createTime;
+    @ApiModelProperty(value = "更新时间(自动填充)")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime updateTime;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createUser;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateUser;
 }

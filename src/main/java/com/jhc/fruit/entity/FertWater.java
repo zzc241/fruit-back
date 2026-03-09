@@ -28,17 +28,17 @@ public class FertWater {
     private LocalDateTime operationTime;
     @ApiModelProperty(value = "操作方式")
     private String operationMethod;
-    @ApiModelProperty(value = "创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
+    @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime createTime;
-    @ApiModelProperty(value = "更新时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
+    @ApiModelProperty(value = "更新时间(自动填充)")
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime updateTime;
-    @ApiModelProperty(value = "创建用户")
+    @TableField(fill = FieldFill.INSERT)
     private Long createUser;
-    @ApiModelProperty(value = "更新用户")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
     @ApiModelProperty(value = "备注")
     private String content;
