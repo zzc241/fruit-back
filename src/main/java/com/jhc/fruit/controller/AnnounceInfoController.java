@@ -70,15 +70,15 @@ public class AnnounceInfoController {
     @PutMapping("/read/{id}")
     @ApiOperation("已读通知方法")
     @ApiImplicitParam(name = "id",value = "通知对应的id")
-    public R<String> readInfo(@PathVariable Long id){
-        String result = announceInfoService.updateReadInfo(id);
+    public R<String> readInfo(@PathVariable Long id , @RequestParam Long isRead){
+        String result = announceInfoService.updateReadInfo(id , isRead);
         return R.success(result);
     }
     @PutMapping("/finish/{id}")
     @ApiOperation("完成通知方法")
     @ApiImplicitParam(name = "id",value = "通知对应的id")
-    public R<String> finishInfo(@PathVariable Long id){
-        String result = announceInfoService.updateFinishInfo(id);
+    public R<String> finishInfo(@PathVariable Long id , @RequestParam Long isFinish){
+        String result = announceInfoService.updateFinishInfo(id , isFinish);
         return R.success(result);
     }
     @PostMapping("/change")

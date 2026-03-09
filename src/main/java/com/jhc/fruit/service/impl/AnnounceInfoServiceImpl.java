@@ -71,13 +71,11 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         }
 
         if (pickInfoVo.getIsFinish() != null) {
-            //如果isFinish为true是已完成1，否则为未完成0
-            Integer isFinishInt = pickInfoVo.getIsFinish() ? 1 : 0;
+            Long isFinishInt = pickInfoVo.getIsFinish();
             queryWrapper.eq(AnnounceInfo::getIsFinish, isFinishInt);
         }
         if(pickInfoVo.getIsRead() != null){
-            //如果isRead为true是已读1，否则为未读0
-            Integer isReadInt = pickInfoVo.getIsRead() ? 1 : 0;
+            Long isReadInt = pickInfoVo.getIsRead();
             queryWrapper.eq(AnnounceInfo::getIsRead, isReadInt);
         }
         // 按时间倒序排列
@@ -144,14 +142,12 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         if(pickInfoVo.getOrchardId() != null){
             queryWrapper.eq(AnnounceInfo::getOrchardId, pickInfoVo.getOrchardId());
         }
-        if (pickInfoVo.getIsFinish() != null) {
-            //如果isFinish为true是已完成1，否则为未完成0
-            Integer isFinishInt = pickInfoVo.getIsFinish() ? 1 : 0;
+        if(pickInfoVo.getIsFinish() != null){
+            Long isFinishInt = pickInfoVo.getIsFinish();
             queryWrapper.eq(AnnounceInfo::getIsFinish, isFinishInt);
         }
         if(pickInfoVo.getIsRead() != null){
-            //如果isRead为true是已读1，否则为未读0
-            Integer isReadInt = pickInfoVo.getIsRead() ? 1 : 0;
+            Long isReadInt = pickInfoVo.getIsRead();
             queryWrapper.eq(AnnounceInfo::getIsRead, isReadInt);
         }
         
@@ -207,31 +203,6 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
             return "未获取到当前员工信息，请检查empId是否正常";
         }
         try {
-            Long empId = pickInfoVo.getEmpId();
-            if(empId != null){
-                String empName = employeeService.getEmpNameById(pickInfoVo.getEmpId());
-                if(empName == null){
-                    return "未获取到当前员工信息，请检查empId是否正常";
-                }
-            }
-        } catch (Exception e) {
-            return "未获取到当前员工信息，请检查empId是否正常";
-        }
-        
-        // try {
-        //     Long groupId = pickInfoVo.getGroupId();
-        //     if(groupId != null){
-        //         // log.info("groupId:{}",groupId);
-        //         String groupName = empGroupService.getGroupNameById(groupId);
-        //         log.info("groupName:{}",groupName);
-        //         if(groupName == null){
-        //             return "未获取到当前组信息，请检查groupId是否正常";
-        //         }
-        //     }
-        // } catch (Exception e) {
-        //     return "未获取到当前组信息，请检查groupId是否正常";
-        // }
-        try {
             Long orchardId = pickInfoVo.getOrchardId();
             if(orchardId != null){
                 String orchardName = orchardService.getOrchardNameById(orchardId);
@@ -248,7 +219,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         return this.updateById(pickInfo) ? "修改成功" : "修改失败";
     }
 
-    public String updateReadInfo(Long id){
+    public String updateReadInfo(Long id , Long isRead){
         if(id == null){
             return "未获取到通知id，请检查id是否正常";
         }
@@ -256,10 +227,10 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         if(info == null){
             return "通知不存在";
         }
-        info.setIsRead(true);
+        info.setIsRead(isRead);
         return this.updateById(info) ? "已读成功" : "已读失败";
     }
-    public String updateFinishInfo(Long id){
+    public String updateFinishInfo(Long id , Long isFinish){
         if(id == null){
             return "未获取到通知id，请检查id是否正常";
         }
@@ -267,7 +238,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         if(info == null){
             return "通知不存在";
         }
-        info.setIsFinish(true);
+        info.setIsFinish(isFinish);
         return this.updateById(info) ? "完成成功" : "完成失败";
     }
     public String saveDeployInfo(AnnounceInfoVo announceInfoVo){

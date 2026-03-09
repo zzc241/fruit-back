@@ -1,3 +1,66 @@
+
+
+**概要**
+
+- **目标**: 这是一个基于 Spring Boot 的果园管理后端，提供员工、果园、任务、新闻、气象等业务接口。
+- **启动类**: [FruitApplication.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+
+**技术栈**
+
+- **框架**: Spring Boot（[@SpringBootApplication](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）、Spring 事务管理。
+- **持久层**: MyBatis-Plus（mapper XML 存于 [mappers](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)），自动填充由 [MyMetaObjectHandler](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 支持。
+- **数据库连接池**: Druid（在 [application.yml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 中配置）。
+- **对象映射/序列化**: Jackson（自定义 [JacksonObjectMapper](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
+- **认证/鉴权**: 简易 JWT 工具类 [JwtUtil](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) + 请求过滤器 [LoginCheckFilter](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)。
+- **文件存储**: MinIO（配置在 [application.yml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
+- **文档/工具**: Swagger（有 [SwaggerConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)），AOP 日志切面（[LogAspect](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
+- **构建**: Maven（[pom.xml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
+
+**项目结构（高层）**
+
+- **controller**: 对外 REST 接口（示例：EmployeeController、TaskController 等）。
+- **service / service.impl**: 业务逻辑层，接口+实现分离。
+- **dao**: MyBatis/Mapper 接口（配合 resources/mappers/*.xml）。
+- **entity / entity.vo**: 实体与视图对象（VO）。
+- **common**: 工具类与通用组件（[JwtUtil](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[R](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 响应类、[MyMetaObjectHandler](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[GlobalExceptionHandler](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 等）。
+- **config**: 全局配置（[MybatisPlusConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[MinioConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[SwaggerConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[CorsConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[WebMvcConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 等）。
+- **filter / aop**: 请求拦截与切面（[LoginCheckFilter](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[LogAspect](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
+- **resources/mappers**: 自定义 SQL 与复杂查询的 XML 映射文件（例如 [FruitTreeDao.xml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
+- **测试**: [test](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 下的单元/集成测试用例。
+
+**请求处理流（典型）**
+
+- **客户端 → 服务器**: HTTP 请求到达 Spring 容器（可走 CORS 配置）。
+- **过滤**: [LoginCheckFilter](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 做鉴权/白名单检查（携带或校验 JWT）。
+- **控制器**: Controller 层接收并校验输入，调用 Service。
+- **业务层**: Service 层执行业务逻辑、事务控制（[@Transactional](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）并调用 Dao。
+- **持久层**: Dao 使用 MyBatis-Plus 或 mapper XML 执行 SQL，并返回实体/VO。
+- **响应**: 统一响应类 [R](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 封装返回结果；异常由 [GlobalExceptionHandler](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 统一处理。
+
+**重要文件 / 参考位置**
+
+- **主类**: [FruitApplication.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+- **配置**: [application.yml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)（数据源、MyBatis-Plus、MinIO、端口等）
+- **MyBatis-Plus 配置**: [MybatisPlusConfig.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+- **JWT 工具**: [JwtUtil.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+- **鉴权过滤器**: [LoginCheckFilter.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+- **AOP 日志**: [LogAspect.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+- **自动填充**: [MyMetaObjectHandler.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+- **异常处理**: [GlobalExceptionHandler.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+- **示例 mapper XML**: [FruitTreeDao.xml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+- **构建文件**: [pom.xml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+
+**架构特性与注意点**
+
+- **混合使用 MP 与 XML**: 项目同时使用 MyBatis-Plus 注解/方法和传统 XML，适合简单 CRUD 与复杂 SQL 并存。
+- **集中配置**: 大量外部依赖（MinIO、AI 接口、证书密码等）都在 [application.yml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)，注意环境隔离与敏感信息管理。
+- **鉴权简单**: JWT + 过滤器实现轻量鉴权，若有更高安全要求，建议引入 Spring Security。
+- **日志与异常**: AOP + 全局异常处理实现统一监控与错误返回，便于运维。
+
+
+
+
+
 ## 2026.1.22开始项目规划文件
 
 
@@ -71,13 +134,25 @@ git remote -v//查看是否连接成功
 //origin  git@github.com:zzc241/-1.0.git (push)
 git pull origin main//拉取代码
 git push origin main//上传代码
+
+//合作时的基本步骤
+合作者1(main分支)、合作者2(zyr分支)
+合作者2先提交分支
+git push origin zyr
+合作者1拉取合作者2分支
+git pull origin zyr
+合作者1提交分支
+git push origin main
+合作者2拉取合作者1分支
+git pull origin main
+//下面的git代码基本不需要用到，了解即可
 ```
 
 ![](README.assets/git2.png)
 
 ```
 27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
-$ git fetch origin zyr
+$ git fetch origin zyr      //这个代码适用于查看别人分支
 From github.com:zzc241/-1.0
 
  * branch            zyr        -> FETCH_HEAD
@@ -88,43 +163,30 @@ $ git branch -r
   origin/zyr
 
 27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
-$ git checkout -b zyr origin/zyr
+$ git checkout -b zyr origin/zyr    //这是让合作方创建分支
 branch 'zyr' set up to track 'origin/zyr'.
 Switched to a new branch 'zyr'
 
-27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (zyr)
-$ git branch -v
-  main d795273 [origin/main] 1.22(readme与时间+‘z’)
-
-* zyr  6e36039 [origin/zyr] 修改：删除了多余属性typen
 
 27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (zyr)
-$ git pull origin zyr
+$ git pull origin zyr       //合并分支
 remote: Enumerating objects: 52, done.
 remote: Counting objects: 100% (52/52), done.
 remote: Compressing objects: 100% (6/6), done.
 remote: Total 24 (delta 12), reused 24 (delta 12), pack-reused 0 (from 0)
-Unpacking objects: 100% (24/24), 1.67 KiB | 30.00 KiB/s, done.
-From github.com:zzc241/-1.0
-
- * branch            zyr        -> FETCH_HEAD
-   6e36039..16bd946  zyr        -> origin/zyr
-   Updating 6e36039..16bd946
-   Fast-forward
-    ...\346\210\252\345\233\276 2026-01-22 142718.png" | Bin 0 -> 242454 bytes
 
 27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (zyr)
-$ git checkout main
+$ git checkout main            //回到自己的主分支
 Switched to branch 'main'
 Your branch is up to date with 'origin/main'.
 
 27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
-$ git merge zyr
+$ git merge zyr     //合并本地zyr分支          
 Updating d795273..16bd946
 Fast-forward
 
 27141@zc MINGW64 /d/中软果蔬项目资源/24013092源码/后端/fruits (1) (main)
-$ git push origin main
+$ git push origin main  //推送本地分支
 Total 0 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
 To github.com:zzc241/-1.0.git
    d795273..16bd946  main -> main
@@ -316,5 +378,36 @@ String[] urls = new String[]{
                 "/swagger-resources/**",
                 "/null/swagger-resources/**"
         };
+```
+
+
+
+
+
+##### 项目优化
+
+这是一段通过empid查询emp的task的代码。不难发现其笛卡尔积是三个表的数据相乘，三个表连起来效率非常低。
+
+```sql
+<select id="getTasksByEmpId" resultType="com.jhc.fruit.entity.Task">
+        SELECT task.* from task,emp_group,empgroup_emp
+        where
+        empgroup_emp.emp_id = #{empId}
+        and empgroup_emp.group_id = emp_group.id
+        and task.group_id = emp_group.id
+</select>
+```
+
+思路：可以优化成子查询，通过emp_group查到groupId再在task中查询。
+
+```sql
+<select id="getTasksByEmpId" resultType="com.jhc.fruit.entity.Task">
+        SELECT task.* 
+        FROM task
+        WHERE task.group_id IN (
+            SELECT group_id FROM empgroup_emp 
+            WHERE emp_id = #{empId}
+        )
+</select>
 ```
 

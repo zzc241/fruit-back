@@ -320,7 +320,9 @@ public class EmployeeController {
     @GetMapping("/getAll")
     public R<List<Employee>> getAll(@RequestParam Long orchardId){
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
+        if(orchardId != null){
+            lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
+        }
         List<Employee> employees = employeeService.list(lambdaQueryWrapper);
         return R.success(employees);
     }

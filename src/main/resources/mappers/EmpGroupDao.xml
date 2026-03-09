@@ -52,11 +52,12 @@
         select emp_group.group_name from emp_group where emp_group.group_id = #{id}
     </select>-->
     <select id="getTasksByEmpId" resultType="com.jhc.fruit.entity.Task">
-        SELECT task.* from task,emp_group,empgroup_emp
-        where
-        empgroup_emp.emp_id = #{empId}
-        and empgroup_emp.group_id = emp_group.id
-        and task.group_id = emp_group.id
+        SELECT task.* 
+        FROM task
+        WHERE task.group_id IN (
+            SELECT group_id FROM empgroup_emp 
+            WHERE emp_id = #{empId}
+        )
     </select>
     <insert id="addEmployee">
         INSERT INTO fruit.empgroup_emp(fruit.empgroup_emp.group_id, fruit.empgroup_emp.emp_id)

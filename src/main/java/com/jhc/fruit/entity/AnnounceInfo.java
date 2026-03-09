@@ -39,6 +39,8 @@ public class AnnounceInfo {
     //接收通知信息的用户id
     private Long empId;
     private Long needNumber;
+    @ApiModelProperty("已经招聘到的人数")
+    private Long haveNumber;
     private Long orchardId;
     //发送通知信息的用户id
     @ApiModelProperty("发送通知信息的用户id")
@@ -46,9 +48,9 @@ public class AnnounceInfo {
     @ApiModelProperty("关联的组id")
     private Long groupId;
     //判断用户是否已读（默认false：未读）
-    private Boolean isRead;
+    private Long isRead;
     //判断任务是否完成（默认false：未完成）
-    private Boolean isFinish;
+    private Long isFinish;
 
     //消息状态：0未审核，1已审核，2已撤销，3未通过
     private Integer status;

@@ -31,15 +31,17 @@ public class AnnounceInfoVo {
     private String groupName;
     @ApiModelProperty("招聘需要的人数")
     private Long needNumber;
+    @ApiModelProperty("已经招聘到的人数")
+    private Long haveNumber;
     @ApiModelProperty("关联的创建消息者id")
     private Long senderId;
     @ApiModelProperty("关联的创建消息者名称")
     private String senderName;
 
     @ApiModelProperty(value = "是否完成")
-    private Boolean isFinish;
+    private Long isFinish;
     @ApiModelProperty(value = "是否已读")
-    private Boolean isRead;
+    private Long isRead;
 
     @ApiModelProperty(value = "当前页码")
     private Integer page = 1;
