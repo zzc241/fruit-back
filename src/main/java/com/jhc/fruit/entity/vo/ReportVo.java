@@ -23,6 +23,9 @@ public class ReportVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
     @ApiModelProperty(value = "病虫害图片")
     private List<String> bcUrlList;
     @ApiModelProperty(value = "水肥图片")

@@ -22,7 +22,7 @@ spring:
       username: root
       password: tyzx99ty!
   jackson:
-    date-format: yyyy-MM-dd'T'HH:mm:ss.SSS
+    date-format: yyyy-MM-dd HH:mm:ss.SSS
     time-zone: GMT+8
   profiles:
     include: txt

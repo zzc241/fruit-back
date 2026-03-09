@@ -62,7 +62,7 @@ public class LoginCheckFilter implements Filter {
         flag = true;
         //3.如果不要处理，则直接放行
         if(flag){
-            log.info("本次请求不需要处理" + requestURI);
+//            log.info("本次请求不需要处理" + requestURI);
             //放行
             filterChain.doFilter(request,response);
             return;
