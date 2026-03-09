@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -103,8 +104,9 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         }
 
         // 3. 批量查询名称（1次DB查询，非N次）
-        Map<Long, String> empNameMap = employeeService.getEmpNameMapByIds(empIds);
-        Map<Long, String> groupNameMap = empGroupService.getGroupNameMapByIds(groupIds);
+        Map<Long, String> empNameMap = employeeService.getEmpNameMapByIds(empIds) == null ? new HashMap<>() : employeeService.getEmpNameMapByIds(empIds);
+        Map<Long, String> groupNameMap = empGroupService.getGroupNameMapByIds(groupIds) == null ? new HashMap<>() : empGroupService.getGroupNameMapByIds(groupIds);
+    
         // 转换records
         List<AnnounceInfoVo> voList = records.stream()
             .map(pickInfo -> {

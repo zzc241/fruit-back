@@ -5,4 +5,7 @@ import com.jhc.fruit.entity.WeatherInfo;
 
 
 public interface WeatherService extends IService<WeatherInfo> {
+    public WeatherInfo getByOrchardId(Long orchardId);
+
+    public WeatherInfo saveByHttp(Long orchardId) throws Exception;
 }
