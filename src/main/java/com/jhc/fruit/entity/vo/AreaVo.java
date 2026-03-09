@@ -41,22 +41,23 @@ public class AreaVo {
     @ApiModelProperty("创建人id")
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;
+    @ApiModelProperty("创建人名称")
+    private String createUserName;
     @ApiModelProperty("修改人id")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
     @ApiModelProperty("负责人id")
     private Long empId;
+    @ApiModelProperty("负责人")
+    private String empName;
 
     @ApiModelProperty("果园名称")
     private String orchardName;
     @ApiModelProperty("地区类型")
     private String type;
-    @ApiModelProperty("创建人名称")
-    private Long createUserName;
     @ApiModelProperty("上一次更新用户")
-    private Long updateUserName;
-    @ApiModelProperty("负责人")
-    private String empName;
+    private String updateUserName;
+    
 
     @ApiModelProperty("果树数量")
     private Long fruitCount;
