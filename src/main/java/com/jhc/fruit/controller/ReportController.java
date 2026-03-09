@@ -9,8 +9,10 @@ import com.jhc.fruit.service.ReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,14 +31,34 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
+    @ApiOperation("新增(带图片文件，存在bug)")
+    @PostMapping(value = "/addImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public R<Long> addImg(
+            @ApiParam(value = "报告", required = true)
+            @RequestPart Report report,  // 直接接收ID
+
+            @ApiParam(value = "bcImgs", defaultValue = "null")
+            @RequestPart(required = false) List<MultipartFile> bcImgs,
+
+            @ApiParam(value = "fertWaterImgs", defaultValue = "null")
+            @RequestPart(required = false) List<MultipartFile> fertWaterImgs,
+
+            @ApiParam(value = "ripeImgs", defaultValue = "null")
+            @RequestPart(required = false) List<MultipartFile> ripeImgs,
+
+            @ApiParam(value = "weedsImgs", defaultValue = "null")
+            @RequestPart(required = false) List<MultipartFile> weedsImgs) {
+
+        return reportService.addImg(report, bcImgs, fertWaterImgs, ripeImgs, weedsImgs);
+    }
+
     @ApiOperation("新增")
-    @PostMapping("/add")
-    public R<Long> add(@RequestBody Report report,
-                       @RequestParam List<MultipartFile> bcImgs,
-                       @RequestParam List<MultipartFile> fertWaterImgs,
-                       @RequestParam List<MultipartFile> ripeImgs,
-                       @RequestParam List<MultipartFile> weedsImgs) {
-        return reportService.add(report, bcImgs, fertWaterImgs, ripeImgs, weedsImgs);
+    @PostMapping( "/add")
+    public R<Long> add(
+            @ApiParam(value = "报告", required = true)
+            @RequestBody ReportVo reportVo) {
+
+        return reportService.add(reportVo);
     }
 
     @ApiOperation("修改")
@@ -49,7 +71,7 @@ public class ReportController {
     @ApiOperation("删除")
     @DeleteMapping("/delete")
     public R<String> delete(@RequestBody List<Long> ids) {
-        reportService.removeByIds(ids);
+        R<String> r = reportService.removeReport(ids);
         return R.success();
     }
 
@@ -58,6 +80,30 @@ public class ReportController {
     public R<List<ReportVo>> select(@RequestBody List<Long> ids) {
         R<List<ReportVo>> reportList = reportService.selectReport(ids);
         return reportList;
+    }
+
+    @ApiOperation("保存图片：病虫害")
+    @PostMapping("/saveBcImg")
+    public R<String> saveBcImg(@RequestParam MultipartFile file) {
+        return reportService.saveBcImg(file);
+    }
+
+    @ApiOperation("保存图片：病虫害")
+    @PostMapping("/saveFertWaterImg")
+    public R<String> saveFertWaterImg(@RequestParam MultipartFile file) {
+        return reportService.saveFertWaterImg(file);
+    }
+
+    @ApiOperation("保存图片：病虫害")
+    @PostMapping("/saveRipeImg")
+    public R<String> saveRipeImg(@RequestParam MultipartFile file) {
+        return reportService.saveRipeImg(file);
+    }
+
+    @ApiOperation("保存图片：病虫害")
+    @PostMapping("/saveWeedsImg")
+    public R<String> saveWeedsImg(@RequestParam MultipartFile file) {
+        return reportService.saveWeedsImg(file);
     }
 
 }
