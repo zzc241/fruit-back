@@ -25,4 +25,6 @@ public interface FileService {
     boolean isPresignedUrlExpired(String presignedUrl);
 
     Map<String, Object> parsePresignedUrl(String presignedUrl);
+
+    Boolean exits(String fileName);
 }
