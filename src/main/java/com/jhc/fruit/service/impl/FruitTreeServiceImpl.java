@@ -361,6 +361,30 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
 
 
     }
+    @Override
+    public R<FruitTreeVo> treeInfoSevenDays(Long treeId) {
+        try{
+            FruitTree fruitTree = fruitTreeDao.selectById(treeId);
+            FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
+
+            LambdaQueryWrapper<FertWater> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(FertWater::getTreeId, treeId);
+            //查询最近7天的记录
+            queryWrapper.ge(FertWater::getCreateTime, System.currentTimeMillis() - 7L * 24 * 60 * 60 * 1000);
+            List<FertWater> fertWaters = fertWaterDao.selectList(queryWrapper);
+
+            fruitTreeVo.setLogs(fertWaters);
+            fruitTreeVo.setAreaName(areaService.getAreaNameById(fruitTree.getAreaId()));
+            fruitTreeVo.setAreaManagerName(fruitTreeDao.getAreaManagerName(fruitTree.getAreaId()));
+            fruitTreeVo.setOrchardName(fruitTreeDao.getOrchardNameById(fruitTree.getOrchardId()));
+            return R.success(fruitTreeVo);
+        }catch (Exception e){
+            e.printStackTrace();
+            return R.error("数据查询失败");
+        }
+
+
+    }
     public R<List<String>> createTreeQRList(List<Long> ids) {
         //先判断该id对应的果树是否存在
         List<FruitTree> fruitTrees = getByIds(ids);

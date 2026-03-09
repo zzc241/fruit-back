@@ -31,4 +31,8 @@ public class CommentVo {
     private LocalDateTime createTime;
     @ApiModelProperty(value = "好评率")
     private Integer goodRate;
+    @ApiModelProperty(value = "创建人姓名")
+    private String createUserName;
+    @ApiModelProperty(value = "创建人头像")
+    private String createUserImg;
 }

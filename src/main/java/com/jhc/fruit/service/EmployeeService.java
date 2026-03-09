@@ -39,4 +39,6 @@ public interface EmployeeService extends IService<Employee> {
     EmployeeVo getInfo(Employee employee);
 
     R<String> auth(Employee employee);
+
+    public String getEmpImgById(Long empId);
 }

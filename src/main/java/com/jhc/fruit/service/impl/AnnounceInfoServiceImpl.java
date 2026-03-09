@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -103,8 +104,12 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         }
 
         // 3. 批量查询名称（1次DB查询，非N次）
-        Map<Long, String> empNameMap = employeeService.getEmpNameMapByIds(empIds);
-        Map<Long, String> groupNameMap = empGroupService.getGroupNameMapByIds(groupIds);
+        Map<Long, String> empNameMapResult = employeeService.getEmpNameMapByIds(empIds);
+        Map<Long, String> groupNameMapResult = empGroupService.getGroupNameMapByIds(groupIds);
+
+        // 处理空值
+        Map<Long, String> empNameMap = empNameMapResult == null ? new HashMap<>() : empNameMapResult;
+        Map<Long, String> groupNameMap = groupNameMapResult == null ? new HashMap<>() : groupNameMapResult;
         // 转换records
         List<AnnounceInfoVo> voList = records.stream()
             .map(pickInfo -> {
@@ -114,7 +119,9 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
                 // 设置关联的名称信息
                 vo.setSenderName(empNameMap.get(pickInfo.getSenderId()));
                 vo.setEmpName(empNameMap.get(pickInfo.getEmpId()));
-                vo.setGroupName(groupNameMap.get(pickInfo.getGroupId()));
+                if(pickInfo.getGroupId() != null){
+                    vo.setGroupName(groupNameMap.get(pickInfo.getGroupId()));
+                }
                 
                 return vo;
             })

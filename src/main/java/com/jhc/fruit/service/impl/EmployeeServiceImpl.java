@@ -278,7 +278,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     @Override
     public List<EmployeeVo> getEmpByOrchardId(Long orchardId){
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Employee::getOrchardId, orchardId).last("LIMIT 1");
+        queryWrapper.eq(Employee::getOrchardId, orchardId);
         List<Employee> employees = employeeDao.selectList(queryWrapper);
         List<EmployeeVo> employeeVos = new ArrayList<>();
         for (Employee employee : employees) {
@@ -407,6 +407,12 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             // 数字转换异常（理论上不会触发，因正则已校验）
             return false;
         }
+    }
+
+    @Override
+    public String getEmpImgById(Long empId) {
+        Employee employee = employeeDao.selectById(empId);
+        return employee.getHeadImg();
     }
 
 

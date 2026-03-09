@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @ApiModel
 public class Employee{
     @ApiModelProperty(value = "员工id")
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty(value = "果园id")

@@ -111,6 +111,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
     public Long getAreaIdByEmpId (Long empId){
         LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Area::getEmpId, empId);
+        queryWrapper.last("limit 1");
         Area area = areaDao.selectOne(queryWrapper);
         if(area == null){
             return null;
