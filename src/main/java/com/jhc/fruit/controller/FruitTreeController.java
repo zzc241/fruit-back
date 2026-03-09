@@ -261,4 +261,9 @@ public class FruitTreeController {
     public R<FruitTreeVo> treeInfo(@PathVariable Long treeId){
         return fruitTreeService.treeInfo(treeId);
     }
+    @GetMapping("/treeInfoSevenDays/{treeId}")
+    @ApiOperation("果树近七天详情信息")
+    public R<FruitTreeVo> treeInfoSevenDays(@PathVariable Long treeId){
+        return fruitTreeService.treeInfoSevenDays(treeId);
+    }
 }

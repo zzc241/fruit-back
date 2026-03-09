@@ -409,5 +409,11 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         }
     }
 
+    @Override
+    public String getEmpImgById(Long empId) {
+        Employee employee = employeeDao.selectById(empId);
+        return employee.getHeadImg();
+    }
+
 
 }

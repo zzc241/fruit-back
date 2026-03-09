@@ -11,6 +11,7 @@ import com.jhc.fruit.entity.Comment;
 import com.jhc.fruit.entity.vo.CommentVo;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.service.CommentService;
+import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.FruitTreeService;
 
 @Service
@@ -18,6 +19,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
 
     @Autowired
     private FruitTreeService fruitTreeService;
+    @Autowired
+    private EmployeeService employeeService;
     public CommentVo selectCommentByTreeId(Long treeId){
 
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
@@ -31,6 +34,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
         //通过评论中的果树id查询果树种类
         FruitTreeVo fruitTreeVo = fruitTreeService.fruitToVo(fruitTreeService.getById(comment.getTreeId()));
         commentVo.setTreeType(fruitTreeVo.getType());
+        //通过userId查询用户姓名、头像
+        commentVo.setCreateUserName(employeeService.getEmpNameById(comment.getUserId()));
+        commentVo.setCreateUserImg(employeeService.getEmpImgById(comment.getUserId()));
         return commentVo;
     }
 }
