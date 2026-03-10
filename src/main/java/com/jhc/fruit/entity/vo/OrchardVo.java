@@ -27,8 +27,6 @@ public class OrchardVo {
     @ApiModelProperty("果园大小")
     private Long size;
 
-    @ApiModelProperty("关联的区域id")
-    private Long areaId;
     @ApiModelProperty("关联的区域名称")
     private String areaName;
     @ApiModelProperty("关联的果园管理员id")

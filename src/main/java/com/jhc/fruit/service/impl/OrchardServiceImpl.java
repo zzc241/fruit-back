@@ -223,15 +223,6 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
      */
     public String saveOrchardInfo(OrchardVo orchardVo){
         Orchard orchard = new Orchard();
-        Long areaId = orchardVo.getAreaId();
-        if(areaId == null){
-            return "区域ID不能为空";
-        }
-        try {
-            areaService.getAreaNameById(areaId);
-        } catch (Exception e) {
-            return "获取区域信息失败，请稍后重试";
-        }
         Long empId = orchardVo.getEmpId();
         if(empId == null){
             return "员工ID不能为空";
@@ -273,15 +264,6 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
         Long id = orchardVo.getId();
         if(id == null){
             return "ID不能为空";
-        }
-        Long areaId = orchardVo.getAreaId();
-        if(areaId == null){
-            return "区域ID不能为空";
-        }
-        try {
-            areaService.getAreaNameById(areaId);
-        } catch (Exception e) {
-            return "获取区域信息失败，请稍后重试";
         }
         Long empId = orchardVo.getEmpId();
         if(empId == null){
