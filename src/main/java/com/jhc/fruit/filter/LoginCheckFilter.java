@@ -3,7 +3,9 @@ package com.jhc.fruit.filter;
 import com.alibaba.fastjson.JSON;
 import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.config.TxtConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.AntPathMatcher;
 
 import javax.servlet.*;
@@ -24,6 +26,7 @@ import java.io.PrintWriter;
 public class LoginCheckFilter implements Filter {
     //路径匹配器，支持通配符
     public static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+    private TxtConfig txtConfig;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -60,6 +63,9 @@ public class LoginCheckFilter implements Filter {
         //2.判断本次请求是否需要处理:true 不处理；false 处理
         boolean flag = check(requestURI,urls);
         flag = true;
+        if (txtConfig != null) {
+            flag = txtConfig.getFilter().getFlag();
+        }
         if (request.getSession().getAttribute("employee") != null) {
             log.info("用户已登录,用户id为：" + request.getSession().getAttribute("employee"));
             BaseContext.setCurrentId((Long) request.getSession().getAttribute("employee"));

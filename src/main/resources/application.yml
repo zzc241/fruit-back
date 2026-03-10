@@ -52,4 +52,14 @@ minio:
 ai-api:
   aiCzm: http://172.16.0.231:8001
   aiZen: http://unknow
+txt-config:
+  descriptionConfig:
+    email: test@qq.com
+    title: 果园项目后端API接口文档
+    version: default
+    description: 果园项目后端API接口文档
+    name: 开发团队
+    url: url
+  filter:
+    flag: true
 

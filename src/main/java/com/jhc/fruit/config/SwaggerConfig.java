@@ -32,7 +32,6 @@ import springfox.documentation.service.Contact; // 修改导入的Contact类
 public class SwaggerConfig {
     @Autowired
     private TypeResolver typeResolver;
-    @Autowired
     private TxtConfig txtConfig;
     //返回一个Docket Bean即可
     @Bean

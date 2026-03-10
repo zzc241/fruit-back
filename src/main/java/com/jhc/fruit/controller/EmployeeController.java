@@ -318,12 +318,12 @@ public class EmployeeController {
 
     @ApiOperation("用户列表")
     @GetMapping("/getAll")
-    public R<List<Employee>> getAll(@RequestParam Long orchardId){
+    public R<List<EmployeeVo>> getAll(@RequestParam Long orchardId){
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         if(orchardId != null){
             lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
         }
-        List<Employee> employees = employeeService.list(lambdaQueryWrapper);
+        List<EmployeeVo> employees = employeeService.getAllEmployees();
         return R.success(employees);
     }
 
