@@ -91,7 +91,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         // 前置校验：report不能为空
         if (report == null) {
             log.error("新增报告失败：report对象为空");
-            return R.error("报告信息不能为空");
+            return R.error("报告不能为空");
         }
 
         // 新增报告基础信息

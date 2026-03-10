@@ -18,8 +18,14 @@ public class Report {
     private Long userId;
     @ApiModelProperty(value = "果树id")
     private Long treeId;
-    @ApiModelProperty(value = "报告内容")
-    private String content;
+    @ApiModelProperty(value = "病虫害报告内容")
+    private String bcContent;
+    @ApiModelProperty(value = "成熟度内容")
+    private String ripeContent;
+    @ApiModelProperty(value = "水肥报告内容")
+    private String fertWaterContent;
+    @ApiModelProperty(value = "杂草报告内容")
+    private String weedsContent;
     @ApiModelProperty(value = "创建日期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)
