@@ -1,4 +1,6 @@
 package com.jhc.fruit.controller;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,9 +36,9 @@ public class CommentController {
     //实现查询功能
     @ApiOperation(value = "查询评论接口")
     @GetMapping("/query/{treeId}")
-    public R<CommentVo> selectCommentByTreeId(@PathVariable Long treeId) {
-        CommentVo comment = commentService.selectCommentByTreeId(treeId);
-        return R.success(comment);
+    public R<List<CommentVo>> selectCommentByTreeId(@PathVariable Long treeId) {
+        List<CommentVo> comments = commentService.selectCommentsByTreeId(treeId);
+        return R.success(comments);
     }
     //实现删除功能
     @ApiOperation(value = "删除评论接口")
