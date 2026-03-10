@@ -36,9 +36,6 @@ public class AreaController {
     private AreaServiceImpl areaServiceImpl;
 
     @Autowired
-    private CameraServiceImpl cameraServiceImpl;
-
-    @Autowired
     private FruitTypeServiceImpl fruitTypeServiceImpl;
     @Autowired
     private FruitTreeServiceImpl fruitTreeServiceImpl;
