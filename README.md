@@ -1,59 +1,57 @@
+- ## 概要
 
+  目标: 这是一个基于 Spring Boot 的果园管理后端，提供员工、果园、任务、新闻、气象等业务接口。
+  启动类: [FruitApplication.java](src/main/java/com/jhc/fruit/FruitApplication.java)
 
-**概要**
+  ## 技术栈
 
-- **目标**: 这是一个基于 Spring Boot 的果园管理后端，提供员工、果园、任务、新闻、气象等业务接口。
-- **启动类**: [FruitApplication.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+  框架: Spring Boot（@SpringBootApplication）、Spring 事务管理。
+  持久层: MyBatis-Plus（mapper XML 存于 [src/main/resources/mappers](src/main/resources/mappers)），自动填充由 [MyMetaObjectHandler.java](src/main/java/com/jhc/fruit/common/MyMetaObjectHandler.java) 支持。
+  数据库连接池: Druid（在 [src/main/resources/application.yml](src/main/resources/application.yml) 中配置）。
+  对象映射/序列化: Jackson（自定义 [JacksonObjectMapper.java](src/main/java/com/jhc/fruit/common/JacksonObjectMapper.java)）。
+  认证/鉴权: 简易 JWT 工具类 [JwtUtil.java](src/main/java/com/jhc/fruit/utils/JwtUtil.java) + 请求过滤器 [LoginCheckFilter.java](src/main/java/com/jhc/fruit/filter/LoginCheckFilter.java)。
+  文件存储: MinIO（配置在 [src/main/resources/application.yml](src/main/resources/application.yml)）。
+  文档/工具: Swagger（有 [SwaggerConfig.java](src/main/java/com/jhc/fruit/config/SwaggerConfig.java)），AOP 日志切面（[LogAspect.java](src/main/java/com/jhc/fruit/aop/LogAspect.java)）。
+  构建: Maven（[pom.xml](pom.xml)）。
 
-**技术栈**
+  ## 项目结构（高层）
 
-- **框架**: Spring Boot（[@SpringBootApplication](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）、Spring 事务管理。
-- **持久层**: MyBatis-Plus（mapper XML 存于 [mappers](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)），自动填充由 [MyMetaObjectHandler](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 支持。
-- **数据库连接池**: Druid（在 [application.yml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 中配置）。
-- **对象映射/序列化**: Jackson（自定义 [JacksonObjectMapper](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
-- **认证/鉴权**: 简易 JWT 工具类 [JwtUtil](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) + 请求过滤器 [LoginCheckFilter](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)。
-- **文件存储**: MinIO（配置在 [application.yml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
-- **文档/工具**: Swagger（有 [SwaggerConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)），AOP 日志切面（[LogAspect](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
-- **构建**: Maven（[pom.xml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
+  - **controller**: 对外 REST 接口（示例：`EmployeeController`、`TaskController` 等）
+  - **service / service.impl**: 业务逻辑层，接口+实现分离
+  - **dao**: MyBatis/Mapper 接口（配合 `src/main/resources/mappers/*.xml`）
+  - **entity / entity.vo**: 实体与视图对象（VO）
+  - **common**: 工具类与通用组件（[JwtUtil.java](src/main/java/com/jhc/fruit/utils/JwtUtil.java)、[R.java](src/main/java/com/jhc/fruit/common/R.java)、[MyMetaObjectHandler.java](src/main/java/com/jhc/fruit/common/MyMetaObjectHandler.java)、[GlobalExceptionHandler.java](src/main/java/com/jhc/fruit/common/GlobalExceptionHandler.java) 等）
+  - **config**: 全局配置（[MybatisPlusConfig.java](src/main/java/com/jhc/fruit/config/MybatisPlusConfig.java)、[MinioConfig.java](src/main/java/com/jhc/fruit/config/MinioConfig.java)、[SwaggerConfig.java](src/main/java/com/jhc/fruit/config/SwaggerConfig.java)、[CorsConfig.java](src/main/java/com/jhc/fruit/config/CorsConfig.java)、[WebMvcConfig.java](src/main/java/com/jhc/fruit/config/WebMvcConfig.java) 等）
+  - **filter / aop**: 请求拦截与切面（[LoginCheckFilter.java](src/main/java/com/jhc/fruit/filter/LoginCheckFilter.java)、[LogAspect.java](src/main/java/com/jhc/fruit/aop/LogAspect.java)）
+  - **resources/mappers**: 自定义 SQL 与复杂查询的 XML 映射文件（例如 [FruitTreeDao.xml](src/main/resources/mappers/FruitTreeDao.xml)）
+  - **test**: 单元/集成测试用例（[src/test/java](src/test/java)）
 
-**项目结构（高层）**
+  ## 请求处理流（典型）
 
-- **controller**: 对外 REST 接口（示例：EmployeeController、TaskController 等）。
-- **service / service.impl**: 业务逻辑层，接口+实现分离。
-- **dao**: MyBatis/Mapper 接口（配合 resources/mappers/*.xml）。
-- **entity / entity.vo**: 实体与视图对象（VO）。
-- **common**: 工具类与通用组件（[JwtUtil](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[R](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 响应类、[MyMetaObjectHandler](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[GlobalExceptionHandler](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 等）。
-- **config**: 全局配置（[MybatisPlusConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[MinioConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[SwaggerConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[CorsConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[WebMvcConfig](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 等）。
-- **filter / aop**: 请求拦截与切面（[LoginCheckFilter](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)、[LogAspect](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
-- **resources/mappers**: 自定义 SQL 与复杂查询的 XML 映射文件（例如 [FruitTreeDao.xml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）。
-- **测试**: [test](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 下的单元/集成测试用例。
+  1. 客户端 → 服务器: HTTP 请求到达 Spring 容器（可走 CORS 配置）。
+  2. 过滤: [LoginCheckFilter.java](src/main/java/com/jhc/fruit/filter/LoginCheckFilter.java) 做鉴权/白名单检查（携带或校验 JWT）。
+  3. 控制器: Controller 层接收并校验输入，调用 Service。
+  4. 业务层: Service 层执行业务逻辑、事务控制（@Transactional）并调用 Dao。
+  5. 持久层: Dao 使用 MyBatis-Plus 或 mapper XML 执行 SQL，并返回实体/VO。
+  6. 响应: 统一响应类 [R.java](src/main/java/com/jhc/fruit/common/R.java) 封装返回结果；异常由 [GlobalExceptionHandler.java](src/main/java/com/jhc/fruit/common/GlobalExceptionHandler.java) 统一处理。
 
-**请求处理流（典型）**
+  ## 重要文件 / 参考位置
 
-- **客户端 → 服务器**: HTTP 请求到达 Spring 容器（可走 CORS 配置）。
-- **过滤**: [LoginCheckFilter](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 做鉴权/白名单检查（携带或校验 JWT）。
-- **控制器**: Controller 层接收并校验输入，调用 Service。
-- **业务层**: Service 层执行业务逻辑、事务控制（[@Transactional](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)）并调用 Dao。
-- **持久层**: Dao 使用 MyBatis-Plus 或 mapper XML 执行 SQL，并返回实体/VO。
-- **响应**: 统一响应类 [R](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 封装返回结果；异常由 [GlobalExceptionHandler](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html) 统一处理。
-
-**重要文件 / 参考位置**
-
-- **主类**: [FruitApplication.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
-- **配置**: [application.yml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)（数据源、MyBatis-Plus、MinIO、端口等）
-- **MyBatis-Plus 配置**: [MybatisPlusConfig.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
-- **JWT 工具**: [JwtUtil.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
-- **鉴权过滤器**: [LoginCheckFilter.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
-- **AOP 日志**: [LogAspect.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
-- **自动填充**: [MyMetaObjectHandler.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
-- **异常处理**: [GlobalExceptionHandler.java](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
-- **示例 mapper XML**: [FruitTreeDao.xml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
-- **构建文件**: [pom.xml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)
+  - 主类: [FruitApplication.java](src/main/java/com/jhc/fruit/FruitApplication.java)
+  - 配置: [application.yml](src/main/resources/application.yml)（数据源、MyBatis-Plus、MinIO、端口等）
+  - MyBatis-Plus 配置: [MybatisPlusConfig.java](src/main/java/com/jhc/fruit/config/MybatisPlusConfig.java)
+  - JWT 工具: [JwtUtil.java](src/main/java/com/jhc/fruit/utils/JwtUtil.java)
+  - 鉴权过滤器: [LoginCheckFilter.java](src/main/java/com/jhc/fruit/filter/LoginCheckFilter.java)
+  - AOP 日志: [LogAspect.java](src/main/java/com/jhc/fruit/aop/LogAspect.java)
+  - 自动填充: [MyMetaObjectHandler.java](src/main/java/com/jhc/fruit/common/MyMetaObjectHandler.java)
+  - 异常处理: [GlobalExceptionHandler.java](src/main/java/com/jhc/fruit/common/GlobalExceptionHandler.java)
+  - 示例 mapper XML: [FruitTreeDao.xml](src/main/resources/mappers/FruitTreeDao.xml)
+  - 构建文件: [pom.xml](pom.xml)
 
 **架构特性与注意点**
 
 - **混合使用 MP 与 XML**: 项目同时使用 MyBatis-Plus 注解/方法和传统 XML，适合简单 CRUD 与复杂 SQL 并存。
-- **集中配置**: 大量外部依赖（MinIO、AI 接口、证书密码等）都在 [application.yml](vscode-file://vscode-app/c:/Users/27141/AppData/Local/Programs/Microsoft VS Code/61b3d0ab13/resources/app/out/vs/code/electron-browser/workbench/workbench.html)，注意环境隔离与敏感信息管理。
+- **集中配置**: 大量外部依赖（MinIO、AI 接口、证书密码等）都在 application.yml，注意环境隔离与敏感信息管理。
 - **鉴权简单**: JWT + 过滤器实现轻量鉴权，若有更高安全要求，建议引入 Spring Security。
 - **日志与异常**: AOP + 全局异常处理实现统一监控与错误返回，便于运维。
 
