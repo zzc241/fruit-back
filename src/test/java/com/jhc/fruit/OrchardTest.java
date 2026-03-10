@@ -25,7 +25,6 @@ class OrchardTest {
         System.out.println("========== testAddOrchard1测试 ==========");
 
         OrchardVo orchard = new OrchardVo();
-        orchard.setAreaId(2L);
         orchard.setDescription("测试果园成功");
         orchard.setEmpId(1L);
         orchard.setName("测试果园001");
@@ -46,7 +45,6 @@ class OrchardTest {
         System.out.println("========== testAddOrchard2测试 ==========");
 
         OrchardVo orchard = new OrchardVo();
-        orchard.setAreaId(20000L);// 测试 areaId 找不到 name 的情况
         orchard.setDescription("测试果园areaId不存在");
         orchard.setEmpId(1L);
         orchard.setName("测试果园002");
@@ -71,7 +69,6 @@ class OrchardTest {
         System.out.println("========== testAddOrchard3测试 ==========");
 
         OrchardVo orchard = new OrchardVo();
-        orchard.setAreaId(2L);// 测试 areaId 找不到 name 的情况
         orchard.setDescription("测试果园empId不存在");
         orchard.setEmpId(20000L);
         orchard.setName("测试果园003");
