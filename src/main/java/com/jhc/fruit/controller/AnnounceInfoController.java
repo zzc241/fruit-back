@@ -33,11 +33,17 @@ public class AnnounceInfoController {
     @Autowired
     private AnnounceInfoService announceInfoService;
 
-    @PostMapping("/list")
-    @ApiOperation("后台：查看全部通知")
-    public R<Page<AnnounceInfoVo>> getInfo(@RequestBody AnnounceInfoVo pickInfoVo){
+    @PostMapping("/listPage")
+    @ApiOperation("后台：查看全部通知分页查询")
+    public R<Page<AnnounceInfoVo>> getPageInfo(@RequestBody AnnounceInfoVo pickInfoVo){
         Page<AnnounceInfoVo> pageInfo = announceInfoService.getPageInfo(pickInfoVo);
         return R.success(pageInfo);
+    }
+    @PostMapping("/list")
+    @ApiOperation("后台：查看全部通知")
+    public R<List<AnnounceInfoVo>> getInfo(@RequestBody AnnounceInfoVo pickInfoVo){
+        List<AnnounceInfoVo> info = announceInfoService.getInfo(pickInfoVo);
+        return R.success(info);
     }
     //其中getPickInfoVo类中只需要传title，isFinish，isRead三个参数，empId从登录信息获取
     @PostMapping("/employee/my-list")
