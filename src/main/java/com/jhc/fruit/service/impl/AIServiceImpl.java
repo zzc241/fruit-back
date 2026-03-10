@@ -33,8 +33,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class AIServiceImpl implements AIService {
-
-    @Autowired
     private AIConfig aiConfig;
     @Autowired
     private FileService fileService;

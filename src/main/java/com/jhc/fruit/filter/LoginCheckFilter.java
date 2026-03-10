@@ -64,7 +64,10 @@ public class LoginCheckFilter implements Filter {
         boolean flag = check(requestURI,urls);
         flag = true;
         if (txtConfig != null) {
-            flag = txtConfig.getFilter().getFlag();
+            if(txtConfig.getFilter().getFlag() != null){
+                flag = txtConfig.getFilter().getFlag();
+            }
+
         }
         if (request.getSession().getAttribute("employee") != null) {
             log.info("用户已登录,用户id为：" + request.getSession().getAttribute("employee"));

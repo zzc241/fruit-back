@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Configuration
-@ConfigurationProperties(prefix="txt-config") //读取节点
+@ConfigurationProperties(prefix="txt") //读取节点
 @Data
 public class TxtConfig {
 

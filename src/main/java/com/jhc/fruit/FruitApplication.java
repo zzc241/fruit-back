@@ -1,6 +1,7 @@
 package com.jhc.fruit;
 
 import com.jhc.fruit.config.AIConfig;
+import com.jhc.fruit.config.TxtConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ServletComponentScan
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableConfigurationProperties(AIConfig.class)
+@EnableConfigurationProperties({AIConfig.class})
 public class FruitApplication {
 
     public static void main(String[] args) {

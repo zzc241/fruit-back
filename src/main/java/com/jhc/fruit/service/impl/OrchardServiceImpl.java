@@ -330,4 +330,9 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
             return false;
         }
     }
+
+    @Override
+    public String getOrchardNameByEmpId(Long empId) {
+        return "";
+    }
 }

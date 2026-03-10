@@ -72,10 +72,10 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title(txtConfig.getDescriptionConfig().getTitle())
-                .description(txtConfig.getDescriptionConfig().getDescription())
-                .version(txtConfig.getDescriptionConfig().getVersion())
-                .contact(new Contact(txtConfig.getDescriptionConfig().getName(), txtConfig.getDescriptionConfig().getUrl(), txtConfig.getDescriptionConfig().getEmail()))
+                .title("gy")
+                .description("gy")
+                .version("gy")
+                .contact(new Contact("gy", "gy", "gy"))
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .build();
