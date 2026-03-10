@@ -249,35 +249,12 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         if(!senderId.equals(userId)){
             return R.error("当前用户传来的不是登录用户，请检查登录状态").toString();
         }
-        try { 
-            if(senderId == null || userId == null){
-                return R.error("未获取到当前登录用户信息，请检查登录状态").toString();
-            }
-            String senderName = employeeService.getEmpNameById(senderId);
-            if(senderName == null){
-                return R.error("未获取到当前发布者用户信息，请检查senderId是否正常").toString();
-            }
-        } catch (Exception e) {
-            return R.error("未获取到当前员工信息，请检查empId是否正常").toString();
-        }
         //判断员工的is_admin是否为2，如果是2就将status改成1（已审核），如果是3就将status改为0（未审核）
         Employee employee = employeeService.getById(senderId);
         
         announceInfoVo.setStatus(0); // 未审核
         if (employee != null && employee.getIsAdmin() == 2) {
             announceInfoVo.setStatus(1); // 已审核
-        }
-        try {
-            Long orchardId = announceInfoVo.getOrchardId();
-            if(orchardId == null){
-                return R.error("请选择果园").toString();
-            }
-            String orchardName = orchardService.getOrchardNameById(orchardId);
-            if(orchardName == null){
-                return R.error("未获取到当前果园信息，请检查orchardId是否正常").toString();
-            }
-        } catch (Exception e) {
-            return R.error("未获取到当前果园信息，请检查orchardId是否正常").toString();
         }
         
         AnnounceInfo announceInfo = new AnnounceInfo();
