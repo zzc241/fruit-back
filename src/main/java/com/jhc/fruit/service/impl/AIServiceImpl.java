@@ -4,14 +4,23 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jhc.fruit.common.HttpUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.config.AIConfig;
+import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.service.AIService;
+import com.jhc.fruit.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import okhttp3.internal.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -27,12 +36,15 @@ public class AIServiceImpl implements AIService {
 
     @Autowired
     private AIConfig aiConfig;
+    @Autowired
+    private FileService fileService;
     private final HttpUtil httpUtil = HttpUtil.getInstance();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public R<List<Integer>> AIOfRipeness(MultipartFile file, double conf, double iou) {
-        //创建请求对象
-        String url = aiConfig.getEndpoint() + "/ripeness/detect/upload" + "?conf=" + conf + "&iou=" + iou;
+        //请求url
+        String url = aiConfig.getAiCzm() + "/ripeness/detect/upload" + "?conf=" + conf + "&iou=" + iou;
 
         String response = httpUtil.doPostUpload(url, null, "file", file);
             //处理响应数据
@@ -104,6 +116,77 @@ public class AIServiceImpl implements AIService {
             // 统一捕获所有异常（工具类已处理IO异常，此处捕获解析/业务异常）
             log.error("AI识别异常", e);
             return R.error("系统异常: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 调用AI接口检测杂草
+     * @param imageFile 待检测的图像文件
+     * @return 解析后的检测结果
+     */
+    public R<AIWeeds.WeedDetectionResponse> AIWeed(MultipartFile imageFile) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(aiConfig.getAiZen());
+        sb.append("/predict");
+        String url = sb.toString();
+        //保存原始图像
+        fileService.save(imageFile, "weedsAIOriginImg");
+
+        try {
+            String responseData = httpUtil.doPostUpload(url, null, "file", imageFile);
+
+            // 校验响应数据非空（避免解析空字符串报错）
+            if (responseData == null || responseData.isEmpty()) {
+                return R.error("检测失败：AI接口返回空结果");
+            }
+
+            // 解析JSON响应为目标对象
+            AIWeeds.WeedDetectionResponse detectionResponse =
+                    objectMapper.readValue(responseData, AIWeeds.WeedDetectionResponse.class);
+
+            return R.success(detectionResponse);
+        } catch (Exception e) {
+            throw new RuntimeException("解析杂草检测结果失败", e);
+        }
+    }
+
+    /**
+     * 处理检测结果（核心业务逻辑）
+     * @param response 接口返回的原始结果
+     */
+    public void processDetectionResult(AIWeeds.WeedDetectionResponse response) {
+        // 校验接口调用是否成功
+        if (response.getCode() != 200) {
+            System.err.println("检测失败：" + response.getMessage());
+            return;
+        }
+
+        AIWeeds.DetectionResult result = response.getResult();
+        List<AIWeeds.WeedDetection> detections = result.getDetections();
+        List<Integer> imageShape = result.getImageShape();
+        int imageHeight = imageShape.get(0);
+        int imageWidth = imageShape.get(1);
+
+        // 1. 过滤低置信度结果（只保留置信度≥0.7的杂草）
+        List<AIWeeds.WeedDetection> validDetections = detections.stream()
+                .filter(d -> d.getConfidence() >= 0.7)
+                .toList();
+
+        // 2. 统计杂草信息
+        System.out.println("有效杂草数量：" + validDetections.size());
+        for (AIWeeds.WeedDetection detection : validDetections) {
+            // 计算杂草区域面积（像素）
+            double width = detection.getX2() - detection.getX1();
+            double height = detection.getY2() - detection.getY1();
+            double area = width * height;
+
+            // 输出单株杂草信息
+            System.out.println("------------------------");
+            System.out.println("杂草种类：" + detection.getClassName());
+            System.out.println("置信度：" + String.format("%.2f%%", detection.getConfidence() * 100));
+            System.out.println("位置坐标：(" + detection.getX1() + "," + detection.getY1() + ") - (" + detection.getX2() + "," + detection.getY2() + ")");
+            System.out.println("覆盖面积：" + String.format("%.2f像素", area));
+            System.out.println("占图像比例：" + String.format("%.2f%%", (area / (imageHeight * imageWidth)) * 100));
         }
     }
 }
