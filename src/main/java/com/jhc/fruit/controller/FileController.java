@@ -65,7 +65,7 @@ public class FileController {
     @ApiOperation("生成二维码")
     @PostMapping("/createQROfString")
     public R<String> createQROfUrl(@RequestBody String str) {
-        String fileName = fileService.upload(QRCodeUtil.createQROfString(str));
+        String fileName = fileService.save(QRCodeUtil.createQROfString(str), "QRtree");
         return R.success(fileName);
     }
 
