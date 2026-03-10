@@ -243,7 +243,9 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
     }
     public String saveDeployInfo(AnnounceInfoVo announceInfoVo){
         Long senderId = announceInfoVo.getSenderId();
+        log.info("senderId:" + senderId);
         Long userId = BaseContext.getId();
+        log.info("userId:" + userId);
         if(!senderId.equals(userId)){
             return R.error("当前用户传来的不是登录用户，请检查登录状态").toString();
         }

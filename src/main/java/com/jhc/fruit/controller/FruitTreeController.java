@@ -244,10 +244,6 @@ public class FruitTreeController {
         return fruitTreeService.myTreeInfo(userId, treeId);
     }
 
-    private AIConfig aiConfig;
-
-
-
     @GetMapping("/treeInfo/{treeId}")
     @ApiOperation("果树详情信息")
     public R<FruitTreeVo> treeInfo(@PathVariable Long treeId){

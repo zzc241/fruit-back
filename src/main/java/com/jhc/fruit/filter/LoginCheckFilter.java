@@ -59,8 +59,14 @@ public class LoginCheckFilter implements Filter {
 
         //2.判断本次请求是否需要处理:true 不处理；false 处理
         boolean flag = check(requestURI,urls);
-        flag = true;
+        flag = false;
         //3.如果不要处理，则直接放行
+        if(request.getSession().getAttribute("employee") != null){
+            System.out.println("用户登录的request:" + request);
+            log.info("用户已登录,用户id为：" + request.getSession().getAttribute("employee"));
+            BaseContext.setCurrentId((Long) request.getSession().getAttribute("employee"));
+            return;
+        }
         if(flag){
 //            log.info("本次请求不需要处理" + requestURI);
             //放行
