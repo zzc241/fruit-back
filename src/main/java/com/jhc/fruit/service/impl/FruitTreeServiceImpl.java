@@ -1,45 +1,32 @@
 package com.jhc.fruit.service.impl;
 
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONException;
-import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jhc.fruit.common.JsonUtil;
 import com.jhc.fruit.common.QRCodeUtil;
 import com.jhc.fruit.common.R;
-import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.dao.FertWaterDao;
 import com.jhc.fruit.dao.FruitTreeDao;
 import com.jhc.fruit.entity.FertWater;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
-import com.jhc.fruit.entity.vo.QRTreeVo;
+import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.AreaService;
 import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.FruitTreeService;
+import com.jhc.fruit.service.TaskService;
 
-import kotlin.jvm.internal.Lambda;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -59,6 +46,8 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     private FertWaterDao fertWaterDao;
     @Autowired
     private AreaService areaService;
+    @Autowired
+    private TaskService taskService;
 
     @Override
     public Page<FruitTreeVo> page(Page<FruitTreeVo> page) {
@@ -239,6 +228,10 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     @Override
     public R<FruitTreeVo> treeInfoSevenDays(Long treeId) {
         try{
+            //通过treeId查询areaId
+            Long areaId = this.getById(treeId).getAreaId();
+            //通过areaId查询对应区域的task
+            List<TaskVo> taskVos = taskService.getByAreaId(areaId);
             FruitTree fruitTree = fruitTreeDao.selectById(treeId);
             FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
 
@@ -252,6 +245,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
             fruitTreeVo.setAreaName(areaService.getAreaNameById(fruitTree.getAreaId()));
             fruitTreeVo.setAreaManagerName(fruitTreeDao.getAreaManagerName(fruitTree.getAreaId()));
             fruitTreeVo.setOrchardName(fruitTreeDao.getOrchardNameById(fruitTree.getOrchardId()));
+            fruitTreeVo.setTasks(taskVos);
             return R.success(fruitTreeVo);
         }catch (Exception e){
             e.printStackTrace();

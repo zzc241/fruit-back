@@ -13,7 +13,6 @@ import com.jhc.fruit.service.OrchardService;
 import com.jhc.fruit.service.TaskImgService;
 import com.jhc.fruit.service.TaskService;
 
-import kotlin.jvm.internal.Lambda;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -252,6 +251,16 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
             Long taskId = taskVoCurr.getId();
             taskVoCurr.setImgsURL(taskImgService.getImg(taskId));
         }
+        return taskVos;
+    }
+
+    public List<TaskVo> getByAreaId(Long areaId) { 
+        LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Task::getAreaId, areaId);
+        List<Task> tasks = this.list(queryWrapper);
+        List<TaskVo> taskVos = tasks.stream()
+                .map(this::taskToVo)
+                .collect(Collectors.toList());
         return taskVos;
     }
 }
