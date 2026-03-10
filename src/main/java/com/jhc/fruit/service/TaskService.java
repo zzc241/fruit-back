@@ -28,4 +28,6 @@ public interface TaskService extends IService<Task> {
 
    List<TaskVo> getByOrchardId(Long OrchardId);
 
+   List<TaskVo> getByAreaId(Long areaId);
+
 }

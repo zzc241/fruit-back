@@ -3,6 +3,9 @@ package com.jhc.fruit.entity.vo;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jhc.fruit.entity.FertWater;
 
 import io.swagger.annotations.ApiModel;
@@ -49,5 +52,14 @@ public class FruitTreeVo {
     private List<FertWater> logs;
     @ApiModelProperty(value = "二维码图片")
     private String url;
+
+
+    @ApiModelProperty(value = "果树相关任务")
+    private List<TaskVo> tasks;
+    
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
+    private Long createUser;
+    private Long updateUser;
 
 }

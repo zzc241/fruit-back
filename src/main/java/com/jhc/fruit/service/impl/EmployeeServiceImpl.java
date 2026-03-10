@@ -416,4 +416,15 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     }
 
 
+
+    public List<EmployeeVo> getAllEmployees(){
+        List<Employee> list = employeeDao.selectList(null);
+        List<EmployeeVo> employeeVoList = new ArrayList<>();
+        for (Employee employee : list) {
+            employeeVoList.add(getInfo(employee));
+        }
+        return employeeVoList;
+    }
+
+
 }

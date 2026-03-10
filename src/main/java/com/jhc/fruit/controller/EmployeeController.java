@@ -352,4 +352,10 @@ public class EmployeeController {
     public R<String> updateStatus(@RequestBody Long id){
         return employeeService.updateStatus(id);
     }
+    @ApiOperation("查看所有用户信息")
+    @GetMapping("/getAllEmployees")
+    public R<List<EmployeeVo>> getAllEmployees(){
+        List<EmployeeVo> list = employeeService.getAllEmployees();
+        return R.success(list);
+    }
 }

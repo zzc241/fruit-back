@@ -33,6 +33,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     queryWrapper.eq(Comment::getTreeId, treeId);
     List<Comment> comments = this.list(queryWrapper);
     log.info("查询到 {} 条原始评论", comments.size());
+    if(comments.size() == 0){
+        log.warn("没有找到任何评论, treeId={}", treeId);
+        return new ArrayList<>(); // 返回空列表而不是 null
+    }
     
     List<CommentVo> commentVos = new ArrayList<>();
     for (int i = 0; i < comments.size(); i++) {

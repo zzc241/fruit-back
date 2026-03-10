@@ -38,6 +38,9 @@ public class CommentController {
     @GetMapping("/query/{treeId}")
     public R<List<CommentVo>> selectCommentByTreeId(@PathVariable Long treeId) {
         List<CommentVo> comments = commentService.selectCommentsByTreeId(treeId);
+        if(comments.size() == 0){
+            return R.error("没有找到任何评论");
+        }
         return R.success(comments);
     }
     //实现删除功能
