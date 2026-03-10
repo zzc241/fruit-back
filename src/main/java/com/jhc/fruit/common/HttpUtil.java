@@ -1,6 +1,9 @@
 package com.jhc.fruit.common;
 
+import com.jhc.fruit.service.FileService;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -11,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class HttpUtil {
 
     //创建实例,确保全局唯一，避免重复创建客户端

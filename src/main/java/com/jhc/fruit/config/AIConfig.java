@@ -8,5 +8,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix="ai-api") //读取节点
 @Data
 public class AIConfig {
-    private String endpoint;
+    private String aiCzm;
+    private String aiZen;
 }

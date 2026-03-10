@@ -1,6 +1,7 @@
 package com.jhc.fruit.controller;
 
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.service.AIService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,5 +29,11 @@ public class AIController {
                                    double iou) {
 
         return aiService.AIOfRipeness(file, conf, iou);
+    }
+
+    @ApiOperation("YOLOv11 目标检测接口")
+    @PostMapping("/YOLOv11Weed")
+    public R<AIWeeds.WeedDetectionResponse> AIWeed(MultipartFile weedFile){
+        return aiService.AIWeed(weedFile);
     }
 }

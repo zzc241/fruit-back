@@ -46,8 +46,8 @@ public class LoginCheckFilter implements Filter {
                 //放行游客浏览新闻方法
                 "/news/**",
                 "/api/employee/getOpenId",
-                "/api/employee/login",    
-                "/api/employee/logout",   
+                "/api/employee/login",
+                "/api/employee/logout",
                 "/api/news/**",
                 //放行Swagger
                 "/swagger-ui.html/**",
@@ -60,7 +60,7 @@ public class LoginCheckFilter implements Filter {
         //2.判断本次请求是否需要处理:true 不处理；false 处理
         boolean flag = check(requestURI,urls);
         if(flag){
-//            log.info("本次请求不需要处理" + requestURI);
+            log.info("本次请求不需要处理" + requestURI);
             //放行
             filterChain.doFilter(request,response);
             return;
@@ -77,7 +77,7 @@ public class LoginCheckFilter implements Filter {
         log.info("用户未登录拦截到请求" + request.getRequestURI());
         //5.如果未登录，则为前端页面响应数据
         // response.getWriter().write(JSON.toJSONString(R.error("用户未登录")));
-        
+
         // 修改后的代码：
         R<String> result = R.error("用户未登录");
         String jsonString = JSON.toJSONString(result);
