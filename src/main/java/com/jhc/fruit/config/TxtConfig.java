@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Configuration
-@ConfigurationProperties(prefix="txt") //读取节点
+@Component
+@ConfigurationProperties(value = "txt")//读取节点
 @Data
 public class TxtConfig {
 

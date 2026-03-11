@@ -59,11 +59,11 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     @Override
     public R<FruitTreeVo> showTree(MultipartFile imgFile) {
         //上传二维码
-        String url = fileService.upload(imgFile);
-
+        String url = fileService.save(imgFile, "showTree");
         //解析二维码
         InputStream inputStream = fileService.getMinioFileInputStream(url);
-
+        //删除二维码
+        fileService.remove(url);
         //查找果树信息
         R<FruitTreeVo> result = treeInfo(QRCodeUtil.readTreeQRCode(inputStream));
         return result;

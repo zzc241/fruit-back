@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public interface AIService{
+public interface AIService extends IService<AIWeeds.WeedDetection> {
 
     R<List<Integer>> AIOfRipeness(MultipartFile file, double conf, double iou);
 
