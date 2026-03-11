@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jhc.fruit.dao.ReportDao">
     <insert id="saveImg">
-        INSERT INTO report_img(img, report_id, type)
+        INSERT INTO report_img(img, report_id, typeId)
         VALUES (#{url}, #{id}, #{type})
     </insert>
     <insert id="addUrl">
-        INSERT INTO report_img (img, report_id, type)
+        INSERT INTO report_img (img, report_id, typeId)
         VALUES (#{url}, #{id}, #{typeId})
     </insert>
     <delete id="deleteImgs">
@@ -21,7 +21,7 @@
         SELECT report_img.img
         FROM report_img
         WHERE report_img.report_id = #{reportId}
-        AND report_img.type = #{typeId}
+        AND report_img.typeId = #{typeId}
     </select>
     <select id="getImgs" resultType="java.lang.String">
         SELECT report_img.img
