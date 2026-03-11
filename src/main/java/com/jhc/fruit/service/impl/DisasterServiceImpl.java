@@ -3,6 +3,7 @@ package com.jhc.fruit.service.impl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.dao.DisasterDao;
 import com.jhc.fruit.entity.Disaster;
@@ -14,7 +15,14 @@ public class DisasterServiceImpl  extends ServiceImpl<DisasterDao, Disaster> imp
 
     @Override
     public DisasterVo getByOrchardId(Long orchardId) {
-        Disaster disaster = this.lambdaQuery().eq(Disaster::getOrchardId, orchardId).one();
+        //按照时间倒序查询
+        LambdaQueryWrapper<Disaster> queryWrapper = new LambdaQueryWrapper<Disaster>()
+                .eq(Disaster::getOrchardId, orchardId)
+                .orderByDesc(Disaster::getCreateTime)
+                .last("limit 1");
+        Disaster disaster = this.getOne(queryWrapper);
+
+
         if (disaster == null) {
             return null; // 或者抛出一个异常，表示未找到对应的灾害信息
         }

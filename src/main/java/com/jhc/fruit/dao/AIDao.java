@@ -10,5 +10,5 @@ import java.util.List;
 @Mapper
 public interface AIDao extends BaseMapper<AIWeeds.WeedDetection> {
 
-    void save(@Param("detections")List<AIWeeds.WeedDetection> detections, String originUrl, String outputUrl);
+    void save(List<AIWeeds.WeedDetection> detections, String originUrl, String outputUrl);
 }
