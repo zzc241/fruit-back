@@ -1,5 +1,7 @@
 package com.jhc.fruit.entity.vo;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -31,8 +33,8 @@ public class DisasterVo {
     @ApiModelProperty(value = "用户名称")
     private String userName;
     @ApiModelProperty(value = "发现时间")
-    private String findTime;
+    private LocalDateTime findTime;
     @ApiModelProperty(value = "创建时间")
-    private String createTime;
+    private LocalDateTime createTime;
 }
 
