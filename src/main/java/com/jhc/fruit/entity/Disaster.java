@@ -22,9 +22,6 @@ public class Disaster {
     @ApiModelProperty(value = "灾害类型")
     @JsonProperty("disaster_type")
     private String disasterType;
-    @JsonProperty("area_id")
-    @ApiModelProperty(value = "区域id")
-    private Long areaId;
     @JsonProperty("orchard_id")
     @ApiModelProperty(value = "果园id")
     private Long orchardId;

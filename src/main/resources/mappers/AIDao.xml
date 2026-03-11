@@ -13,4 +13,10 @@
                 </foreach>
         </if>
     </insert>
+    <select id="getCityByOrchardId" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT city
+        FROM weather
+        WHERE orchard_id = #{orchardId}
+        LIMIT 1
+    </select>
 </mapper>

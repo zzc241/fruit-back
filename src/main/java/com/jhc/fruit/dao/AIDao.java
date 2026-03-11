@@ -10,4 +10,6 @@ import java.util.List;
 public interface AIDao extends BaseMapper<AIWeeds.WeedDetection> {
 
     void save(List<AIWeeds.WeedDetection> detections);
+
+    String getCityByOrchardId(Long orchardId);
 }
