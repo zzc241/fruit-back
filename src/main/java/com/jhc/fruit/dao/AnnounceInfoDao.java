@@ -2,6 +2,9 @@ package com.jhc.fruit.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jhc.fruit.entity.AnnounceInfo;
+
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 @Mapper
 /**
@@ -10,4 +13,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @date ：2026/1/23
  */
 public interface AnnounceInfoDao extends BaseMapper<AnnounceInfo> {
+    public String getAreaNameById(Long areaId);
 }

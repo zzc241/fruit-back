@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,8 +44,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, AnnounceInfo> implements AnnounceInfoService {
-    // @Autowired
-    // private PickInfoDao pickInfoDao;
+    @Autowired
+    private AnnounceInfoDao announceInfoDao;
     @Autowired
     private EmployeeService employeeService;
     @Autowired
@@ -162,15 +163,18 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         List<AnnounceInfo> records = pickInfos;
         Set<Long> empIds = new HashSet<>();
         Set<Long> groupIds = new HashSet<>();
+        Set<Long> areaIds = new HashSet<>();  // 新增：收集区域ID
         for (AnnounceInfo pickInfo : records) {
             if(pickInfo.getSenderId() != null) empIds.add(pickInfo.getSenderId());
             if(pickInfo.getEmpId() != null) empIds.add(pickInfo.getEmpId());
             if(pickInfo.getGroupId() != null) groupIds.add(pickInfo.getGroupId());
+            if(pickInfo.getAreaId() != null) areaIds.add(pickInfo.getAreaId());
         }
 
         // 3. 批量查询名称（1次DB查询，而非N次）
-        Map<Long, String> empNameMap = employeeService.getEmpNameMapByIds(empIds);
         Map<Long, String> groupNameMap = empGroupService.getGroupNameMapByIds(groupIds);
+        Map<Long, String> empNameMap = Optional.ofNullable(employeeService.getEmpNameMapByIds(empIds))
+        .orElse(new HashMap<>());
 
         return pickInfos.stream().map(pickInfo -> {
             AnnounceInfoVo pickInfoVoResult = new AnnounceInfoVo();
@@ -178,7 +182,12 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
             // 设置关联的名称信息
                 pickInfoVoResult.setSenderName(empNameMap.get(pickInfo.getSenderId()));
                 pickInfoVoResult.setEmpName(empNameMap.get(pickInfo.getEmpId()));
-                pickInfoVoResult.setGroupName(groupNameMap.get(pickInfo.getGroupId()));
+                // if(pickInfo.getGroupId() != null){
+                //     pickInfoVoResult.setGroupName(groupNameMap.get(pickInfo.getGroupId()));
+                // }
+                if (pickInfo.getAreaId() != null) {
+                    pickInfoVoResult.setAreaName(announceInfoDao.getAreaNameById(pickInfo.getAreaId() == null ? 0L : pickInfo.getAreaId()));
+                }
             return pickInfoVoResult;
         }).collect(Collectors.toList());
     }
@@ -241,13 +250,15 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         info.setIsFinish(isFinish);
         return this.updateById(info) ? "完成成功" : "完成失败";
     }
+
+    //TODO : 实现消息群发特定组功能
     public String saveDeployInfo(AnnounceInfoVo announceInfoVo){
         Long senderId = announceInfoVo.getSenderId();
         log.info("senderId:" + senderId);
         Long userId = BaseContext.getId();
         log.info("userId:" + userId);
         if(!senderId.equals(userId)){
-            return R.error("当前用户传来的不是登录用户，请检查登录状态").toString();
+            return "当前用户传来的不是登录用户，请检查登录状态";
         }
         //判断员工的is_admin是否为2，如果是2就将status改成1（已审核），如果是3就将status改为0（未审核）
         Employee employee = employeeService.getById(senderId);

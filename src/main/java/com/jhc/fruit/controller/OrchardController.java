@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.vo.OrchardVo;
-import com.jhc.fruit.service.impl.OrchardServiceImpl;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,9 +51,9 @@ public class OrchardController {
 
     @PostMapping("/add")
     @ApiOperation("添加果园")
-    public R<String> deployInfo(@RequestBody OrchardVo orchardVo){
-        String result = orchardService.saveOrchardInfo(orchardVo);
-        return R.success(result);
+    public R<Long> deployInfo(@RequestBody OrchardVo orchardVo){
+        Long id = orchardService.saveOrchardInfo(orchardVo);
+        return R.success(id);
     }
 
     @PostMapping("/change")

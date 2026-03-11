@@ -25,19 +25,34 @@ public class AnnounceInfo {
     private String content;
     
     //接收通知信息的用户id
+    @ApiModelProperty(value = "员工ID")
+    @TableField("emp_id")
     private Long empId;
+    @TableField("need_number")
     private Long needNumber;
     @ApiModelProperty("已经招聘到的人数")
+    @TableField("have_number")
     private Long haveNumber;
+    @ApiModelProperty("关联果园id")
+    @TableField("orchard_id")
     private Long orchardId;
+    @ApiModelProperty("关联的区域id")
+    @TableField("area_id")
+    private Long areaId;
     //发送通知信息的用户id
     @ApiModelProperty("发送通知信息的用户id")
+    @TableField("sender_id")
     private Long senderId;
     @ApiModelProperty("关联的组id")
+    @TableField("group_id")
     private Long groupId;
     //判断用户是否已读（默认false：未读）
+    @ApiModelProperty(value = "是否已读")
+    @TableField("is_read")
     private Long isRead;
     //判断任务是否完成（默认false：未完成）
+    @ApiModelProperty(value = "是否完成")
+    @TableField("is_finish")
     private Long isFinish;
 
     //消息状态：0未审核，1已审核，2已撤销，3未通过

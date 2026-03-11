@@ -1,5 +1,7 @@
 package com.jhc.fruit.entity.vo;
 
+import java.time.LocalDateTime;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -25,6 +27,9 @@ public class AnnounceInfoVo {
     private Long orchardId;
     @ApiModelProperty("关联的果园名称")
     private String orchardName;
+    private Long areaId;
+    @ApiModelProperty("关联的区域名称")
+    private String areaName;
     @ApiModelProperty("关联的组id")
     private Long groupId;
     @ApiModelProperty("关联的组名称")
@@ -53,6 +58,8 @@ public class AnnounceInfoVo {
     @ApiModelProperty(value = "内容")
     private String content;
 
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
     private Long createUser;
     private Long updateUser;
 

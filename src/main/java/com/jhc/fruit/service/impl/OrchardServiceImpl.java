@@ -221,32 +221,33 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
         "status": 1
         }
      */
-    public String saveOrchardInfo(OrchardVo orchardVo){
+    public Long saveOrchardInfo(OrchardVo orchardVo){
         Orchard orchard = new Orchard();
-        Long empId = orchardVo.getEmpId();
-        if(empId == null){
-            return "员工ID不能为空";
-        }
-        try {
-            employeeService.getEmpNameById(empId);
-        } catch (Exception e) {
-            return "获取员工信息失败，请稍后重试";
-        }
-        Long size = orchardVo.getSize();
-        if(size <= 0){
-            return "果园大小不能小于0";
-        }
-        String name = orchardVo.getName();
-        if(StringUtils.isBlank(name)){
-            return "果园名称不能为空";
-        }
-        int status = orchardVo.getStatus();
-        if(status != 0){
-            return "果园状态不合法";
-        }
+        // Long empId = orchardVo.getEmpId();
+        // if(empId == null){
+        //     return "员工ID不能为空";
+        // }
+        // try {
+        //     employeeService.getEmpNameById(empId);
+        // } catch (Exception e) {
+        //     return "获取员工信息失败，请稍后重试";
+        // }
+        // Long size = orchardVo.getSize();
+        // if(size <= 0){
+        //     return "果园大小不能小于0";
+        // }
+        // String name = orchardVo.getName();
+        // if(StringUtils.isBlank(name)){
+        //     return "果园名称不能为空";
+        // }
+        // int status = orchardVo.getStatus();
+        // if(status != 0){
+        //     return "果园状态不合法";
+        // }
         BeanUtils.copyProperties(orchardVo, orchard);
         this.save(orchard);
-        return "保存成功";
+        Long id = orchard.getId();
+        return id;
     }
     /**
      * {
