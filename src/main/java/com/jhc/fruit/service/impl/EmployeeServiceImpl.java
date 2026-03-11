@@ -9,7 +9,6 @@ import com.jhc.fruit.common.JwtUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.dao.FruitTreeDao;
-import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
@@ -22,7 +21,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.jhc.fruit.service.FileService;
-import com.jhc.fruit.service.OrchardService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

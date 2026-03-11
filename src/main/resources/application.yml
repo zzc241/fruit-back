@@ -48,7 +48,7 @@ minio:
   secret-key: ej3CttgQgUHzfw5Zu1oomsETaCjWdR4N5S9IeHG9
   bucket-name: fruit-bucket
 ai-api:
-  aiCzm: http://172.16.0.231:8001
+  aiCzm: http://192.168.123.94:8000
   aiZen: http://172.16.0.204:8000
 txt:
   descriptionConfig:

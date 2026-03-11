@@ -7,9 +7,6 @@ import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.vo.AreaVo;
 import com.jhc.fruit.service.AreaService;
-
-
-import com.jhc.fruit.service.FruitTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

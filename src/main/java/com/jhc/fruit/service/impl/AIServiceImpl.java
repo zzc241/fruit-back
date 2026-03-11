@@ -1,8 +1,6 @@
 package com.jhc.fruit.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,23 +13,11 @@ import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.service.AIService;
 import com.jhc.fruit.service.FileService;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-import okhttp3.internal.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -154,7 +140,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             //处理图片
             String outputUrl = AIWeedImg(originUrl, outputPrefix, detectionResponse.getResult().getDetections());
             if (outputUrl.equals("err")) {
-                outputUrl = "test.png";
+                outputUrl = "ERROR.png";
             }
             //保存识别结果
             aiDao.save(detectionResponse.getResult().getDetections(), originUrl, outputUrl);
