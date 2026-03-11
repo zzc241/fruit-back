@@ -8,7 +8,7 @@ import com.jhc.fruit.entity.vo.DiseaseResponse;
 import com.jhc.fruit.entity.vo.MaturityResponse;
 import com.jhc.fruit.service.AIService;
 import com.jhc.fruit.service.DisasterService;
-
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -26,26 +26,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/AI")
+@Api(tags = "AI接口")
 public class AIController {
     @Autowired
     private AIService aiService;
     @Autowired
     private DisasterService disasterService;
 
-    @ApiOperation("成熟果实数量统计")
-    @PostMapping("/RipeCount")
-    public R<List<Integer>> AIripe(@RequestParam MultipartFile file,
-                                   @ApiParam(value = "conf", defaultValue = "0.25")
-                                   double conf,
-                                   @ApiParam(value = "iou", defaultValue = "0.5")
-                                   double iou) {
-
-        return aiService.AIOfRipeness(file, conf, iou);
-    }
-
     @ApiOperation("YOLOv11 目标检测接口")
     @PostMapping("/YOLOv11Weed")
-    public R<AIWeeds.WeedDetectionResponse> AIWeed(MultipartFile weedFile){
+    public R<List<AIWeeds.WeedDetection>> AIWeed(MultipartFile weedFile){
         return aiService.AIWeed(weedFile);
     }
 

@@ -107,11 +107,6 @@ public class FruitTreeController {
             @ApiImplicitParam(name = "type",value = "果树类型")
     })
     public R<String> update(@RequestBody FruitTree fruitTree){
-        // Long empId = (Long)request.getSession().getAttribute("emplopyee");
-        //其中前端页面会对数字进行四舍五入，丢失了精度，导致id不一样
-        //解决：将long型数据统一转为String字符串
-//        employee.setUpdateTime(LocalDateTime.now());
-//        employee.setUpdateUser(empId);
         boolean b = fruitTreeService.updateById(fruitTree);
         if(!b){
             return R.error("修改失败");
@@ -174,7 +169,8 @@ public class FruitTreeController {
 
     @GetMapping("/area/{areaId}")
     @ApiOperation("区域果树详情信息")
-    public R<List<FruitTreeVo>> myTreeInfo(@PathVariable Long areaId){ 
+    public R<List<FruitTreeVo>> myTreeInfo(@PathVariable Long areaId){
+        //按区域id查询果树
         LambdaQueryWrapper<FruitTree> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(FruitTree::getAreaId, areaId);
         queryWrapper.orderByDesc(FruitTree::getCreateTime); 
@@ -182,6 +178,7 @@ public class FruitTreeController {
         if(fruitTreeList == null && fruitTreeList.size() == 0){
             return R.error("查找失败");
         }
+        //转换为vo类
         List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
         fruitTreeList.forEach(fruitTree -> {
             fruitTreeVoList.add(fruitTreeService.fruitToVo(fruitTree));
@@ -192,9 +189,9 @@ public class FruitTreeController {
 
     /**
      * 生成二维码后生成到minio上，
-     * 返回图片的存储路径 MinIO服务地址/桶名称/目录/文件名.扩展名
+     * 返回图片的存储路径 为在minio的相对路径
      * @param id
-     * @return R.success(QRPat
+     * @return R.success(String)
      * */
     @GetMapping("/createTreeQR/{id}")
     @ApiOperation("生成展示果树详情消息的二维码")

@@ -13,17 +13,19 @@ import java.util.List;
 
 public interface AIService extends IService<AIWeeds.WeedDetection> {
 
-    R<List<Integer>> AIOfRipeness(MultipartFile file, double conf, double iou);
+    R<List<AIWeeds.WeedDetection>> AIWeed(MultipartFile weedFile);
 
-    R<AIWeeds.WeedDetectionResponse> AIWeed(MultipartFile weedFile);
+    String AIWeedImg(String originalMinioPath,
+                            String outputPrefix,
+                            List<AIWeeds.WeedDetection> detections);
 
     DisasterVo weatherAlert(Long orchardId);
 
     String chat(String query);
 
-    String analyzeWaterFertilizer(MultipartFile msFile , MultipartFile rgbFile);
+    R<DiseaseResponse> identifyDisease(MultipartFile diseaseFile);
 
-    R<DiseaseResponse> identifyDisease(MultipartFile maturityFile);
-    
     R<MaturityResponse> identifyMaturity(MultipartFile maturityFile);
+
+    String analyzeWaterFertilizer(MultipartFile msFile, MultipartFile rgbFile);
 }
