@@ -16,16 +16,12 @@ public class Report {
     private Long id;
     @ApiModelProperty(value = "用户id")
     private Long userId;
+    @ApiModelProperty(value = "报告类型(1水肥，2病虫害，3杂草，4成熟度)")
+    private Long typeId;
     @ApiModelProperty(value = "果树id")
     private Long treeId;
-    @ApiModelProperty(value = "病虫害报告内容")
-    private String bcContent;
-    @ApiModelProperty(value = "成熟度内容")
-    private String ripeContent;
-    @ApiModelProperty(value = "水肥报告内容")
-    private String fertWaterContent;
-    @ApiModelProperty(value = "杂草报告内容")
-    private String weedsContent;
+    @ApiModelProperty(value = "报告内容")
+    private String content;
     @ApiModelProperty(value = "创建日期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT)

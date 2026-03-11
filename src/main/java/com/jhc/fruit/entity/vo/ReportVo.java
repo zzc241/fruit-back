@@ -17,6 +17,8 @@ public class ReportVo {
     private Long userId;
     @ApiModelProperty(value = "果树id")
     private Long treeId;
+    @ApiModelProperty(value = "报告类型(1水肥，2病虫害，3杂草，4成熟度)")
+    private Long typeId;
     @ApiModelProperty(value = "报告内容")
     private String content;
     @ApiModelProperty(value = "创建日期")
@@ -26,12 +28,6 @@ public class ReportVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-    @ApiModelProperty(value = "病虫害图片")
-    private List<String> bcUrlList;
-    @ApiModelProperty(value = "水肥图片")
-    private List<String> fertWaterUrlList;
-    @ApiModelProperty(value = "成熟度图片")
-    private List<String> ripeUrlList;
-    @ApiModelProperty(value = "杂草图片")
-    private List<String> weedsUrlList;
+    @ApiModelProperty(value = "图片")
+    private List<String> urlList;
 }

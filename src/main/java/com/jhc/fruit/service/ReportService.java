@@ -13,10 +13,7 @@ public interface ReportService extends IService<Report> {
     void update(ReportVo reportVo);
 
     R<Long> addImg(Report report,
-                   List<MultipartFile> bcImgs,
-                   List<MultipartFile> fertWaterImgs,
-                   List<MultipartFile> ripeImgs,
-                   List<MultipartFile> weedsImgs);
+                   List<MultipartFile> urlImgs);
 
     R<List<ReportVo>> selectReport(List<Long> ids);
 

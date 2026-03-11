@@ -34,13 +34,10 @@ public class ReportController {
             // 接收业务参数（JSON格式，form-data中以File类型上传JSON文件）
             @RequestPart("report") Report report,
             // 接收各类图片文件列表（form-data中以File类型上传）
-            @RequestPart(required = false) List<MultipartFile> bcImgs,
-            @RequestPart(required = false) List<MultipartFile> fertWaterImgs,
-            @RequestPart(required = false) List<MultipartFile> ripeImgs,
-            @RequestPart(required = false) List<MultipartFile> weedsImgs
+            @RequestPart(required = false) List<MultipartFile> urlImgs
     ) {
 
-        return reportService.addImg(report, bcImgs, fertWaterImgs, ripeImgs, weedsImgs);
+        return reportService.addImg(report, urlImgs);
     }
 
     @ApiOperation("新增")
