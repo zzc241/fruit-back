@@ -62,7 +62,9 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
             queryWrapper.eq(Orchard::getId, id);
         }
         //empId是本地登录员工id，固定查询当前员工的果园信息
-        queryWrapper.eq(Orchard::getEmpId, orchardVo.getEmpId());
+        if(orchardVo.getEmpId() != null){
+            queryWrapper.eq(Orchard::getEmpId, orchardVo.getEmpId());
+        }
         //查询果园名字
         if(orchardVo.getName() != null){
             queryWrapper.like(Orchard::getName, orchardVo.getName());
