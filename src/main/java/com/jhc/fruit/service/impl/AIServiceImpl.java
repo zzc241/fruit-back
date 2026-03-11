@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONException;
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jhc.fruit.common.HttpUtil;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.config.AIConfig;
+import com.jhc.fruit.dao.AIDao;
 import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.service.AIService;
 import com.jhc.fruit.service.FileService;
@@ -32,12 +34,15 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class AIServiceImpl implements AIService {
+public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> implements AIService {
+    @Autowired
     private AIConfig aiConfig;
     @Autowired
     private FileService fileService;
     private final HttpUtil httpUtil = HttpUtil.getInstance();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private AIDao aiDao;
 
     @Override
     public R<List<Integer>> AIOfRipeness(MultipartFile file, double conf, double iou) {
@@ -141,6 +146,8 @@ public class AIServiceImpl implements AIService {
             // 解析JSON响应为目标对象
             AIWeeds.WeedDetectionResponse detectionResponse =
                     objectMapper.readValue(responseData, AIWeeds.WeedDetectionResponse.class);
+            //保存识别结果
+            aiDao.save(detectionResponse.getResult().getDetections());
 
             return R.success(detectionResponse);
         } catch (Exception e) {

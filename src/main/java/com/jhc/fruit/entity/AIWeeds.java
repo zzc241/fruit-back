@@ -30,6 +30,7 @@ public class AIWeeds {
     @ApiModel
     public class WeedDetection {
         private Long id;
+        private Long aiId;
         @ApiModelProperty("种类代码")
         private Long classId;
         @ApiModelProperty("杂草种类")

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.AntPathMatcher;
 
+import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.io.PrintWriter;
 public class LoginCheckFilter implements Filter {
     //路径匹配器，支持通配符
     public static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+    @Resource
     private TxtConfig txtConfig;
 
     @Override
@@ -65,6 +67,7 @@ public class LoginCheckFilter implements Filter {
         flag = true;
         if (txtConfig != null) {
             if(txtConfig.getFilter().getFlag() != null){
+                log.info("filter flag : " + txtConfig.getFilter().getFlag());
                 flag = txtConfig.getFilter().getFlag();
             }
 

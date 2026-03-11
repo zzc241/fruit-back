@@ -59,5 +59,6 @@ public class AnnounceInfoVo {
     //消息状态：0未审核，1已审核，2已撤销，3未通过
     private Integer status;
     //薪资
+    @ApiModelProperty(value = "薪资")
     private Long salary;
 }
