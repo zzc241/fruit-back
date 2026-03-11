@@ -10,11 +10,13 @@ import com.jhc.fruit.entity.News;
 import com.jhc.fruit.entity.NewsImg;
 import com.jhc.fruit.service.impl.NewsImgServiceImpl;
 import com.jhc.fruit.service.impl.NewsServiceImpl;
+
+import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.StringUtils;
+// import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,7 +67,7 @@ public class NewsController {
         Page<News> pageInfo = new Page(page,pageSize);
         //创建条件构造器
         LambdaQueryWrapper<News> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.like(StringUtils.isNotEmpty(keywords),News::getTitle,keywords);
+        lambdaQueryWrapper.like(StrUtil.isNotEmpty(keywords),News::getTitle,keywords);
         newsServiceImpl.page(pageInfo,lambdaQueryWrapper);
         return R.success(pageInfo);
     }

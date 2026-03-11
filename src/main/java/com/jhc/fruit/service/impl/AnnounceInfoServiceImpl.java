@@ -12,9 +12,10 @@ import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.AnnounceInfoService;
 
 import com.jhc.fruit.service.OrchardService;
+
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         Page<AnnounceInfo> pageInfo = new Page<>(pickInfoVo.getPage(), pickInfoVo.getPageSize());
         LambdaQueryWrapper<AnnounceInfo> queryWrapper = new LambdaQueryWrapper<>();
 
-        if (StringUtils.isNotBlank(pickInfoVo.getTitle())) {
+        if (StrUtil.isNotBlank(pickInfoVo.getTitle())) {
             queryWrapper.like(AnnounceInfo::getTitle, pickInfoVo.getTitle());
         }
 
@@ -132,7 +133,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         // 构建查询条件
         LambdaQueryWrapper<AnnounceInfo> queryWrapper = new LambdaQueryWrapper<>();
         
-        if (StringUtils.isNotBlank(pickInfoVo.getTitle())) {
+        if (StrUtil.isNotBlank(pickInfoVo.getTitle())) {
             queryWrapper.like(AnnounceInfo::getTitle, pickInfoVo.getTitle());
         }
 

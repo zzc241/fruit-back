@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Area;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import com.jhc.fruit.service.AreaService;
 import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.OrchardService;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -95,7 +95,7 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
         if (orchardVo.getEmpId() != null) {
             queryWrapper.eq(Orchard::getEmpId, orchardVo.getEmpId());
         }
-        else if(StringUtils.isNotBlank(empName)) {
+        else if(StrUtil.isNotBlank(empName)) {
             Long empId = employeeService.getEmpIdByName(empName);
             queryWrapper.eq(Orchard::getEmpId, empId);
         }

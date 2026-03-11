@@ -2,7 +2,6 @@ package com.jhc.fruit.controller;
 
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.AIWeeds;
-import com.jhc.fruit.entity.Disaster;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
 import com.jhc.fruit.entity.vo.MaturityResponse;
@@ -12,7 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import org.bytedeco.javacpp.FlyCapture2.Image;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

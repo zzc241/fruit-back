@@ -1,6 +1,6 @@
 package com.jhc.fruit.aop;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.dao.OperationLogDao;
 import com.jhc.fruit.entity.OperationLog;

@@ -1,7 +1,6 @@
 package com.jhc.fruit.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jhc.fruit.common.QiniuUtils;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.FruitGrow;
 import com.jhc.fruit.service.impl.FruitGrowServiceImpl;
@@ -55,7 +54,8 @@ public class FruitGrowController {
             return R.error("无历史数据");
         }
         //将图片存储到服务器
-        String fileName = QiniuUtils.formatUpload(multipartFile);
+        String fileName = "";
+        // String fileName = QiniuUtils.formatUpload(multipartFile);
         switch (termNum){
             case 1:
                 fruitGrow.setFirstTerm(fileName);

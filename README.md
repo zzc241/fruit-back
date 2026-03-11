@@ -384,7 +384,8 @@ String[] urls = new String[]{
 
 ##### 项目优化
 
-这是一段通过empid查询emp的task的代码。不难发现其笛卡尔积是三个表的数据相乘，三个表连起来效率非常低。
+- 这是一段通过empid查询emp的task的代码。不难发现其笛卡尔积是三个表的数据相乘，三个表连起来效率非常低。
+
 
 ```sql
 <select id="getTasksByEmpId" resultType="com.jhc.fruit.entity.Task">
@@ -409,3 +410,4 @@ String[] urls = new String[]{
 </select>
 ```
 
+- fileServiceImpl应该放在工具类中，由于一开始没有规划好导致。日后有时间可以优化

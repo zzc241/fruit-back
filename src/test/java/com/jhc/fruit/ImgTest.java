@@ -1,7 +1,7 @@
 package com.jhc.fruit;
 
 import com.jhc.fruit.common.BaseContext;
-import com.jhc.fruit.common.QiniuUtils;
+// import com.jhc.fruit.common.QiniuUtils;
 import com.jhc.fruit.common.R;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
@@ -9,7 +9,7 @@ import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.util.Auth;
 import lombok.extern.slf4j.Slf4j;
-import org.bytedeco.javacv.FrameGrabber;
+// import org.bytedeco.javacv.FrameGrabber;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;

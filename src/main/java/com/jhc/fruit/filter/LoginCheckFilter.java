@@ -1,6 +1,6 @@
 package com.jhc.fruit.filter;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.config.TxtConfig;

@@ -126,7 +126,7 @@ public class CameraUtil {
         byte[] data = bos.toByteArray();
         bos.close();
         System.out.println(data);
-        QiniuUtils.upload2Qiniu(data,fileName);
+        // QiniuUtils.upload2Qiniu(data,fileName);
         file.delete();
         System.out.println("图片上传成功");
         String destination = "http://fruitphoto.lookyousmileface.icu/" + fileName;

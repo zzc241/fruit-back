@@ -1,6 +1,6 @@
 package com.jhc.fruit.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.aop.Log;
@@ -10,12 +10,13 @@ import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
 import com.jhc.fruit.service.EmployeeService;
 import com.jhc.fruit.service.impl.EmployeeServiceImpl;
+
+import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -188,7 +189,7 @@ public class EmployeeController {
         Page pageInfo = new Page(page,pageSize);
         //创建条件构造器
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.like(StringUtils.isNotEmpty(name),Employee::getName,name);
+        lambdaQueryWrapper.like(StrUtil.isNotEmpty(name), Employee::getName, name);
         lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
         //进行分页查询
         pageInfo = employeeService.page(pageInfo,lambdaQueryWrapper);

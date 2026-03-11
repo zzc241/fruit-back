@@ -1,8 +1,8 @@
 package com.jhc.fruit.common;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.jhc.fruit.entity.IdentifyInfo;
-import org.bytedeco.javacv.FrameGrabber;
+// import org.bytedeco.javacv.FrameGrabber;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
