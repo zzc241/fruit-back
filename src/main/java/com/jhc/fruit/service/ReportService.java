@@ -12,12 +12,11 @@ public interface ReportService extends IService<Report> {
 
     void update(ReportVo reportVo);
 
-    R<Long> addImg(Report report,
-                   List<MultipartFile> urlImgs);
+    R<String> addImg(Long id, Long typeId, MultipartFile img);
 
     R<List<ReportVo>> selectReport(List<Long> ids);
 
-    R<Long> add(ReportVo reportVo);
+    R<List<Long>> add(Report report);
 
     R<String> removeReport(List<Long> ids);
 

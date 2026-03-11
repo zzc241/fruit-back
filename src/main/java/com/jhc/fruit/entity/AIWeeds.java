@@ -1,5 +1,6 @@
 package com.jhc.fruit.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +13,7 @@ public class AIWeeds {
 
     @Data
     @ApiModel
-    public class WeedDetectionResponse {
+    public static class WeedDetectionResponse {
         private Integer code;
         private String message;
         private DetectionResult result;
@@ -20,20 +21,23 @@ public class AIWeeds {
 
     @Data
     @ApiModel
-    public class DetectionResult {
+    public static class DetectionResult {
         private List<WeedDetection> detections;
         @ApiModelProperty("图像尺寸：[height, width, channel]")
-        private List<Integer> imageShape; // [height, width, channel]
+        @JsonProperty("image_shape")
+        private List<Integer> imageShape;
     }
 
     @Data
     @ApiModel
-    public class WeedDetection {
+    public static class WeedDetection {
         private Long id;
-        private Long aiId;
+        private Long treeId;
         @ApiModelProperty("种类代码")
+        @JsonProperty("class_id") // 映射JSON的class_id
         private Long classId;
         @ApiModelProperty("杂草种类")
+        @JsonProperty("class_name") // 映射JSON的class_name
         private String className;
         @ApiModelProperty("置信度")
         private Double confidence;
@@ -45,6 +49,10 @@ public class AIWeeds {
         private Double x2;
         @ApiModelProperty("坐标y_右下角")
         private Double y2;
+        @ApiModelProperty("原始图片")
+        private String originImg;
+        @ApiModelProperty("处理图片")
+        private String outputImg;
     }
 
 }

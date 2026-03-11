@@ -11,5 +11,9 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
 
     R<List<Integer>> AIOfRipeness(MultipartFile file, double conf, double iou);
 
-    R<AIWeeds.WeedDetectionResponse> AIWeed(MultipartFile weedFile);
+    R<List<AIWeeds.WeedDetection>> AIWeed(MultipartFile weedFile);
+
+    String AIWeedImg(String originalMinioPath,
+                        String outputPrefix,
+                        List<AIWeeds.WeedDetection> detections);
 }

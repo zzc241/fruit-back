@@ -4,12 +4,12 @@
 
     <insert id="save" parameterType="java.util.List">
         <if test="detections != null and detections.size() > 0">
-            INSERT INTO ai_weed (ai_id, class_id, class_name, confidence, x1, y1, x2, y2)
+            INSERT INTO ai_weed (tree_id, class_id, class_name, confidence, x1, y1, x2, y2, originImg, outputImg)
             VALUES
                 <foreach collection="detections"
                          item="item"
                          separator=",">
-                    (#{item.aiId}, #{item.classId}, #{item.className}, #{item.confidence}, #{item.x1}, #{item.y1}, #{item.x2}, #{item.y2})
+                    (#{item.treeId}, #{item.classId}, #{item.className}, #{item.confidence}, #{item.x1}, #{item.y1}, #{item.x2}, #{item.y2}, #{originUrl}, #{outputUrl})
                 </foreach>
         </if>
     </insert>

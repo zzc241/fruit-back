@@ -6,10 +6,8 @@ import com.jhc.fruit.entity.vo.ReportVo;
 import com.jhc.fruit.service.ReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,25 +26,21 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @ApiOperation("新增(带图片文件)")
-    @PostMapping(value = "/addImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R<Long> addImg(
-            // 接收业务参数（JSON格式，form-data中以File类型上传JSON文件）
-            @RequestPart("report") Report report,
-            // 接收各类图片文件列表（form-data中以File类型上传）
-            @RequestPart(required = false) List<MultipartFile> urlImgs
+    @ApiOperation("新增(图片文件)")
+    @PostMapping("/addImg/{reportId}/{typeId}")
+    public R<String> addImg(
+            @PathVariable Long reportId,
+            @PathVariable Long typeId,
+            @RequestParam MultipartFile img
     ) {
-
-        return reportService.addImg(report, urlImgs);
+        return reportService.addImg(reportId, typeId, img);
     }
 
     @ApiOperation("新增")
     @PostMapping( "/add")
-    public R<Long> add(
-            @ApiParam(value = "报告", required = true)
-            @RequestBody ReportVo reportVo) {
-
-        return reportService.add(reportVo);
+    public R<List<Long>> add(
+            @RequestBody Report report) {
+        return reportService.add(report);
     }
 
     @ApiOperation("修改")

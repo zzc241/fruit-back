@@ -77,85 +77,46 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     }
 
     @Override
-    public R<Long> addImg(Report report,
-                          List<MultipartFile> urlImgs){
+    public R<String> addImg(Long id,
+                          Long typeId,
+                          MultipartFile img){
 
-        // 前置校验：report不能为空
-        if (report == null) {
-            log.error("新增报告失败：report对象为空");
+        if (id == null) {
+            log.error("新增报告失败：id为空");
             return R.error("报告不能为空");
         }
-
-        // 新增报告基础信息
-        reportDao.insert(report);
-        Long id = report.getId();
-        // 校验新增后的ID是否有效
-        if (id == null) {
-            log.error("新增报告后ID为空，无法关联图片");
-            return R.error("报告新增失败：ID生成异常");
+        if (typeId == null || !typeIds.contains(typeId)) {
+            log.error("新增报告失败：类型错误 typeId={}", typeId);
         }
 
         try {
-            if (urlImgs != null && !urlImgs.isEmpty()) {
-                if (report.getTreeId().equals(1L)){
+            if (img != null && !img.isEmpty()) {
+                if (typeId.equals(1L)){
                     // 水肥图片：修复判断逻辑 + 单个文件校验
-                    for (MultipartFile fertWaterImg : urlImgs) {
-                        if (fertWaterImg == null || fertWaterImg.isEmpty()) {
-                            log.warn("跳过空的水肥图片，报告ID：{}", id);
-                            continue;
-                        }
-                        String url = fileService.save(fertWaterImg, "fertWater");
-                        if (url == null || url.isEmpty()) {
-                            log.error("水肥图片保存失败，URL为空，报告ID：{}", id);
-                            continue;
-                        }
-                        reportDao.saveImg(url, id, 1);
+                    String url = fileService.save(img, "fertWater");
+                    if (url == null || url.isEmpty()) {
+                        log.error("水肥图片保存失败，URL为空，报告ID：{}", id);
                     }
-                }else if (report.getTreeId().equals(2L)){
-                    // 病虫害图片：正确判断集合非空 + 单个文件校验
-                    // 关键：&& 先判null，再判非空集合，避免NPE
-                    for (MultipartFile bcImg : urlImgs) {
-                        // 跳过空文件（核心：避免调用save处理空文件）
-                        if (bcImg == null || bcImg.isEmpty()) {
-                            log.warn("跳过空的病虫害图片，报告ID：{}", id);
-                            continue;
-                        }
-                        // 调用save并校验返回值
-                        String url = fileService.save(bcImg, "bc");
-                        if (url == null || url.isEmpty()) {
-                            log.error("病虫害图片保存失败，URL为空，报告ID：{}", id);
-                            continue;
-                        }
-                        reportDao.saveImg(url, id, 2);
+                    reportDao.saveImg(url, id, 1);
+                }else if (typeId.equals(2L)){
+                    // 调用save并校验返回值
+                    String url = fileService.save(img, "bc");
+                    if (url == null || url.isEmpty()) {
+                        log.error("病虫害图片保存失败，URL为空，报告ID：{}", id);
                     }
-                }else if (report.getTreeId().equals(3L)){
-                    // 杂草图片：修复判断逻辑 + 单个文件校验
-                    for (MultipartFile weedsImg : urlImgs) {
-                        if (weedsImg == null || weedsImg.isEmpty()) {
-                            log.warn("跳过空的杂草图片，报告ID：{}", id);
-                            continue;
-                        }
-                        String url = fileService.save(weedsImg, "weeds");
-                        if (url == null || url.isEmpty()) {
-                            log.error("杂草图片保存失败，URL为空，报告ID：{}", id);
-                            continue;
-                        }
-                        reportDao.saveImg(url, id, 3);
+                    reportDao.saveImg(url, id, 2);
+                }else if (typeId.equals(3L)){
+                    String url = fileService.save(img, "weeds");
+                    if (url == null || url.isEmpty()) {
+                        log.error("杂草图片保存失败，URL为空，报告ID：{}", id);
                     }
-                }else if (report.getTreeId().equals(4L)){
-                    // 果实成熟度图片：修复判断逻辑 + 单个文件校验
-                    for (MultipartFile ripeImg : urlImgs) {
-                        if (ripeImg == null || ripeImg.isEmpty()) {
-                            log.warn("跳过空的果实成熟度图片，报告ID：{}", id);
-                            continue;
-                        }
-                        String url = fileService.save(ripeImg, "ripe");
-                        if (url == null || url.isEmpty()) {
-                            log.error("果实成熟度图片保存失败，URL为空，报告ID：{}", id);
-                            continue;
-                        }
-                        reportDao.saveImg(url, id, 4);
+                    reportDao.saveImg(url, id, 3);
+                }else if (typeId.equals(4L)){
+                    String url = fileService.save(img, "ripe");
+                    if (url == null || url.isEmpty()) {
+                        log.error("果实成熟度图片保存失败，URL为空，报告ID：{}", id);
                     }
+                    reportDao.saveImg(url, id, 4);
                 }else {
                     return R.error("非法类型");
                 }
@@ -168,9 +129,9 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
                 reportDao.deleteById(id);
                 reportDao.deleteImgs(id);
             }
-            return R.error("上报失败：" + e.getMessage());
+            return R.error("上传失败：" + e.getMessage());
         }
-        return R.success(id);
+        return R.success("上传成功");
     }
 
     @Override
@@ -207,62 +168,25 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     }
 
     @Override
-    public R<Long> add(ReportVo reportVo) {
+    public R<List<Long>> add(Report report) {
+        //保存
+        if (report == null) {
+            return R.error("报告为空");
+        }
+        if (report.getContent() == null || report.getContent().isEmpty()) {
+            return R.error("内容为空");
+        }
 
-//        Report report = new Report();
-//        BeanUtils.copyProperties(reportVo, report);
-//        //1.处理基础信息
-//        List<String> bcImgs = reportVo.getBcUrlList();
-//        List<String> fertWaterImgs = reportVo.getFertWaterUrlList();
-//        List<String> ripeImgs = reportVo.getRipeUrlList();
-//        List<String> weedsImgs = reportVo.getWeedsUrlList();
-//        reportDao.insert(report);
-//        Long id = report.getId();
-//        if (id == null) {
-//            return R.error("上报失败");
-//        }
-//        //先判null，再判非空集合
-//        if (bcImgs != null && !bcImgs.isEmpty()) {
-//            for (String bcImg : bcImgs) {
-//                // 跳过空文件
-//                if (bcImg == null || bcImg.isEmpty()) {
-//                    continue;
-//                }
-//                reportDao.saveImg(bcImg, id, 2);
-//            }
-//        }
-//
-//        // 水肥图片
-//        if (fertWaterImgs != null && !fertWaterImgs.isEmpty()) {
-//            for (String fertWaterImg : fertWaterImgs) {
-//                if (fertWaterImg == null || fertWaterImg.isEmpty()) {
-//                    continue;
-//                }
-//                reportDao.saveImg(fertWaterImg, id, 1);
-//            }
-//        }
-//
-//        // 果实成熟度图片
-//        if (ripeImgs != null && !ripeImgs.isEmpty()) {
-//            for (String ripeImg : ripeImgs) {
-//                if (ripeImg == null || ripeImg.isEmpty()) {
-//                    continue;
-//                }
-//                reportDao.saveImg(ripeImg, id, 4);
-//            }
-//        }
-//
-//        // 杂草图片
-//        if (weedsImgs != null && !weedsImgs.isEmpty()) {
-//            for (String weedsImg : weedsImgs) {
-//                if (weedsImg == null || weedsImg.isEmpty()) {
-//                    continue;
-//                }
-//                reportDao.saveImg(weedsImg, id, 3);
-//            }
-//        }
-//        return R.success(id);
-        return R.error("暂时废弃");
+        reportDao.insert(report);
+        Long id = report.getId();
+        Long typeId = report.getTypeId();
+        if (id == null) {
+            return R.error("上报失败");
+        }
+        if (!typeIds.contains(typeId) || typeId == null) {
+            return R.error("上报类型错误:" + report.getTypeId());
+        }
+        return R.success(List.of(id, typeId));
     }
 
     @Override
