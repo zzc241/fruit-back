@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.DisasterDao">
+    <select id="selectType" resultType="java.lang.String">
+        SELECT DISTINCT disaster.disaster_type
+        FROM disaster
+        WHERE disaster.orchard_id = #{orchardId}
+        AND disaster.typeId = #{typeId}
+    </select>
+    <select id="getTypeCount" resultType="java.lang.Integer">
+        SELECT COUNT(disaster.id)
+        FROM disaster
+        WHERE disaster_type = #{type}
+    </select>
+    <select id="getTypeCountArea" resultType="java.lang.Integer">
+        SELECT COUNT(disaster.id)
+        FROM disaster
+        WHERE disaster_type = #{type}
+        AND disaster.area_id = #{areaId}
+    </select>
+</mapper>

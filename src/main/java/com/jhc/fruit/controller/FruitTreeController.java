@@ -6,6 +6,7 @@ import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
+import com.jhc.fruit.entity.vo.TreeTypeVo;
 import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.FruitGrowService;
 import com.jhc.fruit.service.FruitTreeService;
@@ -251,5 +252,17 @@ public class FruitTreeController {
     @ApiOperation("果树近七天详情信息")
     public R<FruitTreeVo> treeInfoSevenDays(@PathVariable Long treeId){
         return fruitTreeService.treeInfoSevenDays(treeId);
+    }
+
+    @ApiOperation("统计果树品种及其数量(果园)")
+    @GetMapping("/statisticsTreeType")
+    public R<List<TreeTypeVo.TreeType>> statisticsTreeType(@PathVariable Long orchardId){
+        return fruitTreeService.statisticsTreeType(orchardId);
+    }
+
+    @ApiOperation("统计果树品种及其数量(区域)")
+    @GetMapping("/statisticsAreaTreeType")
+    public R<List<TreeTypeVo>> statisticsTreeTypeArea(@PathVariable Long orchardId){
+        return fruitTreeService.statisticsTreeTypeArea(orchardId);
     }
 }

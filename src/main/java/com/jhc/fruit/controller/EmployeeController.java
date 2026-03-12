@@ -122,26 +122,20 @@ public class EmployeeController {
      */
     @PostMapping("/add")
     @ApiOperation("新增用户方法")
-    public R<String> save(@RequestBody Employee employee){
+    public R<Long> save(@RequestBody Employee employee){
         log.info("新增员工，员工信息：",employee.toString());
         //用户名校验
         String username = employee.getUsername();
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Employee::getUsername,username);
         Employee emp = employeeService.getOne(lambdaQueryWrapper);
-        if(emp != null){
-            return R.error("用户名已经存在");
-        }
         //设置初始密码123456，使用md5加密处理
         if(employee.getPassword() == null || "".equals(employee.getPassword())){
             employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         }else {
             employee.setPassword(DigestUtils.md5DigestAsHex(employee.getPassword().getBytes()));
         }
-        if(employee.getUsername() == null || "".equals(employee.getUsername())){
-            employee.setUsername("newUser" + UUID.randomUUID().toString().replace("-", ""));
-        }
-        if (employee.getIsAdmin() == null || "".equals(employee.getIsAdmin())){
+        if (employee.getIsAdmin() == null){
             //如果没有设置过用户类型，默认用户为游客5
             employee.setIsAdmin(5);
         }
@@ -154,7 +148,7 @@ public class EmployeeController {
 
         employeeService.save(employee);
 
-        return R.success("新增员工成功");
+        return R.success(employee.getId());
     }
 
     @GetMapping("/page")

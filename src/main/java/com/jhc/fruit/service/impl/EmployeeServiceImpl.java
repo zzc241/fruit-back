@@ -348,6 +348,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         //账户存在
         //校验手机号和身份证
         if (isValidPhone(employee.getPhone())) {
+            log.info("IdCard： " + employee.getIdCard());
+            log.info("Employee: " + employee.toString());
+            log.info("isValidIdCard：" + isValidIdCard(employee.getIdCard()));
             if (isValidIdCard(employee.getIdCard())){
                 employeeDao.updateById(employee);
                 return R.success("认证成功");
@@ -378,21 +381,15 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         return PHONE_PATTERN.matcher(cleanPhone).matches();
     }
 
-    private static final Pattern ID_CARD_PATTERN = Pattern.compile("^[1-9]\\d{5}(19|20)\\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$");
-    /**
-     * 身份证号校验码权重
-     */
+    // 1. 身份证号正则（18位，最后一位可为X/x）
+    private static final Pattern ID_CARD_PATTERN = Pattern.compile("^[1-9]\\d{5}(18|19|20)\\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$");
+
+    // 2. 标准权重数组（第1-17位对应权重）
     private static final int[] ID_CARD_WEIGHT = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
-    /**
-     * 身份证号校验码对应值
-     */
+
+    // 3. 标准校验码数组（索引0-10对应模11的结果）
     private static final char[] ID_CARD_CHECK_CODE = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
 
-    /**
-     * 校验18位身份证号是否合法（含格式+校验码双重校验）
-     * @param idCard 身份证号（支持空字符串、null、带空格的格式）
-     * @return true=合法，false=不合法
-     */
     public static boolean isValidIdCard(String idCard) {
         // 1. 空值/空白校验
         if (StringUtils.isBlank(idCard)) {
@@ -407,10 +404,12 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
 
         // 4. 校验码验证（核心：防止伪造身份证号）
         try {
-            // 前17位数字求和
+            // 前17位数字 × 权重求和
             int sum = 0;
             for (int i = 0; i < 17; i++) {
-                sum += (cleanIdCard.charAt(i) - '0') * ID_CARD_WEIGHT[i];
+                // 字符转数字（'0'的ASCII码是48，减去后得到数字）
+                int digit = cleanIdCard.charAt(i) - '0';
+                sum += digit * ID_CARD_WEIGHT[i];
             }
             // 计算校验码
             int mod = sum % 11;
@@ -423,6 +422,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             return false;
         }
     }
+
 
     @Override
     public String getEmpImgById(Long empId) {

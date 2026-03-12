@@ -45,4 +45,8 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     String getOrchardNameById(Long orchardId);
 
     String getAreaManagerName(Long areaId);
+
+    List<Long> selectTypeDISTINCT(Long orchardId);
+
+    Integer countType(Long orchardId, Long typeId);
 }
