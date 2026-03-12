@@ -252,4 +252,10 @@ public class FruitTreeController {
     public R<FruitTreeVo> treeInfoSevenDays(@PathVariable Long treeId){
         return fruitTreeService.treeInfoSevenDays(treeId);
     }
+
+    @ApiOperation("/统计病虫害种类及其占比")
+    @GetMapping("/statisticsDisaster")
+    public R<Map<String, Object>> statisticsDisaster(Long orchardId){
+        return null;
+    }
 }
