@@ -261,7 +261,7 @@ public class FruitTreeController {
     }
 
     @ApiOperation("统计果树品种及其数量(区域)")
-    @GetMapping("/statisticsTreeType")
+    @GetMapping("/statisticsAreaTreeType")
     public R<List<TreeTypeVo>> statisticsTreeTypeArea(@PathVariable Long orchardId){
         return fruitTreeService.statisticsTreeTypeArea(orchardId);
     }
