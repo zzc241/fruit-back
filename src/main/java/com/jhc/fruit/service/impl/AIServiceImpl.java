@@ -130,7 +130,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     public DisasterVo weatherAlert(Long orchardId) {
         String city = aiDao.getCityByOrchardId(orchardId);
         // 1. 构建请求URL
-        String url = "http://172.16.0.231:8000/api/weather-alert";
+        String url = aiConfig.getAiCzm() + "/api/weather-alert";
         
         // 2. 构建请求参数
         Map<String, String> params = new HashMap<>();
@@ -199,7 +199,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
     @Override
     public String chat(String query) {
-        String url = "http://172.16.0.231:8000/api/chat";
+        String url = aiConfig.getAiCzm() + "/api/chat";
         
         // 1. 构建请求体参数（POST 请求的参数放在 body 中）
         Map<String, Object> bodyParams = new HashMap<>();
@@ -217,7 +217,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         return response;
     }
     public String analyzeWaterFertilizer(MultipartFile msFile, MultipartFile rgbFile) {
-        String url = "http://172.16.0.231:8000/api/analyze-water-fertilizer";
+        String url = aiConfig.getAiCzm() + "/api/analyze-water-fertilizer";
         
         // 1. 构建请求头
         Map<String, String> headers = new HashMap<>();
@@ -236,7 +236,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     }
 
     public R<MaturityResponse> identifyMaturity(MultipartFile maturityFile) {
-        String url = "http://172.16.0.231:8000/api/identify-maturity";
+        String url = aiConfig.getAiCzm() + "/api/identify-maturity";
         
         // 构建请求头
         Map<String, String> headers = new HashMap<>();
@@ -263,7 +263,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         }
     }
     public R<DiseaseResponse> identifyDisease(MultipartFile diseaseFile) {
-        String url = "http://172.16.0.231:8000/api/identify-disease";
+        String url = aiConfig.getAiCzm() + "/api/identify-disease";
         
         // 构建请求头
         Map<String, String> headers = new HashMap<>();
