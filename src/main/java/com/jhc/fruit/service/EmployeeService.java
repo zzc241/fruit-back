@@ -43,4 +43,6 @@ public interface EmployeeService extends IService<Employee> {
     public String getEmpImgById(Long empId);
 
     public List<EmployeeVo> getAllEmployees();
+
+    public List<EmployeeVo> getAllEmployeesByOrchardId(Long orchardId);
 }

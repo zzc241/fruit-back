@@ -306,12 +306,8 @@ public class EmployeeController {
     @ApiOperation("用户列表")
     @GetMapping("/getAll")
     public R<List<EmployeeVo>> getAll(@RequestParam Long orchardId){
-        LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if(orchardId != null){
-            lambdaQueryWrapper.eq(Employee::getOrchardId,orchardId);
-        }
-        List<EmployeeVo> employees = employeeService.getAllEmployees();
-        return R.success(employees);
+        List<EmployeeVo> employeesVo = employeeService.getAllEmployeesByOrchardId(orchardId);
+        return R.success(employeesVo);
     }
 
     @ApiOperation("批量删除员工")

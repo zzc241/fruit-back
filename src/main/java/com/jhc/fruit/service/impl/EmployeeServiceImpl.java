@@ -443,6 +443,19 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         }
         return employeeVoList;
     }
+    public List<EmployeeVo> getAllEmployeesByOrchardId(Long orchardId){
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Employee::getOrchardId, orchardId);
+        List<Employee> list = employeeDao.selectList(queryWrapper);
+        List<EmployeeVo> employeeVoList = new ArrayList<>();
+        for (Employee employee : list) {
+            EmployeeVo employeeVo = new EmployeeVo();
+            String orchardName = fruitTreeDao.getOrchardNameById(employee.getOrchardId());
+            employeeVo.setOrchardName(orchardName);
+            employeeVoList.add(getInfo(employee));
+        }
+        return employeeVoList;
+    }
 
 
 }
