@@ -34,4 +34,6 @@ public class Disaster {
     @ApiModelProperty(value = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime createTime;
+    @ApiModelProperty(value = "灾害类型（1气象，2病害，3虫害)")
+    private Long typeId;
 }

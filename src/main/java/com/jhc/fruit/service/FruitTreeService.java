@@ -8,9 +8,11 @@ import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.AnnounceInfo;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.entity.vo.QRTreeVo;
+import com.jhc.fruit.entity.vo.TreeTypeVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FruitTreeService extends IService<FruitTree> {
     public List<FruitTreeVo> pageSelect(Page<FruitTreeVo> page,String type);
@@ -41,4 +43,8 @@ public interface FruitTreeService extends IService<FruitTree> {
     FruitTreeVo fruitToVo(FruitTree fruitTree);
 
     void removeByAreaId(Long id);
+
+    R<List<TreeTypeVo.TreeType>> statisticsTreeType(Long orchardId);
+
+    R<List<TreeTypeVo>> statisticsTreeTypeArea(Long orchardId);
 }

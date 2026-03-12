@@ -110,4 +110,15 @@
         WHERE area_info.id = #{areaId}
         AND area_info.emp_id = employee.id
     </select>
+    <select id="selectTypeDISTINCT" resultType="java.lang.Long">
+        SELECT DISTINCT fruit_tree.type
+        FROM fruit.fruit_tree
+        WHERE fruit_tree.orchard_id = #{orchardId}
+    </select>
+    <select id="countType" resultType="java.lang.Integer">
+        SELECT COUNT(fruit_tree.id)
+        FROM fruit_tree
+        WHERE fruit_tree.type = #{typeId}
+        AND fruit_tree.orchard_id = #{orchardId}
+    </select>
 </mapper>

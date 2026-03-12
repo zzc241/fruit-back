@@ -5,13 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.QRCodeUtil;
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.dao.AreaDao;
+import com.jhc.fruit.dao.DisasterDao;
 import com.jhc.fruit.dao.FertWaterDao;
 import com.jhc.fruit.dao.FruitTreeDao;
-import com.jhc.fruit.entity.FertWater;
-import com.jhc.fruit.entity.FruitTree;
-import com.jhc.fruit.entity.FruitType;
+import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.entity.vo.TaskVo;
+import com.jhc.fruit.entity.vo.TreeTypeVo;
 import com.jhc.fruit.service.AreaService;
 import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.FruitTreeService;
@@ -24,9 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +47,8 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     private AreaService areaService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private AreaDao areaDao;
 
     @Override
     public Page<FruitTreeVo> page(Page<FruitTreeVo> page) {
@@ -195,6 +196,47 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     public void removeByAreaId(Long id) {
         fruitTreeDao.deleteByAreaId(id);
     }
+
+    @Override
+    public R<List<TreeTypeVo.TreeType>> statisticsTreeType(Long orchardId) {
+        List<TreeTypeVo.TreeType> ttList = new ArrayList<>();
+        //统计品种
+        List<Long> typeIdsList = fruitTreeDao.selectTypeDISTINCT(orchardId);
+        typeIdsList.forEach(typeId ->{
+
+            Integer count = fruitTreeDao.countType(orchardId, typeId);
+            String typeName = fruitTreeDao.selectByType(typeId);
+            TreeTypeVo.TreeType treeType = new TreeTypeVo.TreeType(typeName, count);
+            ttList.add(treeType);
+        });
+        return R.success(ttList);
+    }
+
+    @Override
+    public R<List<TreeTypeVo>> statisticsTreeTypeArea(Long orchardId) {
+        List<TreeTypeVo> result = new ArrayList<>();
+        LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Area::getOrchardId, orchardId);
+        List<Area> areaList = areaDao.selectList(queryWrapper);
+        for(Area area : areaList){
+            TreeTypeVo treeTypeVo = new TreeTypeVo();
+            List<TreeTypeVo.TreeType> ttList = new ArrayList<>();
+            //统计品种
+            List<Long> typeIdsList = fruitTreeDao.selectTypeDISTINCT(orchardId);
+            typeIdsList.forEach(typeId ->{
+
+                Integer count = fruitTreeDao.countType(orchardId, typeId);
+                String typeName = fruitTreeDao.selectByType(typeId);
+                TreeTypeVo.TreeType treeType = new TreeTypeVo.TreeType(typeName, count);
+                ttList.add(treeType);
+            });
+            treeTypeVo.setArea(area);
+            treeTypeVo.setTypeCount(ttList);
+            result.add(treeTypeVo);
+        }
+        return R.success(result);
+    }
+
 
     public FruitTree voToFruitTree(FruitTreeVo fruitTreeVo) {
         FruitTree fruitTree = new FruitTree();

@@ -1,14 +1,10 @@
 package com.jhc.fruit.controller;
 
+import com.jhc.fruit.entity.Area;
+import com.jhc.fruit.entity.vo.DisasterTypeVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Disaster;
@@ -18,6 +14,9 @@ import com.jhc.fruit.service.DisasterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -64,5 +63,17 @@ public class DisasterController {
         DisasterVo resultVo = new DisasterVo();
         BeanUtils.copyProperties(getResult, resultVo);
         return R.success(resultVo);
+    }
+
+    @ApiOperation(value = "统计病虫害种类及其出现次数(果园）")
+    @GetMapping("/statisticsDisaster")
+    public R<List<DisasterTypeVo>> statisticsDisaster(@PathVariable Long orchardId){
+        return disasterService.statisticsDisaster(orchardId);
+    }
+
+    @ApiOperation(value = "统计病虫害种类及其出现次数(区域）")
+    @GetMapping("/statisticsAreaDisaster")
+    public R<List<Map<Area,List<DisasterTypeVo>>>> statisticsAreaDisaster(@PathVariable Long orchardId){
+        return disasterService.statisticsAreaDisaster(orchardId);
     }
 }
