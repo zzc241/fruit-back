@@ -1,15 +1,12 @@
 package com.jhc.fruit.controller;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jhc.fruit.aop.Log;
 import com.jhc.fruit.common.*;
 import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
 import com.jhc.fruit.service.EmployeeService;
-import com.jhc.fruit.service.impl.EmployeeServiceImpl;
 
 import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
@@ -17,24 +14,13 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -302,7 +288,7 @@ public class EmployeeController {
     public R<List<Employee>> getAdmin(){
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         //判断员工的身份为0，则成为园区负责人候选人
-        lambdaQueryWrapper.eq(Employee::getIsAdmin,0);
+        lambdaQueryWrapper.eq(Employee::getIsAdmin,2);
         List<Employee> admins = employeeService.list(lambdaQueryWrapper);
         return R.success(admins);
     }
@@ -341,11 +327,10 @@ public class EmployeeController {
         return R.success(employees);
     }
 
-    @ApiOperation("保存用户头像")
+    @ApiOperation("保存/修改用户头像")
     @PostMapping("/saveHeadImg")
-    public R<String> saveHeadImg(@RequestParam("file") MultipartFile file) {
-        String fileUrl = employeeService.saveHeadImg(file, "headImg");
-        return R.success(fileUrl);
+    public R<String> saveHeadImg(@RequestParam("headImg") MultipartFile file) {
+        return employeeService.saveHeadImg(file, "headImg");
     }
 
     @ApiOperation("修改账户状态")
@@ -359,4 +344,5 @@ public class EmployeeController {
         List<EmployeeVo> list = employeeService.getAllEmployees();
         return R.success(list);
     }
+
 }

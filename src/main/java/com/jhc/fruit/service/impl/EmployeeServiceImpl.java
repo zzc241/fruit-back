@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.JsonUtil;
 import com.jhc.fruit.common.JwtUtil;
 import com.jhc.fruit.common.R;
@@ -289,9 +290,25 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     }
 
     @Override
-    public String saveHeadImg(MultipartFile file, String headImg) {
+    public R<String> saveHeadImg(MultipartFile file, String headImg) {
         String url = fileService.save(file, headImg);
-        return url;
+        //获取当前登录用户
+        Long id = BaseContext.getId();
+        if (id == null){
+            return R.error("非法id");
+        }
+        if (file == null){
+            return R.error("非法图片");
+        }
+
+        //更新头像
+        Employee employee = employeeDao.selectById(id);
+        if (employee == null){
+            return R.error("ERROR, user is no exits");
+        }
+        employee.setHeadImg(url);
+        employeeDao.updateById(employee);
+        return R.success(url);
     }
 
     @Override
