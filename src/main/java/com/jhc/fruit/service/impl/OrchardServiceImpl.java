@@ -55,6 +55,8 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
      */
     @Override
     public Page<OrchardVo> getPageInfo(OrchardVo orchardVo) { 
+        // TODO后续优化，查看几乎所有果园
+        orchardVo.setPageSize(100000);
         Page<Orchard> pageInfo = new Page<>(orchardVo.getPage(), orchardVo.getPageSize());
         LambdaQueryWrapper<Orchard> queryWrapper = new LambdaQueryWrapper<>();
         Long id = orchardVo.getId();
