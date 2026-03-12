@@ -356,7 +356,21 @@ public String doPostUploadMulti(String url, Map<String, String> headers,
             }
         }
         
-        MediaType mediaType = MediaType.parse("application/octet-stream");
+        // 获取文件的真实 MIME 类型
+        String contentType = null;
+        for (Map.Entry<String, MultipartFile> fileEntry : fileParams.entrySet()) {
+            if (fileEntry.getKey().equals(paramName)) {
+                contentType = fileEntry.getValue().getContentType();
+                break;
+            }
+        }
+
+        // 如果获取不到，用默认值
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        MediaType mediaType = MediaType.parse(contentType);
         multipartBuilder.addFormDataPart(
                 paramName,
                 originalFilename,

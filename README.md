@@ -121,7 +121,10 @@ FLUSH PRIVILEGES;
 
 
 ```git
+//自己创建仓库
 git init
+//克隆远程仓库
+git clone https://github.com/QYQY-QY/orchard-manger.git
 
 git remote add origin git@github.com:zzc241/-1.0.git
 //git@github.com:zzc241/-1.0.git在下面图片中
@@ -143,6 +146,31 @@ git pull origin zyr
 git push origin main
 合作者2拉取合作者1分支
 git pull origin main
+
+//自己上传代码
+# 1. 添加所有修改
+git add .
+
+# 2. 提交到本地仓库
+git commit -m "暂存本地修改"
+
+# 3. 拉取远程代码
+git pull origin zyr
+
+# 4. 如果有冲突，解决冲突后再次提交
+git add .
+git commit -m "解决合并冲突"
+
+//本地有更改但想要拉取别人的代码
+# 1. 暂存本地修改
+git stash
+
+# 2. 拉取远程代码
+git pull origin zyr
+
+# 3. 恢复暂存的修改
+git stash pop
+
 //下面的git代码基本不需要用到，了解即可
 ```
 
@@ -379,6 +407,58 @@ String[] urls = new String[]{
 ```
 
 
+
+##### 后端调AI接口报错
+
+###### 接受类和接口返回类型不匹配
+
+```
+public class MaturityResponse {
+    
+    private Integer code;
+    private String msg;
+    private String answer;
+    
+    @JsonProperty("image_data")
+    private String imageData;  // 新增：图片十六进制数据
+    
+    @JsonProperty("ripe_stats")
+    private RipeStats ripeStats;
+    
+    @Data
+    public static class RipeStats {
+        @JsonProperty("total_fruits")
+        private Integer totalFruits;
+        
+        @JsonProperty("maturity_distribution")
+        private Map<String, Integer> maturityDistribution;  // 新增：成熟度分布
+        
+        @JsonProperty("ripe_fruits")
+        private Integer ripeFruits;  // 新增：成熟果实数量
+        
+        @JsonProperty("ripe_rate")
+        private Double ripeRate;  // 熟果率，JSON里是 50 表示 50%
+    }
+//如果这里面没有ai返回的对应类型就不会接收
+```
+
+
+
+###### 传给接口文件类型不匹配
+
+```
+public R<MaturityResponse> identifyMaturity(String maturityFile)
+//如果ai接口要获取MultipartFile的数据格式，你给他传String的话ai接口报错
+public R<MaturityResponse> identifyMaturity(MultipartFile maturityFile)
+```
+
+###### 传给接口文件名不匹配
+
+```
+fileParams.put("maturityFile", maturityFile);
+//如果ai接口要获取file名称的数据，你给他传maturityFile的话ai接口报错
+fileParams.put("file", maturityFile);  // 参数名根据接口文档调整
+```
 
 
 

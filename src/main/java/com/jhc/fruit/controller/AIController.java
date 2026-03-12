@@ -63,7 +63,7 @@ public class AIController {
     // }
     @ApiOperation("分析病虫害接口")
     @PostMapping("/identify-disease")
-    public R<DiseaseResponse> identifyDisease(MultipartFile diseaseFile){
+    public R<DiseaseResponse> identifyDisease(@RequestParam MultipartFile diseaseFile){
         return aiService.identifyDisease(diseaseFile);
     }
     @ApiOperation("分析成熟度接口")

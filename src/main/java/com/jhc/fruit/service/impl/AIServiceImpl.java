@@ -244,7 +244,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         
         // 构建文件参数
         Map<String, MultipartFile> fileParams = new HashMap<>();
-        fileParams.put("maturityFile", maturityFile);  // 参数名根据接口文档调整
+        fileParams.put("file", maturityFile);  // 参数名根据接口文档调整
         
         // 调用接口
         String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
@@ -271,7 +271,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         
         // 构建文件参数
         Map<String, MultipartFile> fileParams = new HashMap<>();
-        fileParams.put("diseaseFile", diseaseFile);  // 参数名根据接口文档调整
+        fileParams.put("file", diseaseFile);  // 参数名根据接口文档调整
         
         // 调用接口
         String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
