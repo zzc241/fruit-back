@@ -9,9 +9,12 @@ import io.minio.*;
 import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -453,6 +456,83 @@ public class FileServiceImpl implements FileService {
             throw new RuntimeException(e);
         }
 
+    }
+
+    /**
+     * 从MinIO根据文件名获取文件，并转换为MultipartFile格式
+     * @param fileName MinIO中存储的文件名（即upload方法返回的fileName）
+     * @return MultipartFile 对象（MockMultipartFile实现）
+     * @throws Exception 读取MinIO文件失败时抛出
+     */
+    @Override
+    public MultipartFile getMinioFileAsMultipartFile(String fileName){
+        try{
+            // 1. 校验文件是否存在
+            if (!exits(fileName)) {
+                throw new RuntimeException("MinIO中不存在文件：" + fileName);
+            }
+
+            // 2. 从MinIO读取文件流到字节数组（避免流关闭后无法复用）
+            InputStream minioInputStream = getMinioFileInputStream(fileName);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = minioInputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, len);
+            }
+            byte[] fileBytes = outputStream.toByteArray();
+
+            // 3. 关闭流（避免资源泄漏）
+            minioInputStream.close();
+            outputStream.close();
+
+            // 4. 解析文件名和扩展名（用于构造MultipartFile）
+            String originalFilename = fileName; // 若存储时记录了原始文件名，可替换为真实名称
+            String contentType = getContentTypeByFileName(fileName); // 获取文件MIME类型
+
+            // 5. 封装为MockMultipartFile（Spring提供的MultipartFile实现类）
+            return new MockMultipartFile(
+                    "file",                // 参数名（可自定义，对应前端上传的name）
+                    originalFilename,      // 原始文件名
+                    contentType,           // 文件MIME类型
+                    new ByteArrayInputStream(fileBytes) // 文件字节流
+            );
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    /**
+     * 批量从MinIO获取文件并转换为MultipartFile列表
+     * @param fileNames MinIO文件名列表
+     * @return MultipartFile列表
+     * @throws Exception 读取失败时抛出
+     */
+    @Override
+    public List<MultipartFile> getMinioFilesAsMultipartFileList(List<String> fileNames) throws Exception {
+        List<MultipartFile> multipartFiles = new ArrayList<>();
+        for (String fileName : fileNames) {
+            multipartFiles.add(getMinioFileAsMultipartFile(fileName));
+        }
+        return multipartFiles;
+    }
+
+    /**
+     * 根据文件名获取MIME类型（适配常见图片格式）
+     */
+    private String getContentTypeByFileName(String fileName) {
+        if (fileName == null) {
+            return "application/octet-stream";
+        }
+        String ext = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        switch (ext) {
+            case "png": return "image/png";
+            case "jpg": case "jpeg": return "image/jpeg";
+            case "gif": return "image/gif";
+            case "bmp": return "image/bmp";
+            default: return "application/octet-stream";
+        }
     }
 
 }

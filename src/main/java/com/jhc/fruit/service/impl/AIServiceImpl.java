@@ -236,6 +236,28 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         return response;
     }
 
+    @Override
+    public String unanalyzeWaterFertilizer(String msFileName, String rgbFileName) {
+        MultipartFile msFile = fileService.getMinioFileAsMultipartFile(msFileName);
+        MultipartFile rgbFile = fileService.getMinioFileAsMultipartFile(rgbFileName);
+        String url = aiConfig.getAiCzm() + "/api/analyze-water-fertilizer";
+
+        // 1. 构建请求头
+        Map<String, String> headers = new HashMap<>();
+        headers.put("accept", "application/json");
+
+        // 2. 构建文件参数映射
+        Map<String, MultipartFile> fileParams = new HashMap<>();
+        fileParams.put("ms_file", msFile);
+        fileParams.put("rgb_file", rgbFile);
+
+        // 3. 调用多文件上传方法
+        String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
+
+        log.info(response);
+        return response;
+    }
+
     public R<MaturityResponse> identifyMaturity(MultipartFile maturityFile) {
         String url = aiConfig.getAiCzm() + "/api/identify-maturity";
         

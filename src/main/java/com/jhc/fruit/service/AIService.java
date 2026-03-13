@@ -28,4 +28,6 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
     R<MaturityResponse> identifyMaturity(MultipartFile maturityFile);
 
     String analyzeWaterFertilizer(MultipartFile msFile, MultipartFile rgbFile);
+
+    String unanalyzeWaterFertilizer(String msFile, String rgbFile);
 }

@@ -29,4 +29,8 @@ public interface FileService {
     Boolean exits(String fileName);
 
     Boolean remove(String fileName);
+
+    MultipartFile getMinioFileAsMultipartFile(String fileName);
+
+    List<MultipartFile> getMinioFilesAsMultipartFileList(List<String> fileNames) throws Exception;
 }

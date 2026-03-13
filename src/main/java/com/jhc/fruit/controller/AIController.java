@@ -1,5 +1,6 @@
 package com.jhc.fruit.controller;
 
+import com.google.gson.JsonObject;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.entity.vo.DisasterVo;
@@ -56,6 +57,14 @@ public class AIController {
         return R.success(result);
     }
 
+    @ApiOperation("AI聊天接口(JSON)")
+    @PostMapping("/chatJSON")
+    public R<String> chatJSON(@RequestBody JsonObject query) {
+        String str = query.toString();
+        String result = aiService.chat(str);
+        return R.success(result);
+    }
+
     // @ApiOperation("分析图片接口")
     // @PostMapping("/identify-image")
     // public R<AIWeeds.WeedDetectionResponse> identifyImage(MultipartFile weedFile){
@@ -76,6 +85,13 @@ public class AIController {
     @PostMapping("/analyze-water-fertilizer")
     public R<String> analyzeWaterFertilizer(MultipartFile msFile , MultipartFile rgbFile){
         String result = aiService.analyzeWaterFertilizer(msFile , rgbFile);
+        return R.success(result);
+    }
+
+    @ApiOperation("小程序：分析水肥需求接口")
+    @PostMapping("/unapp/analyze-water-fertilizer")
+    public R<String> unappanalyzeWaterFertilizer(@RequestParam String msFile, @RequestParam String rgbFile){
+        String result = aiService.unanalyzeWaterFertilizer(msFile , rgbFile);
         return R.success(result);
     }
 
