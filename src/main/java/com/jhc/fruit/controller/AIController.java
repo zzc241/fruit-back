@@ -57,14 +57,6 @@ public class AIController {
         return R.success(result);
     }
 
-    @ApiOperation("AI聊天接口(JSON)")
-    @PostMapping("/chatJSON")
-    public R<String> chatJSON(@RequestBody JsonObject query) {
-        String str = query.toString();
-        String result = aiService.chat(str);
-        return R.success(result);
-    }
-
     // @ApiOperation("分析图片接口")
     // @PostMapping("/identify-image")
     // public R<AIWeeds.WeedDetectionResponse> identifyImage(MultipartFile weedFile){
