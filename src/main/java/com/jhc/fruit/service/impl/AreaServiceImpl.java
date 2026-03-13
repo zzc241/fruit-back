@@ -7,6 +7,7 @@ import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.vo.AreaVo;
 import com.jhc.fruit.service.AreaService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -99,11 +100,17 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
         return areaId;
     }
 
-    public List<Area> selectByOrchardId(Long orchardId){
+    public List<AreaVo> selectByOrchardId(Long orchardId){
         LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Area::getOrchardId, orchardId);
         List<Area> areaList = areaDao.selectList(queryWrapper);
-        return areaList;
+        List<AreaVo> areaVoList = new ArrayList<>();
+        for(Area area : areaList){
+            AreaVo areaVo = new AreaVo();
+            BeanUtils.copyProperties(area, areaVo);
+            areaVoList.add(areaVo);
+        }
+        return areaVoList;
     }
     public Long getAreaIdByEmpId (Long empId){
         LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Area;
+import com.jhc.fruit.entity.vo.AreaVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -306,9 +307,9 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
 
     public Boolean removeOrchard(Long id) {
         try {
-            List<Area> areaList = areaService.selectByOrchardId(id);
-            for(Area area : areaList){
-                areaService.removeArea(area.getId());
+            List<AreaVo> areaList = areaService.selectByOrchardId(id);
+            for(AreaVo areaVo : areaList){
+                areaService.removeArea(areaVo.getId());
             }
             orchardDao.deleteById(id);
             return true;

@@ -3,7 +3,6 @@ package com.jhc.fruit.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.entity.Area;
-import com.jhc.fruit.entity.Orchard;
 import com.jhc.fruit.entity.vo.AreaVo;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public interface AreaService extends IService<Area> {
     public String getAreaNameById(Long areaId);
     public Long getAreaIdByName(String areaName);
 
-    public List<Area> selectByOrchardId(Long orchardId);
+    public List<AreaVo> selectByOrchardId(Long orchardId);
     public Long getAreaIdByEmpId (Long empId);
 
     void removeArea(Long id);

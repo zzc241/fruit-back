@@ -177,8 +177,8 @@ public class AreaController {
     @GetMapping("/selectByOrchardId")
     @ApiOperation("根据果园id筛选")
     @ApiImplicitParam(name = "orchardId",value = "果园id")
-    public R<List<Area>> selectByOrchardId(Long orchardId){
-        List<Area> areaByOrchardId = areaServiceImpl.selectByOrchardId(orchardId);
+    public R<List<AreaVo>> selectByOrchardId(Long orchardId){
+        List<AreaVo> areaByOrchardId = areaServiceImpl.selectByOrchardId(orchardId);
         return R.success(areaByOrchardId);
     }
 
