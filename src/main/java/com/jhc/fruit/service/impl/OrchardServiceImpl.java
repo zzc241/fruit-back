@@ -1,11 +1,15 @@
 package com.jhc.fruit.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jhc.fruit.common.R;
-import com.jhc.fruit.entity.Area;
+import com.jhc.fruit.entity.OrchardPoint;
 import com.jhc.fruit.entity.vo.AreaVo;
+import com.jhc.fruit.entity.vo.OrchardPointVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -322,5 +326,35 @@ public class OrchardServiceImpl extends ServiceImpl<OrchardDao, Orchard> impleme
     @Override
     public String getOrchardNameByEmpId(Long empId) {
         return "";
+    }
+
+    @Override
+    public R<String> addPoint(OrchardPointVo orchardPointVo) {
+        //提取果园id和坐标组
+        Long orchardId = orchardPointVo.getOrchardId();
+        List<List<Double>> points = orchardPointVo.getPoints();
+        Gson gson = new Gson();
+        if (orchardId == null || orchardDao.selectById(orchardId) == null) {
+            return R.error("果园不存在");
+        }
+        if(points == null || points.isEmpty()){
+            return R.error("坐标为空");
+        }
+        OrchardPoint orchardPoint = new OrchardPoint();
+        BeanUtils.copyProperties(orchardPointVo, orchardPoint);
+        orchardPoint.setPoints(gson.toJson(points));
+        //果园和坐标均存在
+        orchardDao.savePoints(orchardId, orchardPoint.getPoints());
+        return R.success("添加成功");
+    }
+
+    @Override
+    public R<List<List<Double>>> getPoints(Long orchardId) {
+        //查询对应果园的数据
+        OrchardPoint orchardPoint = orchardDao.getPoints(orchardId);
+        //将json转为List<List<Double>坐标数据
+        Gson gson = new Gson();
+        List<List<Double>> points = gson.fromJson(orchardPoint.getPoints(), new TypeToken<List<List<Double>>>() {}.getType());
+        return R.success(points);
     }
 }

@@ -1,14 +1,11 @@
 package com.jhc.fruit.controller;
 import java.util.List;
 
+import com.jhc.fruit.entity.OrchardPoint;
+import com.jhc.fruit.entity.vo.OrchardPointVo;
 import com.jhc.fruit.service.OrchardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.common.BaseContext;
@@ -82,4 +79,16 @@ public class OrchardController {
 //    private R<String> updateOrchard(@RequestBody OrchardVo orchardVo){
 //        return orchardServiceImpl.updateByOrchardVo(orchardVo);
 //    }
+
+    @PostMapping("/addPoints")
+    @ApiOperation("添加果园坐标")
+    public R<String> addPoint(@RequestBody OrchardPointVo orchardPointVo){
+        return orchardService.addPoint(orchardPointVo);
+    }
+
+    @GetMapping("/getPoints/{orchardId}")
+    @ApiOperation("获取果园坐标")
+    public R<List<List<Double>>> getPoints(@PathVariable Long orchardId){
+        return orchardService.getPoints(orchardId);
+    }
 }

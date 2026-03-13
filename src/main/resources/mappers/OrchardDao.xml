@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.OrchardDao">
+
+    <insert id="savePoints">
+        INSERT INTO orchard_point(orchard_id, points)
+        VALUES (#{orchardId}, #{points})
+    </insert>
+    <select id="getPoints" resultType="com.jhc.fruit.entity.OrchardPoint">
+        SELECT orchard_point.*
+        FROM orchard_point
+        WHERE orchard_id = #{orchardId}
+    </select>
+</mapper>
+
+
+

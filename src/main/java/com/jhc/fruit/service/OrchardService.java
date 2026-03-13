@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Orchard;
+import com.jhc.fruit.entity.OrchardPoint;
+import com.jhc.fruit.entity.vo.OrchardPointVo;
 import com.jhc.fruit.entity.vo.OrchardVo;
 
 public interface OrchardService extends IService<Orchard>{
@@ -22,4 +24,8 @@ public interface OrchardService extends IService<Orchard>{
     Boolean removeOrchard(Long id);
 
     String getOrchardNameByEmpId(Long empId);
+
+    R<String> addPoint(OrchardPointVo orchardPointVo);
+
+    R<List<List<Double>>> getPoints(Long orchardId);
 }

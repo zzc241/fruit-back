@@ -228,6 +228,12 @@
             <artifactId>okhttp</artifactId>
             <version>4.12.0</version> <!-- 2026年最新稳定版，兼容Java 8+ -->
         </dependency>
+<!--用于处理字符串和json,主要在orchard处理points-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
     </dependencies>
 <!-- springboot 打包插件-->
     <build>
