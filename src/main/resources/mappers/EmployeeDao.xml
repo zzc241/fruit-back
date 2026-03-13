@@ -6,6 +6,7 @@
         SELECT COUNT(*)
         FROM employee
         WHERE orchard_id = #{orchardId}
+          AND employee.is_admin IN (2, 3, 6)
     </select>
     <select id="statisticsAreaEmployee" resultType="java.lang.Integer">
         SELECT COUNT(*)
@@ -13,5 +14,6 @@
         WHERE area_info.id = #{areaId}
           AND area_info.emp_group = empgroup_emp.group_id
           AND empgroup_emp.emp_id = employee.id
+          AND employee.is_admin IN (3, 6)
     </select>
 </mapper>
