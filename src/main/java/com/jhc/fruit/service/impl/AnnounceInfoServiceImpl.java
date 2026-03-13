@@ -54,7 +54,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
     private OrchardService orchardService;
     @Override
     public Page<AnnounceInfoVo> getPageInfo(AnnounceInfoVo pickInfoVo) { 
-        Page<AnnounceInfo> pageInfo = new Page<>(pickInfoVo.getPage(), pickInfoVo.getPageSize());
+        Page<AnnounceInfo> pageInfo = new Page<>(pickInfoVo.getPage(), 1000);
         LambdaQueryWrapper<AnnounceInfo> queryWrapper = new LambdaQueryWrapper<>();
 
         if (StrUtil.isNotBlank(pickInfoVo.getTitle())) {
