@@ -68,7 +68,7 @@ public class FileServiceImpl implements FileService {
 
             // 设置存储对象名称
             String extFileName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            String fileName = UUID.randomUUID().toString().replace("-" , "") + extFileName;
+            String fileName = "upload/" + UUID.randomUUID().toString().replace("-" , "") + extFileName;
 
             PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                     .bucket(minioProperties.getBucketName())
