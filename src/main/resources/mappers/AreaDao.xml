@@ -59,4 +59,9 @@
         FROM employee
         WHERE id = #{empId}
     </select>
+    <select id="getAreaNameById" resultType="java.lang.String">
+        SELECT area_info.name
+        FROM area_info
+        WHERE id = #{areaId}
+    </select>
 </mapper>

@@ -24,7 +24,9 @@ public interface TaskService extends IService<Task> {
 
    List<TaskVo> queryTasks(TaskVo tasksVo);
 
-   List<TaskVo> queryTasksBackend(TaskVo taskVo);
+    TaskVo taskToVo(Task task);
+
+    List<TaskVo> queryTasksBackend(TaskVo taskVo);
 
    List<TaskVo> getByOrchardId(Long OrchardId);
 

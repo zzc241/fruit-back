@@ -2,6 +2,7 @@ package com.jhc.fruit.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.dao.TaskDao;
 import com.jhc.fruit.entity.EmpGroup;
 import com.jhc.fruit.entity.Task;
@@ -39,6 +40,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     private OrchardService orchardService;
     @Autowired
     private EmpGroupService empGroupService;
+    @Autowired
+    private AreaDao areaDao;
 
     /*新增任务*/
     @Override
@@ -215,12 +218,17 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         return task;
     }
 
-    private TaskVo taskToVo(Task task) {
+    @Override
+    public TaskVo taskToVo(Task task) {
         TaskVo taskVo = new TaskVo();
         BeanUtils.copyProperties(task, taskVo);
         taskVo.setUsername(
                 employeeService.getEmpNameById(
                         task.getCreatorId()));
+        taskVo.setAreaName(areaDao.getAreaNameById(task.getAreaId()));
+        taskVo.setImgsURL(
+                taskImgService.getImg(task.getId())
+        );
         return taskVo;
     }
 

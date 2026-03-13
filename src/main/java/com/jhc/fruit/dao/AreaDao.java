@@ -25,4 +25,6 @@ public interface AreaDao extends BaseMapper<Area> {
     void removeIncludeTree(Long id);
 
     String getEmpName(Long empId);
+
+    String getAreaNameById(Long areaId);
 }
