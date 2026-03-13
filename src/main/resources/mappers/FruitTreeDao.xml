@@ -121,4 +121,11 @@
         WHERE fruit_tree.type = #{typeId}
         AND fruit_tree.orchard_id = #{orchardId}
     </select>
+    <select id="selectByTaskType" resultType="com.jhc.fruit.entity.FruitTree">
+        SELECT fruit_tree.*
+        FROM fruit_tree, task
+        WHERE fruit_tree.orchard_id = #{orchardId}
+        AND fruit_tree.area_id = task.area_id
+        AND task.task_type = #{type}
+    </select>
 </mapper>

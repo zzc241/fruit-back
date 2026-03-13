@@ -66,13 +66,13 @@ public class DisasterController {
     }
 
     @ApiOperation(value = "统计病虫害种类及其出现次数(果园）")
-    @GetMapping("/statisticsDisaster")
+    @GetMapping("/statisticsDisaster/{orchardId}")
     public R<List<DisasterTypeVo>> statisticsDisaster(@PathVariable Long orchardId){
         return disasterService.statisticsDisaster(orchardId);
     }
 
     @ApiOperation(value = "统计病虫害种类及其出现次数(区域）")
-    @GetMapping("/statisticsAreaDisaster")
+    @GetMapping("/statisticsAreaDisaster/{orchardId}")
     public R<List<Map<Area,List<DisasterTypeVo>>>> statisticsAreaDisaster(@PathVariable Long orchardId){
         return disasterService.statisticsAreaDisaster(orchardId);
     }

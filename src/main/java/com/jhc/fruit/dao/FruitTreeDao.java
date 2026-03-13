@@ -49,4 +49,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     List<Long> selectTypeDISTINCT(Long orchardId);
 
     Integer countType(Long orchardId, Long typeId);
+
+    List<FruitTree> selectByTaskType(Long orchardId, String type);
 }

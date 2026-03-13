@@ -47,4 +47,6 @@ public interface FruitTreeService extends IService<FruitTree> {
     R<List<TreeTypeVo.TreeType>> statisticsTreeType(Long orchardId);
 
     R<List<TreeTypeVo>> statisticsTreeTypeArea(Long orchardId);
+
+    R<List<FruitTreeVo>> getByTask(Long orchardId, String type);
 }

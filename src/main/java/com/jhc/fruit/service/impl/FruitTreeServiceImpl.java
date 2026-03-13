@@ -237,6 +237,25 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         return R.success(result);
     }
 
+    @Override
+    public R<List<FruitTreeVo>> getByTask(Long orchardId, String type) {
+        //找出相关果树
+        List<FruitTree> fruitTreeList = fruitTreeDao.selectByTaskType(orchardId, type);
+        List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
+        for (FruitTree fruitTree : fruitTreeList) {
+            FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
+            //查询相关任务
+            TaskVo taskVo = new TaskVo();
+            taskVo.setOrchardId(orchardId);
+            taskVo.setTaskType(type);
+            taskVo.setTreeId(fruitTree.getId());
+            //添加任务信息
+            fruitTreeVo.setTasks(taskService.queryTasks(taskVo));
+            fruitTreeVoList.add(fruitTreeVo);
+        }
+        return R.success(fruitTreeVoList);
+    }
+
 
     public FruitTree voToFruitTree(FruitTreeVo fruitTreeVo) {
         FruitTree fruitTree = new FruitTree();

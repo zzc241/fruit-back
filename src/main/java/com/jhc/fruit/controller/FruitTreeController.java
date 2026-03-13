@@ -255,14 +255,20 @@ public class FruitTreeController {
     }
 
     @ApiOperation("统计果树品种及其数量(果园)")
-    @GetMapping("/statisticsTreeType")
+    @GetMapping("/statisticsTreeType/{orchardId}")
     public R<List<TreeTypeVo.TreeType>> statisticsTreeType(@PathVariable Long orchardId){
         return fruitTreeService.statisticsTreeType(orchardId);
     }
 
     @ApiOperation("统计果树品种及其数量(区域)")
-    @GetMapping("/statisticsAreaTreeType")
+    @GetMapping("/statisticsAreaTreeType/{orchardId}")
     public R<List<TreeTypeVo>> statisticsTreeTypeArea(@PathVariable Long orchardId){
         return fruitTreeService.statisticsTreeTypeArea(orchardId);
+    }
+
+    @ApiOperation("根据任务类型和果园id查询果树")
+    @GetMapping("/getByTask")
+    public R<List<FruitTreeVo>> getByTask(@RequestParam Long orchardId, @RequestParam String type){
+        return fruitTreeService.getByTask(orchardId, type);
     }
 }
