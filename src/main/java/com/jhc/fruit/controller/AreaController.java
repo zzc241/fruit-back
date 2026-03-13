@@ -1,18 +1,15 @@
 package com.jhc.fruit.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jhc.fruit.aop.Log;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Camera;
+import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.vo.AreaVo;
+import com.jhc.fruit.service.AreaService;
 import com.jhc.fruit.service.FruitTreeService;
-import com.jhc.fruit.service.impl.AreaServiceImpl;
-import com.jhc.fruit.service.impl.CameraServiceImpl;
-import com.jhc.fruit.service.impl.FruitTreeServiceImpl;
-import com.jhc.fruit.service.impl.FruitTypeServiceImpl;
+import com.jhc.fruit.service.FruitTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -33,12 +30,12 @@ import java.util.List;
 @Api(tags = "地区管理接口")
 public class AreaController {
     @Autowired
-    private AreaServiceImpl areaServiceImpl;
+    private AreaService areaService;
 
     @Autowired
-    private FruitTypeServiceImpl fruitTypeServiceImpl;
+    private FruitTypeService fruitTypeService;
     @Autowired
-    private FruitTreeServiceImpl fruitTreeServiceImpl;
+    private FruitTreeService fruitTreeService;
 
 
     @PostMapping
@@ -47,7 +44,7 @@ public class AreaController {
         //获取新增区域的类型
         String type = areaVo.getType();
         //通过前端新增区域里的类型查找对应类型在后端的id
-        Long typeId = areaServiceImpl.getIdByType(type);
+        Long typeId = areaService.getIdByType(type);
         System.out.println(typeId);
         //如果该类型不存在
         if(typeId == null){
@@ -59,16 +56,16 @@ public class AreaController {
         area.setTypeId(typeId);
         BeanUtils.copyProperties(areaVo, area);
         //保存
-        areaServiceImpl.save(area);
+        areaService.save(area);
         Long areaId = area.getId();
         Long fruitCount = areaVo.getFruitCount();
-        Long fruitId = fruitTypeServiceImpl.getIdByType(type);
+        Long fruitId = fruitTypeService.getIdByType(type);
         if(fruitCount != null && fruitCount > 0){
             for(int i = 0; i < fruitCount; i++){ 
                 FruitTree fruitTree = new FruitTree();
                 fruitTree.setAreaId(areaId);
                 fruitTree.setType(fruitId);
-                fruitTreeServiceImpl.save(fruitTree);
+                fruitTreeService.save(fruitTree);
             }
         }
         Long id = area.getId();
@@ -78,10 +75,9 @@ public class AreaController {
     @DeleteMapping("/{id}")
     @ApiOperation("地区删除方法")
     @ApiImplicitParam(name = "id",value = "地区id")
-    public R<List<Camera>> delete(@PathVariable Long id){
+    public R<String> delete(@PathVariable Long id){
         //1.根据地区id删除对应的地区
-        areaServiceImpl.removeArea(id);
-
+        areaService.removeArea(id);
 
         return R.success();
     }
@@ -107,9 +103,9 @@ public class AreaController {
         if(name != null){
             name += "%";
         }
-        pageInfo.setTotal(areaServiceImpl.page(page1).getTotal());
-        pageInfo.setPages(areaServiceImpl.page(page1).getPages());
-        List<AreaVo> result = areaServiceImpl.getPageInfo(pageInfo, name);
+        pageInfo.setTotal(areaService.page(page1).getTotal());
+        pageInfo.setPages(areaService.page(page1).getPages());
+        List<AreaVo> result = areaService.getPageInfo(pageInfo, name);
         //进行分页查询
         pageInfo.setRecords(result);
         return R.success(pageInfo);
@@ -123,52 +119,45 @@ public class AreaController {
     @GetMapping("/{id}")
     @ApiOperation("根据id查询地区信息，用于修改地区信息时回溯信息")
     @ApiImplicitParam(name = "id",value = "地区id")
-    public R<Area> getById(@PathVariable int id){
-        Area area = areaServiceImpl.getById(id);
-        return R.success(area);
+    public R<AreaVo> getById(@PathVariable int id){
+        Area area = areaService.getById(id);
+        AreaVo areaVo = areaService.areaToVo(area);
+        return R.success(areaVo);
     }
 
     @PutMapping
     @ApiOperation("修改地区信息")
     public R<String> update(@RequestBody Area area){
-        areaServiceImpl.updateById(area);
+        areaService.updateById(area);
         return R.success("修改地区成功");
-    }
-
-    @GetMapping("/select/{id}")
-    @ApiOperation("地区编号[数字]进行筛选")
-    @ApiImplicitParam(name = "id",value = "筛选区块编号为多少的区块")
-    public R<Area> selectById(@PathVariable int id){
-        Area area = areaServiceImpl.getById(id);
-        return R.success(area);
     }
 
     @GetMapping("/getType")
     @ApiOperation("根据果蔬类型id查找对应果蔬类型,用于筛选时果蔬类别的展示")
     public R<List<String>> selectType(){
-        List<String> type = areaServiceImpl.getTypeById();
-        if(type == null && type.size() == 0){
+        List<String> type = areaService.getTypeById();
+        if(type == null && type.isEmpty()){
             return R.error("获取失败");
         }
         return R.success(type);
     }
 
     @GetMapping("/getId")
-    @ApiOperation("根据区块id查找对应区块,用于筛选时区块编号的展示")
+    @ApiOperation("获取区域id列表")
     public R<List<Integer>> selectId(){
-        List<Integer> idList = areaServiceImpl.getId();
-        if(idList == null && idList.size() == 0){
+        List<Integer> idList = areaService.getId();
+        if(idList == null && idList.isEmpty()){
             return R.error("获取失败");
         }
         return R.success(idList);
     }
 
     @GetMapping("/select")
-    @ApiOperation("中字类型筛选")
+    @ApiOperation("类型筛选")
     @ApiImplicitParam(name = "type",value = "果蔬类型")
     public R<List<Area>> selectByType(String type){
-        List<Area> areaByType = areaServiceImpl.getAreaByType(type);
-        if(areaByType == null && areaByType.size() == 0){
+        List<Area> areaByType = areaService.getAreaByType(type);
+        if(areaByType == null && areaByType.isEmpty()){
             return R.error("筛选失败");
         }
         return R.success(areaByType);
@@ -178,10 +167,15 @@ public class AreaController {
     @ApiOperation("根据果园id筛选")
     @ApiImplicitParam(name = "orchardId",value = "果园id")
     public R<List<AreaVo>> selectByOrchardId(Long orchardId){
-        List<AreaVo> areaByOrchardId = areaServiceImpl.selectByOrchardId(orchardId);
+        List<AreaVo> areaByOrchardId = areaService.selectByOrchardId(orchardId);
         return R.success(areaByOrchardId);
     }
 
+    @PutMapping("/addEmp")
+    @ApiOperation("添加员工")
+    public R<String> addEmployee(@RequestParam Long areaId, @RequestParam Long empId){
+        return areaService.addEmployee(empId,areaId);
+    }
 
 }
 

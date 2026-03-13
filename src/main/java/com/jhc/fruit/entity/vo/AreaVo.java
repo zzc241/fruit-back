@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.jhc.fruit.entity.Employee;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * @author : zyr
  * @date  : 2026/1/23
@@ -61,4 +64,6 @@ public class AreaVo {
 
     @ApiModelProperty("果树数量")
     private Long fruitCount;
+    @ApiModelProperty(value = "员工组id")
+    private List<Employee> employeeList;
 }

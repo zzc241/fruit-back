@@ -110,16 +110,19 @@
         WHERE area_info.id = #{areaId}
         AND area_info.emp_id = employee.id
     </select>
+    <!--果树不一定绑定了果园id，但是一定绑定了区域id，先根据果园id查找区域id，在通过区域id查找果树-->
     <select id="selectTypeDISTINCT" resultType="java.lang.Long">
         SELECT DISTINCT fruit_tree.type
-        FROM fruit.fruit_tree
-        WHERE fruit_tree.orchard_id = #{orchardId}
+        FROM fruit.fruit_tree, area_info
+        WHERE area_info.orchard_id = #{orchardId}
+        AND area_info.id = fruit_tree.area_id
     </select>
     <select id="countType" resultType="java.lang.Integer">
         SELECT COUNT(fruit_tree.id)
-        FROM fruit_tree
+        FROM fruit_tree, area_info
         WHERE fruit_tree.type = #{typeId}
-        AND fruit_tree.orchard_id = #{orchardId}
+        AND area_info.orchard_id = #{orchardId}
+        AND area_info.id = fruit_tree.area_id
     </select>
     <select id="selectByTaskType" resultType="com.jhc.fruit.entity.FruitTree">
         SELECT fruit_tree.*

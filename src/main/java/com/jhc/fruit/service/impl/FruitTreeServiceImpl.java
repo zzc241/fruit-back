@@ -203,7 +203,6 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         //统计品种
         List<Long> typeIdsList = fruitTreeDao.selectTypeDISTINCT(orchardId);
         typeIdsList.forEach(typeId ->{
-
             Integer count = fruitTreeDao.countType(orchardId, typeId);
             String typeName = fruitTreeDao.selectByType(typeId);
             TreeTypeVo.TreeType treeType = new TreeTypeVo.TreeType(typeName, count);

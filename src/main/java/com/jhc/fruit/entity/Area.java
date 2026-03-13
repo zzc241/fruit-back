@@ -33,6 +33,8 @@ public class Area {
     private String description;
     @ApiModelProperty("负责人")
     private Long empId;
+    @ApiModelProperty(value = "员工组id")
+    private Long empGroup;
 
     @ApiModelProperty(value = "创建时间(自动填充)")
     @TableField(fill = FieldFill.INSERT)

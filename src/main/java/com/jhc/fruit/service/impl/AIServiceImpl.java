@@ -167,12 +167,12 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             disasterType = "气象条件适宜";
         }
         // 可以根据需要添加更多预警类型
-        // alerts.append("🚨 【低温冻害橙色预警】")
-        // alerts.append("🚨 【高温热害红色预警】")
-        // alerts.append("⚠️ 【高湿病害黄色预警】")
-        // alerts.append("⚠️ 【干旱蓝色预警】")
-        // alerts.append("⚠️ 【大风蓝色预警】")
-        // alerts.append("✅ 【气象条件适宜】")
+        // alerts.append(" 【低温冻害橙色预警】")
+        // alerts.append(" 【高温热害红色预警】")
+        // alerts.append(" 【高湿病害黄色预警】")
+        // alerts.append(" 【干旱蓝色预警】")
+        // alerts.append(" 【大风蓝色预警】")
+        // alerts.append(" 【气象条件适宜】")
         
         // 提取管理建议部分
         if (content.contains("柑橘种植管理建议")) {
@@ -191,6 +191,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         disasterVo.setDisasterType(disasterType);
         Disaster disaster = new Disaster();
         BeanUtils.copyProperties(disasterVo, disaster);
+        disaster.setTypeId(1L);
         disasterService.save(disaster);
 
         log.info(response);

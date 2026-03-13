@@ -2,6 +2,7 @@ package com.jhc.fruit.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.vo.AreaVo;
 
@@ -27,4 +28,8 @@ public interface AreaService extends IService<Area> {
     void removeArea(Long id);
 
     List<String> listName(Long id);
+
+    R<String> addEmployee(Long empId, Long areaId);
+
+    AreaVo areaToVo(Area area);
 }

@@ -64,4 +64,20 @@
         FROM area_info
         WHERE id = #{areaId}
     </select>
+    <select id="getTypeName" resultType="java.lang.String">
+        SELECT fruit_type.type
+        FROM fruit_type
+        WHERE id = #{typeId}
+    </select>
+    <select id="getOrchardName" resultType="java.lang.String">
+        SELECT orchard.name
+        FROM orchard
+        WHERE id = #{orchardId}
+    </select>
+    <select id="selectEmp" resultType="com.jhc.fruit.entity.Employee">
+        SELECT employee.*
+        FROM employee,empgroup_emp
+        WHERE empgroup_emp.group_id = #{empGroup}
+        AND empgroup_emp.emp_id = employee.id
+    </select>
 </mapper>

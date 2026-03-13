@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.AnnounceInfo;
+import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.vo.AreaVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -27,4 +28,10 @@ public interface AreaDao extends BaseMapper<Area> {
     String getEmpName(Long empId);
 
     String getAreaNameById(Long areaId);
+
+    String getTypeName(Long typeId);
+
+    String getOrchardName(Long orchardId);
+
+    List<Employee> selectEmp(Long empGroup);
 }
