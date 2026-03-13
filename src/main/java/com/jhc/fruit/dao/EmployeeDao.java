@@ -6,4 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface EmployeeDao extends BaseMapper<Employee> {
+    Integer statisticsEmployee(Long orchardId);
+
+    Integer statisticsAreaEmployee(Long areaId);
 }

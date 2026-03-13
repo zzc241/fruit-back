@@ -8,8 +8,10 @@ import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.JsonUtil;
 import com.jhc.fruit.common.JwtUtil;
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.dao.FruitTreeDao;
+import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
@@ -53,6 +55,8 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     private FileService fileService;
     @Autowired
     private FruitTreeDao fruitTreeDao;
+    @Autowired
+    private AreaDao areaDao;
 
 
     @Override
@@ -455,6 +459,28 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             employeeVoList.add(getInfo(employee));
         }
         return employeeVoList;
+    }
+
+    @Override
+    public R<Integer> statisticsEmployee(Long orchardId) {
+        Integer userCount = employeeDao.statisticsEmployee(orchardId);
+        return R.success(userCount);
+    }
+
+    @Override
+    public R<List<Map<String, Integer>>> statisticsAreaEmployee(Long orchardId) {
+        //先查询该果园所拥有的区域
+        LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Area::getOrchardId, orchardId);
+        List<Area> areaList = areaDao.selectList(queryWrapper);
+        List<Map<String, Integer>> mapList = new ArrayList<>();
+        for (Area area : areaList) {
+            Map<String, Integer> map = new HashMap<>();
+            Integer userCount = employeeDao.statisticsAreaEmployee(area.getId());
+            map.put(area.getName(), userCount);
+            mapList.add(map);
+        }
+        return R.success(mapList);
     }
 
 

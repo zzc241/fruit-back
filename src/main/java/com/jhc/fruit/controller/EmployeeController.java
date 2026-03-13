@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -333,6 +334,18 @@ public class EmployeeController {
     public R<List<EmployeeVo>> getAllEmployees(){
         List<EmployeeVo> list = employeeService.getAllEmployees();
         return R.success(list);
+    }
+
+    @ApiOperation("统计果园工作人员")
+    @GetMapping("/statisticsEmployee/{orchardId}")
+    public R<Integer> statisticsEmployee(@PathVariable Long orchardId){
+        return employeeService.statisticsEmployee(orchardId);
+    }
+
+    @ApiOperation("统计果园各个区域工作人员数量")
+    @GetMapping("/statisticsAreaEmployee/{orchardId}")
+    public R<List<Map<String, Integer>>> statisticsAreaEmployee(@PathVariable Long orchardId){
+        return employeeService.statisticsAreaEmployee(orchardId);
     }
 
 }

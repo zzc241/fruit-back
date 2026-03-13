@@ -261,6 +261,61 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         return R.success(fruitTreeVoList);
     }
 
+    @Override
+    public R<List<Map<String, Double>>> statisticsRipe(Long orchardId) {
+        List<Map<String, Double>> result = new ArrayList<>();
+        //统计品种
+        List<Long> typeIdsList = fruitTreeDao.selectTypeDISTINCT(orchardId);
+        typeIdsList.forEach(typeId ->{
+            String typeName = fruitTreeDao.selectByType(typeId);
+            Integer ripeCount = fruitTreeDao.getRipeSum(orchardId, typeId);
+            Integer count = fruitTreeDao.getCountNumSum(orchardId, typeId);
+            //非空处理
+            int ripeCountInt = (ripeCount == null) ? 0 : ripeCount;
+            int countInt = (count == null) ? 0 : count;
+            // 计算熟果率
+            Double ripeRate;
+            if (countInt == 0) {
+                // 总数为0时，熟果率设为0
+                ripeRate = 0.0;
+            } else {
+                ripeRate = (double) ripeCountInt / countInt;
+            }
+            Map<String, Double> map = Map.of(typeName, ripeRate);
+            result.add(map);
+        });
+        return R.success(result);
+    }
+
+    @Override
+    public R<List<Map<String, Double>>> statisticsAreaRipe(Long orchardId) {
+        //获取果园内所有区域
+        List<Map<String, Double>> result = new ArrayList<>();
+        LambdaQueryWrapper<Area> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Area::getOrchardId, orchardId);
+        List<Area> areaList = areaDao.selectList(queryWrapper);
+        for(Area area : areaList){
+            //统计区域内果树熟果率
+            String areaName = areaDao.getAreaNameById(area.getId());
+            Integer ripeCount = fruitTreeDao.getAreaRipeSum(orchardId, area.getId());
+            Integer count = fruitTreeDao.getAreaCountNumSum(orchardId, area.getId());
+            //非空处理
+            int ripeCountInt = (ripeCount == null) ? 0 : ripeCount;
+            int countInt = (count == null) ? 0 : count;
+            // 计算熟果率
+            Double ripeRate;
+            if (countInt == 0) {
+                // 总数为0时，熟果率设为0
+                ripeRate = 0.0;
+            } else {
+                ripeRate = (double) ripeCountInt / countInt;
+            }
+            Map<String, Double> map = Map.of(areaName, ripeRate);
+            result.add(map);
+        }
+        return R.success(result);
+    }
+
 
     public FruitTree voToFruitTree(FruitTreeVo fruitTreeVo) {
         FruitTree fruitTree = new FruitTree();

@@ -65,7 +65,7 @@ public class Task {
     private LocalDateTime createTime;
     @ApiModelProperty(value = "更新时间(自动填充)")
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime updateTime;
     @TableField(fill = FieldFill.INSERT)
     private Long createUser;

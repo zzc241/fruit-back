@@ -45,4 +45,8 @@ public interface EmployeeService extends IService<Employee> {
     public List<EmployeeVo> getAllEmployees();
 
     public List<EmployeeVo> getAllEmployeesByOrchardId(Long orchardId);
+
+    R<Integer> statisticsEmployee(Long orchardId);
+
+    R<List<Map<String, Integer>>> statisticsAreaEmployee(Long orchardId);
 }

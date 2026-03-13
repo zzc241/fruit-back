@@ -271,4 +271,16 @@ public class FruitTreeController {
     public R<List<FruitTreeVo>> getByTask(@RequestParam Long orchardId, @RequestParam String type){
         return fruitTreeService.getByTask(orchardId, type);
     }
+
+    @ApiOperation("统计各个品种熟果率")
+    @GetMapping("/statisticsRipe/{orchardId}")
+    public R<List<Map<String, Double>>> statisticsRipe(@PathVariable Long orchardId){
+        return fruitTreeService.statisticsRipe(orchardId);
+    }
+
+    @ApiOperation("统计区域熟果率")
+    @GetMapping("/statisticsAreaRipe/{orchardId}")
+    public R<List<Map<String, Double>>> statisticsAreaRipe(@PathVariable Long orchardId){
+        return fruitTreeService.statisticsAreaRipe(orchardId);
+    }
 }
