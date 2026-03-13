@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.EmployeeDao">
+
+    <select id="statisticsEmployee" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM employee
+        WHERE orchard_id = #{orchardId}
+    </select>
+    <select id="statisticsAreaEmployee" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM employee, area_info, empgroup_emp
+        WHERE area_info.id = #{areaId}
+          AND area_info.emp_group = empgroup_emp.group_id
+          AND empgroup_emp.emp_id = employee.id
+    </select>
+</mapper>
