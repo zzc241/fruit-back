@@ -108,6 +108,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaDao, Area> implements AreaS
         for(Area area : areaList){
             AreaVo areaVo = new AreaVo();
             BeanUtils.copyProperties(area, areaVo);
+            areaVo.setEmpName(areaDao.getEmpName(area.getEmpId()));
             areaVoList.add(areaVo);
         }
         return areaVoList;

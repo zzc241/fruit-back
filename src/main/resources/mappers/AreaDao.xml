@@ -54,4 +54,9 @@
     <select id = "getById" resultType = "com.jhc.fruit.entity.Area">
         select * from area_info where id = #{id}
     </select>
+    <select id="getEmpName" resultType="java.lang.String">
+        SELECT employee.username
+        FROM employee
+        WHERE id = #{empId}
+    </select>
 </mapper>
