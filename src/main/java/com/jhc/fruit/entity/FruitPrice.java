@@ -17,7 +17,7 @@ public class FruitPrice {
     @TableId(type = IdType.AUTO)
     private Long id;
     @ApiModelProperty("水果名称/品种id")
-    private Long type_id;
+    private Long typeId;
     @ApiModelProperty(value = "水果名称/品种", example = "柑桔")
     private String fruitName;
     @ApiModelProperty("水果价格（元，保留2位小数）")
