@@ -11,4 +11,18 @@ import java.util.List;
 @Mapper
 public interface TaskDao extends BaseMapper<Task> {
     List<Task> selectByOrchardId(Long OrchardId);
+
+    List<Task> getOwnTask(Long empId);
+
+    List<String> getType(Long empId);
+
+    Integer countType(Long empId, String type);
+
+    List<String> getFertType(Long empId);
+
+    Double getfertUseCount(Long empId, String fertType);
+
+    List<String> getpesticideType(Long empId);
+
+    Double getPesticideUseCount(Long empId, String pesticideType);
 }

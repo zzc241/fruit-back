@@ -1,6 +1,7 @@
 package com.jhc.fruit.controller;
 
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.entity.vo.OwnTaskVo;
 import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.TaskService;
 import io.swagger.annotations.Api;
@@ -88,6 +89,12 @@ public class TaskController {
             log.error(e.getMessage());
             return R.error("查询失败");
         }
+    }
+
+    @ApiOperation("统计个人任务数据")
+    @GetMapping("/getOwnTask/{empId}")
+    public R<OwnTaskVo> getOwnTask(@PathVariable Long empId) {
+        return taskService.getOwnTask(empId);
     }
     
 }

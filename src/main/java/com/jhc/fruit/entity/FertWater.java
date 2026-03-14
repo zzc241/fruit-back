@@ -17,6 +17,8 @@ public class FertWater {
     private Long id;
     @ApiModelProperty(value = "类型")
     private String type;
+    @ApiModelProperty(value = "品牌")
+    private String brand;
     @ApiModelProperty(value = "施用量")
     private Integer num;
     @ApiModelProperty(value = "unit")

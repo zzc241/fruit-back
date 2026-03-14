@@ -2,11 +2,13 @@ package com.jhc.fruit.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.dao.TaskDao;
 import com.jhc.fruit.entity.EmpGroup;
 import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.entity.TaskImg;
+import com.jhc.fruit.entity.vo.OwnTaskVo;
 import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.EmpGroupService;
 import com.jhc.fruit.service.EmployeeService;
@@ -14,6 +16,7 @@ import com.jhc.fruit.service.OrchardService;
 import com.jhc.fruit.service.TaskImgService;
 import com.jhc.fruit.service.TaskService;
 
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +24,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -270,5 +271,48 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                 .map(this::taskToVo)
                 .collect(Collectors.toList());
         return taskVos;
+    }
+
+    @Override
+    public R<OwnTaskVo> getOwnTask(Long empId) {
+        OwnTaskVo ownTaskVo = new OwnTaskVo();
+        //先通过员工id查找关联任务(员工id-》员工组-》任务)
+        List<Task> taskList = taskDao.getOwnTask(empId);
+        if (taskList == null || taskList.isEmpty()) {
+            return R.error("没有相关任务");
+        }
+        //开始统计数据
+        ownTaskVo.setTasksCount(taskList.size());
+        //类型统计
+        List<Map<String, Integer>> typeCount = new ArrayList<>();
+        List<String> typeList = taskDao.getType(empId);
+        for (String type : typeList) {
+            Map<String, Integer> map = new HashMap<>();
+            Integer count = taskDao.countType(empId, type);
+            map.put(type, count);
+            typeCount.add(map);
+        }
+        ownTaskVo.setTypeCount(typeCount);
+        //统计肥料
+        List<Map<String, Double>> fertCount = new ArrayList<>();
+        List<String> fertTypeList = taskDao.getFertType(empId);
+        for(String fertType : fertTypeList){
+            Map<String, Double> map = new HashMap<>();
+            Double countNum = taskDao.getfertUseCount(empId, fertType);
+            map.put(fertType, countNum);
+            fertCount.add(map);
+        }
+        ownTaskVo.setFertCount(fertCount);
+        //统计农药
+        List<Map<String, Double>> pesticideCount = new ArrayList<>();
+        List<String> pesticideTypeList = taskDao.getpesticideType(empId);
+        for(String pesticideType : pesticideTypeList){
+            Map<String, Double> map = new HashMap<>();
+            Double countNum = taskDao.getPesticideUseCount(empId, pesticideType);
+            map.put(pesticideType, countNum);
+            pesticideCount.add(map);
+        }
+        ownTaskVo.setFertCount(fertCount);
+        return R.success(ownTaskVo);
     }
 }

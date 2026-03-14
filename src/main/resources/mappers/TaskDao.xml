@@ -4,4 +4,60 @@
     <select id = "selectByOrchardId" resultType = "com.jhc.fruit.entity.Task">
         select * from task where orchard_id = #{orchardId}
     </select>
+    <select id="getOwnTask" resultType="com.jhc.fruit.entity.Task">
+        SELECT task.*
+        FROM task, empgroup_emp
+        WHERE empgroup_emp.emp_id = #{empId}
+          AND empgroup_emp.group_id = task.group_id
+          AND task.status = 2
+    </select>
+    <select id="getType" resultType="java.lang.String">
+        SELECT DISTINCT task.task_type
+        FROM task, empgroup_emp
+        WHERE empgroup_emp.emp_id = #{empId}
+          AND empgroup_emp.group_id = task.group_id
+          AND task.status = 2
+    </select>
+    <select id="countType" resultType="java.lang.Integer">
+        SELECT COUNT(task.task_type)
+        FROM task, empgroup_emp
+        WHERE empgroup_emp.emp_id = #{empId}
+          AND empgroup_emp.group_id = task.group_id
+          AND task.status = 2
+          AND task_type = #{type}
+    </select>
+    <select id="getFertType" resultType="java.lang.String">
+        SELECT DISTINCT fert_water.brand
+        FROM task, empgroup_emp, fert_water
+        WHERE empgroup_emp.emp_id = #{empId}
+          AND empgroup_emp.group_id = task.group_id
+          AND task.status = 2
+          AND fert_water.type = 2
+    </select>
+    <select id="getfertUseCount" resultType="java.lang.Double">
+        SELECT COUNT(fert_water.num)
+        FROM task, empgroup_emp, fert_water
+        WHERE empgroup_emp.emp_id = #{empId}
+          AND empgroup_emp.group_id = task.group_id
+          AND task.status = 2
+          AND fert_water.brand = #{fertType}
+          AND fert_water.tree_id = task.tree_id
+    </select>
+    <select id="getpesticideType" resultType="java.lang.String">
+        SELECT DISTINCT fert_water.brand
+        FROM task, empgroup_emp, fert_water
+        WHERE empgroup_emp.emp_id = #{empId}
+          AND empgroup_emp.group_id = task.group_id
+          AND task.status = 2
+          AND fert_water.type = 3
+    </select>
+    <select id="getPesticideUseCount" resultType="java.lang.Double">
+        SELECT COUNT(fert_water.num)
+        FROM task, empgroup_emp, fert_water
+        WHERE empgroup_emp.emp_id = #{empId}
+          AND empgroup_emp.group_id = task.group_id
+          AND task.status = 2
+          AND fert_water.brand = #{pesticideType}
+          AND fert_water.tree_id = task.tree_id
+    </select>
 </mapper>
