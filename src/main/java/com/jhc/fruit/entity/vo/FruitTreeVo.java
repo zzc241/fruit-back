@@ -44,6 +44,8 @@ public class FruitTreeVo {
     private Long healthCondition;
     @ApiModelProperty(value = "成熟度")
     private Double ripeDegree;
+    @ApiModelProperty(value = "行列位置（行-列）")
+    private String location;
 
 
     @ApiModelProperty(value = "区域负责人姓名")

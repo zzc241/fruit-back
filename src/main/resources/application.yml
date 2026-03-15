@@ -50,6 +50,7 @@ minio:
 ai-api:
   aiCzm: http://192.168.123.94:8000
   aiZen: http://172.16.0.204:8000
+  aiAudio: http://172.16.0.204:5000
 txt:
   descriptionConfig:
     email: test@qq.com

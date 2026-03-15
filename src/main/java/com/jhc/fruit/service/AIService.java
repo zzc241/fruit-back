@@ -3,6 +3,7 @@ package com.jhc.fruit.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.AIWeeds;
+import com.jhc.fruit.entity.AudioRecognitionSuccess;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
 import com.jhc.fruit.entity.vo.MaturityResponse;
@@ -30,4 +31,6 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
     String analyzeWaterFertilizer(MultipartFile msFile, MultipartFile rgbFile);
 
     String unanalyzeWaterFertilizer(String msFile, String rgbFile);
+
+    R<AudioRecognitionSuccess> processAudio(MultipartFile wavFile);
 }

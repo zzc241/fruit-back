@@ -1,8 +1,8 @@
 package com.jhc.fruit.controller;
 
-import com.google.gson.JsonObject;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.AIWeeds;
+import com.jhc.fruit.entity.AudioRecognitionSuccess;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
 import com.jhc.fruit.entity.vo.MaturityResponse;
@@ -10,7 +10,6 @@ import com.jhc.fruit.service.AIService;
 import com.jhc.fruit.service.DisasterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,5 +86,10 @@ public class AIController {
         return R.success(result);
     }
 
+    @ApiOperation("WAV音频文件转文字")
+    @PostMapping("/processAudio")
+    public R<AudioRecognitionSuccess> processAudio (@RequestParam MultipartFile wavFile){
+        return aiService.processAudio(wavFile);
+    }
 
 }

@@ -2,6 +2,8 @@ package com.jhc.fruit.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.HttpUtil;
@@ -10,6 +12,7 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.dao.AIDao;
 import com.jhc.fruit.entity.AIWeeds;
+import com.jhc.fruit.entity.AudioRecognitionSuccess;
 import com.jhc.fruit.entity.Disaster;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
@@ -17,6 +20,7 @@ import com.jhc.fruit.entity.vo.MaturityResponse;
 import com.jhc.fruit.service.AIService;
 import com.jhc.fruit.service.DisasterService;
 import com.jhc.fruit.service.FileService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.BeanUtils;
@@ -256,6 +260,61 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
         log.info(response);
         return response;
+    }
+
+    /**
+     * Flask端音频处理失败响应的内部类
+     */
+    @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class AudioRecognitionError {
+        private String error; // Flask返回的error字段
+    }
+
+    // ========== 修改后的processAudio方法 ==========
+    @Override
+    public R<AudioRecognitionSuccess> processAudio(MultipartFile wavFile) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(aiConfig.getAiAudio());
+        sb.append("/process_audio"); // 路径已修复为下划线
+        String url = sb.toString();
+
+        // 初始化ObjectMapper（建议注入全局实例，此处简化）
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            // 1. 调用工具类上传文件（参数名改为audio，匹配Flask）
+            String responseData = httpUtil.doPostUpload(url, null, "audio", wavFile);
+
+            // 2. 校验响应非空
+            if (responseData == null || responseData.isEmpty()) {
+                return R.error("检测失败：AI接口返回空结果");
+            }
+
+            // 3. 先尝试解析为成功响应
+            try {
+                AudioRecognitionSuccess successResp = objectMapper.readValue(responseData, AudioRecognitionSuccess.class);
+                if (successResp.isSuccess()) {
+                    return R.success(successResp);
+                }
+            } catch (JsonProcessingException e) {
+                // 不是成功响应，尝试解析为失败响应
+                try {
+                    AudioRecognitionError errorResp = objectMapper.readValue(responseData, AudioRecognitionError.class);
+                    return R.error("AI接口处理失败：" + errorResp.getError());
+                } catch (JsonProcessingException ex) {
+                    // 既不是成功也不是失败格式，返回原始错误
+                    return R.error("AI接口响应格式异常：" + responseData);
+                }
+            }
+
+            // 兜底返回
+            return R.error("AI接口响应解析失败");
+
+        } catch (Exception e) {
+            log.error("音频处理失败", e); // 打印完整堆栈
+            return R.error("WAV接口报错：" + e.getMessage());
+        }
     }
 
     public R<MaturityResponse> identifyMaturity(MultipartFile maturityFile) {

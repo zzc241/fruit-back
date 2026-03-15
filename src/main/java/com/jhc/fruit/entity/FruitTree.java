@@ -47,4 +47,6 @@ public class FruitTree {
     private Long createUser;
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+    @ApiModelProperty(value = "行列位置（行-列）")
+    private String location;
 }
