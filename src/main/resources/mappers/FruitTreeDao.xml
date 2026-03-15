@@ -125,11 +125,19 @@
           AND area_info.id = fruit_tree.area_id
     </select>
     <select id="selectByTaskType" resultType="com.jhc.fruit.entity.FruitTree">
-        SELECT fruit_tree.*
-        FROM fruit_tree, task
+        <!-- 使用 DISTINCT 确保果树记录唯一，INNER JOIN 明确关联关系 -->
+        SELECT DISTINCT fruit_tree.*
+        FROM fruit_tree
+        INNER JOIN task
+        ON fruit_tree.orchard_id = task.orchard_id  -- 补充果园ID关联，缩小范围
+        AND fruit_tree.area_id = task.area_id       -- 原有的区域ID关联
+        AND (
+        task.tree_id = fruit_tree.id OR         -- 关联具体果树（精准匹配）
+        task.tree_id IS NULL                    -- 兼容任务未指定具体果树的场景
+        )
         WHERE fruit_tree.orchard_id = #{orchardId}
-          AND fruit_tree.area_id = task.area_id
-          AND task.task_type = #{type}
+        AND task.task_type = #{type}
+        <!-- 可选：添加索引优化，提升查询速度 -->
     </select>
     <select id="getRipeSum" resultType="java.lang.Integer">
         SELECT SUM(fruit_tree.ripe_num)
