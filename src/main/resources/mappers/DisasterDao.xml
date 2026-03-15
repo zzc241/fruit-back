@@ -5,7 +5,7 @@
         SELECT DISTINCT disaster.disaster_type
         FROM disaster
         WHERE disaster.orchard_id = #{orchardId}
-        AND disaster.typeId = #{typeId}
+        AND disaster.type_id = #{typeId}
     </select>
     <select id="getTypeCount" resultType="java.lang.Integer">
         SELECT COUNT(disaster.id)
