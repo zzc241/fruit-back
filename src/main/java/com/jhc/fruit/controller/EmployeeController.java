@@ -3,6 +3,7 @@ package com.jhc.fruit.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.common.*;
+import com.jhc.fruit.config.WxConfig;
 import com.jhc.fruit.entity.Employee;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
@@ -36,6 +37,8 @@ import java.util.UUID;
 public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private WxConfig wxConfig;
 
     @GetMapping("/getWorkers")
     @ApiOperation("获取所有临时工")
@@ -58,6 +61,11 @@ public class EmployeeController {
             @ApiImplicitParam(name = "appSecret",value = "前端传入的appSecret")
     })
     public R<Employee> openIdLogin(String code,HttpServletRequest request){
+        // 可以在需要时记录配置信息
+        log.info("微信小程序配置 - appId: {}, apiUrl: {}", 
+                 wxConfig.getMiniapp().getAppid(), 
+                 wxConfig.getMiniapp().getApiUrl());
+        
         return employeeService.openIdLogin(code,request);
     }
 

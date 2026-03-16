@@ -70,4 +70,10 @@ txt:
     url: url
   filter:
     flag: true
+wx:
+  miniapp:
+    appid: wx857c079ab13764e8
+    secret: e0178501e5e6c91229d4ec8aa570ed88
+    grant-type: authorization_code
+    api-url: https://api.weixin.qq.com/sns/jscode2session
 

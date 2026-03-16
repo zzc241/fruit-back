@@ -8,6 +8,7 @@ import com.jhc.fruit.common.BaseContext;
 import com.jhc.fruit.common.JsonUtil;
 import com.jhc.fruit.common.JwtUtil;
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.config.WxConfig;  // 导入配置类
 import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.dao.FruitTreeDao;
@@ -57,7 +58,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
     private FruitTreeDao fruitTreeDao;
     @Autowired
     private AreaDao areaDao;
-
+    
+    @Autowired
+    private WxConfig wxConfig;  // 注入微信配置
 
     @Override
     public List<Employee> getWorkers(){
@@ -103,35 +106,56 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         return empNameMap;
     }
 
+    /**
+     * 从配置中获取微信小程序配置并获取openId
+     */
     public String getOpenId(String code, HttpServletRequest request){
         //拼接url
         if (code == null || code.isEmpty()) {
             return null;
-        }else {
-            StringBuilder url = new StringBuilder("https://api.weixin.qq.com/sns/jscode2session?");
-            url.append("appid=");//appid设置
-            url.append("wx8d7387dcf72d379e");
-            url.append("&secret=");//secret设置
-            url.append("1cb81e119574f97c341f794b6e545c7e");
-            url.append("&js_code=");//code设置
-            url.append(code);
-            url.append("&grant_type=authorization_code");
+        } else {
+            // 从配置中获取appid和secret
+            String appid = wxConfig.getMiniapp().getAppid();
+            String secret = wxConfig.getMiniapp().getSecret();
+            String grantType = wxConfig.getMiniapp().getGrantType();
+            String apiUrl = wxConfig.getMiniapp().getApiUrl();
+            
+            // 记录日志（生产环境可以去掉secret的日志，避免敏感信息泄露）
+            log.info("获取openId - appid: {}, apiUrl: {}", appid, apiUrl);
+            
+            StringBuilder url = new StringBuilder(apiUrl);
+            url.append("?appid=").append(appid);
+            url.append("&secret=").append(secret);
+            url.append("&js_code=").append(code);
+            url.append("&grant_type=").append(grantType);
+            
             Map<String, Object> map = null;
             try {
-                HttpClient client = HttpClientBuilder.create().build();//构建一个Client
-                HttpGet get = new HttpGet(url.toString());    //构建一个GET请求
-                HttpResponse response = client.execute(get);//提交GET请求
-                HttpEntity result = response.getEntity();//拿到返回的HttpResponse的"实体"
+                HttpClient client = HttpClientBuilder.create().build();
+                HttpGet get = new HttpGet(url.toString());
+                HttpResponse response = client.execute(get);
+                HttpEntity result = response.getEntity();
                 String content = EntityUtils.toString(result);
-//            System.out.println(content);//打印返回的信息
-                JSONObject res = JSONObject.parseObject(content);//把信息封装为json
-                //把信息封装到map
-                map = JsonUtil.parseJSON2Map(res);//使用工具类将JSON数据转换为Map类型
+                
+                // 记录微信返回的内容（调试用）
+                log.info("微信接口返回: {}", content);
+                
+                JSONObject res = JSONObject.parseObject(content);
+                map = JsonUtil.parseJSON2Map(res);
+                
+                // 检查是否有错误
+                if (map.containsKey("errcode") && !"0".equals(map.get("errcode").toString())) {
+                    log.error("微信接口返回错误: {}", map.get("errmsg"));
+                    return null;
+                }
+                
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error("code:001-" + e.getMessage());
+                log.error("获取微信openId失败", e);
+                return null;
             }
-            if (map.get("openid") == null) {
+            
+            if (map == null || map.get("openid") == null) {
+                log.error("微信返回中没有openid: {}", map);
                 return null;
             } else {
                 return map.get("openid").toString();

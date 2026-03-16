@@ -40,5 +40,7 @@ public class Comment {
     private Long createUser;
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+    @ApiModelProperty(value = "评价图片")
+    private Integer img;
 
 }

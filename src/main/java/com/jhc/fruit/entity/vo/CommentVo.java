@@ -1,6 +1,9 @@
 package com.jhc.fruit.entity.vo;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -35,4 +38,7 @@ public class CommentVo {
     private String createUserName;
     @ApiModelProperty(value = "创建人头像")
     private String createUserImg;
+
+    private Integer img;
+    private List<String> multipleImgs;
 }

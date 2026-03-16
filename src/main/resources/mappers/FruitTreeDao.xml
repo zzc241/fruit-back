@@ -165,4 +165,9 @@
           AND area_info.id = #{areaId}
           AND area_info.id = fruit_tree.area_id
     </select>
+    <select id="selectOrchardIdByTreeId" resultType="java.lang.Long">
+        SELECT orchard_id
+        from area_info where 
+        id in (select area_id from fruit_tree where id = #{treeId})
+    </select>
 </mapper>
