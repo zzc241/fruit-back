@@ -59,4 +59,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     Integer getAreaRipeSum(Long orchardId, Long areaId);
 
     Integer getAreaCountNumSum(Long orchardId, Long id);
+
+    Long selectOrchardIdByTreeId(Long treeId);
 }

@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.CommentDao;
+import com.jhc.fruit.dao.FruitTreeDao;
 import com.jhc.fruit.entity.Comment;
 import com.jhc.fruit.entity.CommentImg;
 import com.jhc.fruit.entity.FruitTree;
@@ -36,6 +37,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     private FileService fileService;
     @Autowired
     private CommentDao commentDao;
+    @Autowired
+    private FruitTreeDao fruitTreeDao;
     public List<CommentVo> selectCommentsByTreeId(Long treeId){
     LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
     queryWrapper.eq(Comment::getTreeId, treeId);
@@ -64,6 +67,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
             CommentVo commentVo = new CommentVo();
             BeanUtils.copyProperties(comment, commentVo);
             commentVo.setMultipleImgs(multipleImgs);
+            commentVo.setOrchardId(fruitTreeDao.selectOrchardIdByTreeId(treeId));
             
             // 计算好评率
             Integer choice = comment.getChoice();

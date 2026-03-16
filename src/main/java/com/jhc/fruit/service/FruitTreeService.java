@@ -53,4 +53,6 @@ public interface FruitTreeService extends IService<FruitTree> {
     R<List<Map<String, Double>>> statisticsRipe(Long orchardId);
 
     R<List<Map<String, Double>>> statisticsAreaRipe(Long orchardId);
+
+    Long selectOrchardIdByTreeId(Long treeId);
 }

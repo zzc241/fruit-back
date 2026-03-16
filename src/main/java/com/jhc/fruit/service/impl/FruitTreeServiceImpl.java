@@ -421,5 +421,9 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         return R.success(urls);
     }
 
+    public Long selectOrchardIdByTreeId(Long treeId){
+        return fruitTreeDao.selectOrchardIdByTreeId(treeId);
+    }
+
 
 }
