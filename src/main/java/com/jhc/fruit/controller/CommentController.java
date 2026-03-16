@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.dao.FruitTreeDao;
 import com.jhc.fruit.entity.Comment;
 import com.jhc.fruit.entity.vo.CommentVo;
 import com.jhc.fruit.service.CommentService;
@@ -28,10 +29,13 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentController {
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private FruitTreeDao fruitTreeDao;
     //实现评论添加功能
     @ApiOperation(value = "添加评论接口")
     @PostMapping("/add")
     public R<Long> add(@RequestBody Comment comment) {
+        comment.setOrchardId(fruitTreeDao.selectOrchardIdByTreeId(comment.getTreeId()));
         commentService.save(comment);
         Long id = comment.getId();
         return R.success(id);
