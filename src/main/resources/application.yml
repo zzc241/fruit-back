@@ -6,6 +6,10 @@ server:
     key-store: classpath:8062640_fruit.lookyousmileface.icu.pfx
 
 spring:
+  port: 3388
+  # Tomcat文件上传大小限制（核心）
+  tomcat:
+    max-swallow-size: 50MB  # 允许Tomcat接收的最大请求体大小
   mvc:
     hiddenmethod:
       filter:
@@ -13,6 +17,9 @@ spring:
   servlet:
     multipart:
       max-file-size: 50MB
+      enabled: true  # 开启文件上传
+      max-request-size: 1024MB  # 整个请求体的最大大小（多文件总和，需大于max-file-size）
+      file-size-threshold: 1MB  # 文件大小超过此值时，写入临时文件（可选）
   application:
     name: fruit
   datasource:
@@ -24,6 +31,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss.SSS
     time-zone: GMT+8
+
 #  web:
 #    resources:
 #      static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
@@ -50,7 +58,8 @@ minio:
 ai-api:
   aiCzm: http://192.168.123.94:8000
   aiZen: http://172.16.0.204:8000
-  aiAudio: http://172.16.0.204:5000
+  aiAudio: http://192.168.123.94:5001
+  aiCbh: http://192.168.123.94:8003
 txt:
   descriptionConfig:
     email: test@qq.com

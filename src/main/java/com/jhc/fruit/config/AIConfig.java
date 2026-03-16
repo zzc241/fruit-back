@@ -13,4 +13,5 @@ public class AIConfig {
     private String aiCzm;
     private String aiZen;
     private String aiAudio;
+    private String aiCbh;
 }

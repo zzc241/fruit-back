@@ -2,6 +2,7 @@ package com.jhc.fruit.controller;
 
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.AIWeeds;
+import com.jhc.fruit.entity.ApiResponse;
 import com.jhc.fruit.entity.AudioRecognitionSuccess;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,6 +92,24 @@ public class AIController {
     @PostMapping("/processAudio")
     public R<AudioRecognitionSuccess> processAudio (@RequestParam MultipartFile wavFile){
         return aiService.processAudio(wavFile);
+    }
+
+    @ApiOperation("多光谱照片分析")
+    @PostMapping(value = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse analyze(@RequestParam("images") List<MultipartFile> images) {
+        try {
+            return aiService.analyzeMultiSpectralImages(images);
+        } catch (IllegalArgumentException e) {
+            ApiResponse response = new ApiResponse();
+            response.setCode(400);
+            response.setMsg(e.getMessage());
+            return response;
+        } catch (Exception e) {
+            ApiResponse response = new ApiResponse();
+            response.setCode(500);
+            response.setMsg("分析失败：" + e.getMessage());
+            return response;
+        }
     }
 
 }

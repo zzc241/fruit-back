@@ -5,15 +5,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jhc.fruit.common.BaseContext;
-import com.jhc.fruit.common.HttpUtil;
-import com.jhc.fruit.common.ImageDrawUtil;
-import com.jhc.fruit.common.R;
+import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.dao.AIDao;
-import com.jhc.fruit.entity.AIWeeds;
-import com.jhc.fruit.entity.AudioRecognitionSuccess;
-import com.jhc.fruit.entity.Disaster;
+import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
 import com.jhc.fruit.entity.vo.MaturityResponse;
@@ -23,15 +18,15 @@ import com.jhc.fruit.service.FileService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import okhttp3.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -392,6 +387,126 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             return "err";
         }
     }
+
+    @Override
+    public ApiResponse analyzeMultiSpectralImages(List<MultipartFile> images) throws IOException {
+        // 1. 原有校验逻辑（保留）
+        if (images == null || images.size() != 4) {
+            throw new IllegalArgumentException("必须上传且仅上传4张多光谱图片，当前数量：" + (images == null ? 0 : images.size()));
+        }
+        for (int i = 0; i < images.size(); i++) {
+            MultipartFile image = images.get(i);
+            if (image == null || image.isEmpty()) {
+                throw new IllegalArgumentException("第" + (i+1) + "张图片为空，请检查");
+            }
+        }
+
+        // 2. 构建第三方接口地址（保留）
+        String THIRD_PARTY_API_URL = aiConfig.getAiCbh() + "/analyze";
+        if (THIRD_PARTY_API_URL == null || THIRD_PARTY_API_URL.trim().isEmpty()) {
+            throw new RuntimeException("第三方接口地址为空，请检查AIConfig配置");
+        }
+
+        // 3. 映射文件参数（保留）
+        Map<String, MultipartFile> fileParams = new HashMap<>();
+        fileParams.put("nm555", images.get(0));
+        fileParams.put("nm660", images.get(1));
+        fileParams.put("nm720", images.get(2));
+        fileParams.put("nm840", images.get(3));
+
+        // 4. 校验文件格式（保留）
+        for (Map.Entry<String, MultipartFile> entry : fileParams.entrySet()) {
+            String paramName = entry.getKey();
+            MultipartFile file = entry.getValue();
+            String fileName = file.getOriginalFilename();
+            if (fileName == null || !fileName.endsWith(".tif")) {
+                throw new IllegalArgumentException("参数" + paramName + "格式错误，仅支持.tif，当前：" + fileName);
+            }
+        }
+
+        // 5. 调用第三方接口（保留）
+        Map<String, String> headers = new HashMap<>();
+        String responseBody = httpUtil.doPostUploadMulti(THIRD_PARTY_API_URL, headers, fileParams);
+
+        // 6. 校验响应（保留）
+        if (responseBody == null || responseBody.isEmpty()) {
+            throw new RuntimeException("第三方接口返回空响应");
+        }
+        if (responseBody.startsWith("错误：")) {
+            throw new RuntimeException("第三方接口调用失败：" + responseBody);
+        }
+
+        // 7. 解析响应（保留）
+        MultiSpectralResponse spectralResponse;
+        try {
+            spectralResponse = objectMapper.readValue(responseBody, MultiSpectralResponse.class);
+        } catch (Exception e) {
+            throw new RuntimeException("解析响应失败，响应体：" + responseBody, e);
+        }
+        if (spectralResponse == null || spectralResponse.getCode() != 200) {
+            throw new RuntimeException("分析失败，返回码：" + (spectralResponse == null ? "空" : spectralResponse.getCode()));
+        }
+
+        // 8. 提取核心数据
+        MultiSpectralResponse.PythonResponseData pythonData = spectralResponse.getData();
+        if (pythonData == null) {
+            throw new RuntimeException("返回data字段为空");
+        }
+        MultiSpectralResponse.PythonFertilizerAnalysis analysis = pythonData.getJson_content();
+        if (analysis == null) {
+            throw new RuntimeException("返回json_content字段为空");
+        }
+
+        // ========== 核心修改：赋值所有字段（兜底默认值） ==========
+        // 8.1 赋值光谱指数（Python返回null则用0.0兜底）
+        FullIndicesMean spectralIndices = new FullIndicesMean();
+        spectralIndices.setNDVI(analysis.getNdvi() != null ? analysis.getNdvi() : 0.0);
+        spectralIndices.setNDRE(analysis.getNdre() != null ? analysis.getNdre() : 0.0);
+        spectralIndices.setOSAVI(analysis.getOsavi() != null ? analysis.getOsavi() : 0.0);
+        spectralIndices.setNDPI(analysis.getNdpi() != null ? analysis.getNdpi() : 0.0);
+        spectralIndices.setKVI(analysis.getKvi() != null ? analysis.getKvi() : 0.0);
+        spectralIndices.setKSI(analysis.getKsi() != null ? analysis.getKsi() : 0.0);
+        spectralIndices.setTRI(analysis.getTri() != null ? analysis.getTri() : 0.0);
+        spectralIndices.setMTCI(analysis.getMtci() != null ? analysis.getMtci() : 0.0);
+        spectralIndices.setCaVI(analysis.getCavi() != null ? analysis.getCavi() : 0.0);
+        spectralIndices.setWI(analysis.getWi() != null ? analysis.getWi() : 0.0);
+        spectralIndices.setNDWI(analysis.getNdwi() != null ? analysis.getNdwi() : 0.0);
+        spectralIndices.setMSI(analysis.getMsi() != null ? analysis.getMsi() : 0.0);
+        spectralIndices.setCI_rededge(analysis.getCiRededge() != null ? analysis.getCiRededge() : 0L);
+        spectralIndices.setCCI(analysis.getCci() != null ? analysis.getCci() : 0.0);
+        spectralIndices.setPRI(analysis.getPri() != null ? analysis.getPri() : 0.0);
+        spectralIndices.setSIPI(analysis.getSipi() != null ? analysis.getSipi() : 0.0);
+        spectralIndices.setEVI(analysis.getEvi() != null ? analysis.getEvi() : 0.0);
+        spectralIndices.setLAI(analysis.getLai() != null ? analysis.getLai() : 0.0);
+
+        // 8.2 赋值区块信息（地理+编码，null则用默认值兜底）
+        BlockPosition blockPosition = new BlockPosition();
+        blockPosition.setFile_name(pythonData.getJson_file_path());
+        blockPosition.setLatitude(analysis.getLatitude() != null ? analysis.getLatitude() : 0.0);
+        blockPosition.setLongitude(analysis.getLongitude() != null ? analysis.getLongitude() : 0.0);
+        blockPosition.setAltitude(analysis.getAltitude() != null ? analysis.getAltitude() : 0.0);
+        blockPosition.setFull_block_code(analysis.getFullBlockCode() != null ? analysis.getFullBlockCode() : "default");
+        blockPosition.setBig_block(analysis.getBigBlock() != null ? analysis.getBigBlock() : "default");
+        blockPosition.setSub_block(analysis.getSubBlock() != null ? analysis.getSubBlock() : "default");
+
+        // 8.3 组装返回数据
+        List<BlockPosition> blockPositions = new ArrayList<>();
+        blockPositions.add(blockPosition);
+
+        ApiResponse.ResponseData responseData = new ApiResponse.ResponseData();
+        responseData.setNutritionStatus(analysis.getFertilizer_level() != null ? analysis.getFertilizer_level() : "normal");
+        responseData.setBlockPositions(blockPositions);
+        responseData.setSpectralIndices(spectralIndices);
+        responseData.setAnalysisImage(null); // 暂无分析图片，保留null
+
+        // 9. 组装最终响应
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(200);
+        apiResponse.setMsg("分析成功");
+        apiResponse.setData(responseData);
+        return apiResponse;
+    }
+
 
 
 }
