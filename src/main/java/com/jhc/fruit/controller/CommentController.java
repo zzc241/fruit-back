@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Comment;
@@ -29,9 +31,16 @@ public class CommentController {
     //实现评论添加功能
     @ApiOperation(value = "添加评论接口")
     @PostMapping("/add")
-    public R<String> add(@RequestBody Comment comment) {
+    public R<Long> add(@RequestBody Comment comment) {
         commentService.save(comment);
-        return R.success("评论添加成功");
+        Long id = comment.getId();
+        return R.success(id);
+    }
+    @ApiOperation(value = "添加评论图片接口")
+    @PostMapping("/addImg/{commentId}")
+    public R<String> addImg(@PathVariable Long commentId,
+            @RequestParam MultipartFile img) {
+        return commentService.addImg(commentId, img);
     }
     //实现查询功能
     @ApiOperation(value = "查询评论接口")

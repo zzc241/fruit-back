@@ -6,16 +6,20 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.CommentDao;
 import com.jhc.fruit.entity.Comment;
+import com.jhc.fruit.entity.CommentImg;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.vo.CommentVo;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.service.CommentService;
 import com.jhc.fruit.service.EmployeeService;
+import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.FruitTreeService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +32,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     private FruitTreeService fruitTreeService;
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private FileService fileService;
+    @Autowired
+    private CommentDao commentDao;
     public List<CommentVo> selectCommentsByTreeId(Long treeId){
     LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
     queryWrapper.eq(Comment::getTreeId, treeId);
@@ -42,10 +50,20 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     for (int i = 0; i < comments.size(); i++) {
         Comment comment = comments.get(i);
         log.info("处理第 {} 条评论, id={}", i+1, comment.getId());
-        
         try {
+            Long commonId = comment.getId();
+            List<CommentImg> commentImg = commentDao.selectImgByCommonId(commonId);
+
+            List<String> multipleImgs = new ArrayList<>();
+            for(CommentImg img : commentImg){
+                log.info("处理图片: {}", img.getImg() );
+                String imgUrl = fileService.getImageUrl(img.getImg());
+                log.info("图片URL: {}", imgUrl);
+                multipleImgs.add(imgUrl);
+            }
             CommentVo commentVo = new CommentVo();
             BeanUtils.copyProperties(comment, commentVo);
+            commentVo.setMultipleImgs(multipleImgs);
             
             // 计算好评率
             Integer choice = comment.getChoice();
@@ -87,4 +105,17 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
     log.info("最终返回 {} 条评论Vo", commentVos.size());
     return commentVos;
 }
+    @Override
+    public R<String> addImg(Long commentId , MultipartFile img){
+        String url = null;
+        try {
+            url = fileService.save(img, "comment");
+        } catch (Exception e) {
+            log.error("新增报告及图片失败，报告ID：{}，异常信息：{}", commentId, e.getMessage(), e);
+            return R.error("上传失败：" + e.getMessage());
+        }
+        // 将图片和commentId放到数据库
+        commentDao.saveImg(url, commentId);
+        return R.success(url);
+    }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.CommentDao">
+    <insert id="saveImg">
+        INSERT INTO comment_img (comment_id, img) 
+        VALUES (#{commentId}, #{url})
+    </insert>
+    <select id="selectImgByCommonId" resultType="com.jhc.fruit.entity.CommentImg">
+        SELECT * FROM comment_img WHERE comment_id = #{commentId}
+    </select>
+</mapper>
