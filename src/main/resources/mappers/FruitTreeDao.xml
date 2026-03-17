@@ -84,8 +84,9 @@
     </select>
     <select id="myTree" resultType="com.jhc.fruit.entity.FruitTree">
         SELECT fruit_tree.id, fruit_tree.img, fruit_tree.type
-        FROM fruit_tree, fruit_emp
-        WHERE fruit_emp.id = #{id} AND fruit_tree.id = fruit_emp.tree_id
+        FROM fruit_tree, area_info
+        WHERE fruit_tree.area_id = area_info.id
+        AND area_info.emp_id = #{id}
     </select>
     <select id="checkEmpOfTree" resultType="java.lang.Boolean">
         SELECT *
