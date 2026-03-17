@@ -227,9 +227,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                 employeeService.getEmpNameById(
                         task.getCreatorId()));
         taskVo.setAreaName(areaDao.getAreaNameById(task.getAreaId()));
-        taskVo.setImgsURL(
-                taskImgService.getImg(task.getId())
-        );
+        if (!(taskImgService.getImg(task.getId()) == null)){
+            taskVo.setImgsURL(
+                    taskImgService.getImg(task.getId())
+            );
+        }
+
         return taskVo;
     }
 

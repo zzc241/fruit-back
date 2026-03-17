@@ -59,7 +59,8 @@ public class LoginCheckFilter implements Filter {
                 "/webjars/**",
                 "/v2/**",
                 "/swagger-resources/**",
-                "/null/swagger-resources/**"
+                "/null/swagger-resources/**",
+                "/AI/analyze"
         };
 
         //2.判断本次请求是否需要处理:true 不处理；false 处理
@@ -100,7 +101,7 @@ public class LoginCheckFilter implements Filter {
         R<String> result = R.error("用户未登录");
         String jsonString = JSON.toJSONString(result);
         // 重定向到首页
-        response.sendRedirect("/index.html");
+//        response.sendRedirect("/index.html");
 
         // 设置响应头，指定编码
         response.setContentType("application/json;charset=UTF-8");
