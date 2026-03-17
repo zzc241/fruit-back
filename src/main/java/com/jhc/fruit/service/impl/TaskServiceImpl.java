@@ -87,15 +87,20 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
             Task task = voToTask(taskVo);
             this.updateById(task);
             List<String> img = taskVo.getImgsURL();
-            Iterator<String> iterator = img.iterator();
+            Iterator<String> iterator = null;
             Long id = task.getId();
             taskImgService.removeByTaskId(id);
-            while (iterator.hasNext()) {
-                String imgUrl = iterator.next();
-                TaskImg taskImg = new TaskImg();
-                taskImg.setImg(imgUrl);
-                taskImg.setTaskId(task.getId());
-                taskImgService.addTaskImg(taskImg);
+            if(!(img == null || img.size() == 0)){
+                iterator = img.iterator();
+                while (iterator.hasNext()) {
+                    String imgUrl = iterator.next();
+                    if (img != null && img.size() > 0) {
+                        TaskImg taskImg = new TaskImg();
+                        taskImg.setImg(imgUrl);
+                        taskImg.setTaskId(task.getId());
+                        taskImgService.addTaskImg(taskImg);
+                    }
+                }
             }
         }catch (Exception e){
             log.error(e.getMessage());
