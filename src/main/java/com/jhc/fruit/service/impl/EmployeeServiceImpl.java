@@ -181,6 +181,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             employee.setCreateTime(LocalDateTime.now());
             //生成默认用户名
             employee.setUsername(UUID.randomUUID().toString());
+            employee.setName(UUID.randomUUID().toString());
             //生成默认密码
             employee.setPassword("123456");
             //设置为游客账户
