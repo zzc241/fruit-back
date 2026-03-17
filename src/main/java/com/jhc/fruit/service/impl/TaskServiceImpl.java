@@ -196,6 +196,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         if (task.getGroupId() != null) {
             queryWrapper.eq(Task::getGroupId, task.getGroupId());
         }
+        tasks = taskDao.selectList(queryWrapper);
         List<TaskVo> taskVos = tasks.stream()
                 .map(this::taskToVo)
                 .collect(Collectors.toList());
