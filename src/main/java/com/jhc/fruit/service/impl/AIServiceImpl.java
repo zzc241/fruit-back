@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
@@ -218,10 +219,19 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     }
     public String analyzeWaterFertilizer(MultipartFile msFile, MultipartFile rgbFile) {
         String url = aiConfig.getAiCzm() + "/api/analyze-water-fertilizer";
-        
+
+        // 添加文件验证
+        if (msFile == null || msFile.isEmpty()) {
+            log.error("MS文件为空或不存在: ");
+            return "错误：MS文件获取失败";
+        }
+        if (rgbFile == null || rgbFile.isEmpty()) {
+            log.error("RGB文件为空或不存在: ");
+            return "错误：RGB文件获取失败";
+        }
         // 1. 构建请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("accept", "application/json");
+        headers.put("accept", "multipart/form-data");
         
         // 2. 构建文件参数映射
         Map<String, MultipartFile> fileParams = new HashMap<>();
@@ -241,9 +251,18 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         MultipartFile rgbFile = fileService.getMinioFileAsMultipartFile(rgbFileName);
         String url = aiConfig.getAiCzm() + "/api/analyze-water-fertilizer";
 
+        // 添加文件验证
+        if (msFile == null || msFile.isEmpty()) {
+            log.error("MS文件为空或不存在: {}", msFileName);
+            return "错误：MS文件获取失败";
+        }
+        if (rgbFile == null || rgbFile.isEmpty()) {
+            log.error("RGB文件为空或不存在: {}", rgbFileName);
+            return "错误：RGB文件获取失败";
+        }
         // 1. 构建请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("accept", "application/json");
+        headers.put("accept", "multipart/form-data");
 
         // 2. 构建文件参数映射
         Map<String, MultipartFile> fileParams = new HashMap<>();
@@ -397,7 +416,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         for (int i = 0; i < images.size(); i++) {
             MultipartFile image = images.get(i);
             if (image == null || image.isEmpty()) {
-                throw new IllegalArgumentException("第" + (i+1) + "张图片为空，请检查");
+                throw new IllegalArgumentException("第" + (i + 1) + "张图片为空，请检查");
             }
         }
 
@@ -436,29 +455,107 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             throw new RuntimeException("第三方接口调用失败：" + responseBody);
         }
 
-        // 7. 解析响应（保留）
+        // ==================== 7. 解析响应（已修复） ====================
         MultiSpectralResponse spectralResponse;
+        MultiSpectralResponse.PythonFertilizerAnalysis analysis = null;
+        MultiSpectralResponse.PythonResponseData pythonData = null;
+        String photoPrefix = null;
+        String imageUrl = null;  // 新增：保存图片URL
+        String actualFileName = null;  // 新增：保存实际文件名
+
         try {
-            spectralResponse = objectMapper.readValue(responseBody, MultiSpectralResponse.class);
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+            log.info("成功接收到响应，开始解析");
+
+            // 检查响应格式
+            if (rootNode.has("code") && rootNode.get("code").asInt() == 200) {
+                // 新格式：包含code, msg, data字段
+                JsonNode dataNode = rootNode.get("data");
+
+                // 从data中获取照片编号和图片URL
+                if (dataNode.has("照片编号")) {
+                    photoPrefix = dataNode.get("照片编号").asText();
+                    log.info("照片编号: {}", photoPrefix);
+                }
+
+                // 获取图片URL（如果有）
+                if (dataNode.has("image_url") && !dataNode.get("image_url").isNull()) {
+                    imageUrl = dataNode.get("image_url").asText();
+                    log.info("图片URL: {}", imageUrl);
+                }
+
+                // 获取实际的分析数据 - 注意字段名是中文的
+                JsonNode analysisDataNode = dataNode.get("fertilizer_analysis_json全部数据");
+                if (analysisDataNode != null) {
+                    log.info("找到分析数据节点");
+
+                    // 手动构建响应对象
+                    spectralResponse = new MultiSpectralResponse();
+                    spectralResponse.setCode(200);
+                    spectralResponse.setMsg("success");
+
+                    // 构建PythonResponseData
+                    pythonData = new MultiSpectralResponse.PythonResponseData();
+                    pythonData.setJson_file_path(getStringValue(analysisDataNode, "visual_save_path"));
+
+                    // 从block_position获取实际文件名（修复关键点）
+                    JsonNode blockNode = analysisDataNode.get("block_position");
+                    if (blockNode != null && blockNode.isArray() && blockNode.size() > 0) {
+                        JsonNode firstBlock = blockNode.get(0);
+                        actualFileName = getStringValue(firstBlock, "file_name");
+                        log.info("实际文件名: {}", actualFileName);
+                    }
+
+                    // 构建PythonFertilizerAnalysis
+                    analysis = extractAnalysisFromJson(analysisDataNode);
+
+                    pythonData.setJson_content(analysis);
+                    spectralResponse.setData(pythonData);
+
+                    log.info("数据解析成功");
+                } else {
+                    log.error("未找到fertilizer_analysis_json全部数据节点");
+                    throw new RuntimeException("无法找到分析数据");
+                }
+            } else {
+                // 旧格式兼容
+                log.warn("使用旧格式解析");
+                photoPrefix = rootNode.fieldNames().next();
+                JsonNode actualData = rootNode.get(photoPrefix);
+
+                spectralResponse = new MultiSpectralResponse();
+                spectralResponse.setCode(200);
+                spectralResponse.setMsg("success");
+
+                pythonData = new MultiSpectralResponse.PythonResponseData();
+                pythonData.setJson_file_path(getStringValue(actualData, "visual_save_path"));
+
+                // 从block_position获取实际文件名
+                JsonNode blockNode = actualData.get("block_position");
+                if (blockNode != null && blockNode.isArray() && blockNode.size() > 0) {
+                    JsonNode firstBlock = blockNode.get(0);
+                    actualFileName = getStringValue(firstBlock, "file_name");
+                }
+
+                analysis = extractAnalysisFromJson(actualData);
+
+                pythonData.setJson_content(analysis);
+                spectralResponse.setData(pythonData);
+            }
+
+            log.info("成功解析响应，照片编号: {}", photoPrefix);
+
         } catch (Exception e) {
-            throw new RuntimeException("解析响应失败，响应体：" + responseBody, e);
-        }
-        if (spectralResponse == null || spectralResponse.getCode() != 200) {
-            throw new RuntimeException("分析失败，返回码：" + (spectralResponse == null ? "空" : spectralResponse.getCode()));
+            log.error("解析响应失败，原始响应: {}", responseBody, e);
+            throw new RuntimeException("解析响应失败: " + e.getMessage(), e);
         }
 
-        // 8. 提取核心数据
-        MultiSpectralResponse.PythonResponseData pythonData = spectralResponse.getData();
-        if (pythonData == null) {
-            throw new RuntimeException("返回data字段为空");
-        }
-        MultiSpectralResponse.PythonFertilizerAnalysis analysis = pythonData.getJson_content();
+        // 8. 验证解析结果
         if (analysis == null) {
-            throw new RuntimeException("返回json_content字段为空");
+            throw new RuntimeException("解析后的analysis对象为空");
         }
 
-        // ========== 核心修改：赋值所有字段（兜底默认值） ==========
-        // 8.1 赋值光谱指数（Python返回null则用0.0兜底）
+        // ==================== 9. 赋值光谱指数 ====================
         FullIndicesMean spectralIndices = new FullIndicesMean();
         spectralIndices.setNDVI(analysis.getNdvi() != null ? analysis.getNdvi() : 0.0);
         spectralIndices.setNDRE(analysis.getNdre() != null ? analysis.getNdre() : 0.0);
@@ -479,9 +576,30 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         spectralIndices.setEVI(analysis.getEvi() != null ? analysis.getEvi() : 0.0);
         spectralIndices.setLAI(analysis.getLai() != null ? analysis.getLai() : 0.0);
 
-        // 8.2 赋值区块信息（地理+编码，null则用默认值兜底）
+        // ==================== 10. 赋值区块信息（修复文件名问题） ====================
         BlockPosition blockPosition = new BlockPosition();
-        blockPosition.setFile_name(pythonData.getJson_file_path());
+        // 修复：使用实际的文件名，而不是保存路径
+        if (actualFileName != null) {
+            blockPosition.setFile_name(actualFileName);
+        } else {
+            // 如果获取失败，尝试从第一个文件名获取
+            try {
+                JsonNode rootNode = objectMapper.readTree(responseBody);
+                JsonNode dataNode = rootNode.get("data");
+                JsonNode analysisDataNode = dataNode.get("fertilizer_analysis_json全部数据");
+                JsonNode blockNode = analysisDataNode.get("block_position");
+                if (blockNode != null && blockNode.isArray() && blockNode.size() > 0) {
+                    JsonNode firstBlock = blockNode.get(0);
+                    blockPosition.setFile_name(getStringValue(firstBlock, "file_name"));
+                } else {
+                    blockPosition.setFile_name("unknown.tif");
+                }
+            } catch (Exception e) {
+                log.warn("获取文件名失败，使用默认值", e);
+                blockPosition.setFile_name("unknown.tif");
+            }
+        }
+
         blockPosition.setLatitude(analysis.getLatitude() != null ? analysis.getLatitude() : 0.0);
         blockPosition.setLongitude(analysis.getLongitude() != null ? analysis.getLongitude() : 0.0);
         blockPosition.setAltitude(analysis.getAltitude() != null ? analysis.getAltitude() : 0.0);
@@ -489,7 +607,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         blockPosition.setBig_block(analysis.getBigBlock() != null ? analysis.getBigBlock() : "default");
         blockPosition.setSub_block(analysis.getSubBlock() != null ? analysis.getSubBlock() : "default");
 
-        // 8.3 组装返回数据
+        // ==================== 11. 组装返回数据 ====================
         List<BlockPosition> blockPositions = new ArrayList<>();
         blockPositions.add(blockPosition);
 
@@ -497,14 +615,105 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         responseData.setNutritionStatus(analysis.getFertilizer_level() != null ? analysis.getFertilizer_level() : "normal");
         responseData.setBlockPositions(blockPositions);
         responseData.setSpectralIndices(spectralIndices);
-        responseData.setAnalysisImage(null); // 暂无分析图片，保留null
 
-        // 9. 组装最终响应
+        // 如果有图片URL，可以设置到某个字段（假设你的ResponseData有imageUrl字段）
+        // 如果没有，可以暂时忽略或后续扩展
+        // responseData.setImageUrl(imageUrl);
+
+        responseData.setAnalysisImage(imageUrl);
+
+        // 12. 组装最终响应
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(200);
         apiResponse.setMsg("分析成功");
         apiResponse.setData(responseData);
+
+        log.info("分析完成，照片编号: {}, 营养状态: {}", photoPrefix, analysis.getFertilizer_level());
         return apiResponse;
+    }
+
+    // 辅助方法：安全的获取double值
+    private Double getDoubleValue(JsonNode node, String field) {
+        if (node.has(field) && !node.get(field).isNull()) {
+            return node.get(field).asDouble();
+        }
+        return null;
+    }
+
+    // 辅助方法：安全的获取long值
+    private Long getLongValue(JsonNode node, String field) {
+        if (node.has(field) && !node.get(field).isNull()) {
+            return node.get(field).asLong();
+        }
+        return null;
+    }
+
+    // 辅助方法：安全的获取string值
+    private String getStringValue(JsonNode node, String field) {
+        if (node.has(field) && !node.get(field).isNull()) {
+            return node.get(field).asText();
+        }
+        return null;
+    }
+
+    // 从状态文本解析肥料等级
+    private String parseFertilizerLevel(String statusText) {
+        if (statusText == null) return "normal";
+
+        if (statusText.contains("氮素偏少") || statusText.contains("磷素缺乏")) {
+            return "deficiency";
+        } else if (statusText.contains("过量")) {
+            return "excess";
+        } else {
+            return "normal";
+        }
+    }
+
+    // 新增方法：从JSON节点提取分析数据
+    private MultiSpectralResponse.PythonFertilizerAnalysis extractAnalysisFromJson(JsonNode dataNode) {
+        MultiSpectralResponse.PythonFertilizerAnalysis analysis =
+                new MultiSpectralResponse.PythonFertilizerAnalysis();
+
+        // 从 full_indices_mean 中提取光谱指数
+        JsonNode indicesNode = dataNode.get("full_indices_mean");
+        if (indicesNode != null) {
+            analysis.setNdvi(getDoubleValue(indicesNode, "NDVI"));
+            analysis.setNdre(getDoubleValue(indicesNode, "NDRE"));
+            analysis.setOsavi(getDoubleValue(indicesNode, "OSAVI"));
+            analysis.setNdpi(getDoubleValue(indicesNode, "NDPI"));
+            analysis.setKvi(getDoubleValue(indicesNode, "KVI"));
+            analysis.setKsi(getDoubleValue(indicesNode, "KSI"));
+            analysis.setTri(getDoubleValue(indicesNode, "TRI"));
+            analysis.setMtci(getDoubleValue(indicesNode, "MTCI"));
+            analysis.setCavi(getDoubleValue(indicesNode, "CaVI"));
+            analysis.setWi(getDoubleValue(indicesNode, "WI"));
+            analysis.setNdwi(getDoubleValue(indicesNode, "NDWI"));
+            analysis.setMsi(getDoubleValue(indicesNode, "MSI"));
+            analysis.setCiRededge(getLongValue(indicesNode, "CI_rededge"));
+            analysis.setCci(getDoubleValue(indicesNode, "CCI"));
+            analysis.setPri(getDoubleValue(indicesNode, "PRI"));
+            analysis.setSipi(getDoubleValue(indicesNode, "SIPI"));
+            analysis.setEvi(getDoubleValue(indicesNode, "EVI"));
+            analysis.setLai(getDoubleValue(indicesNode, "LAI"));
+        }
+
+        // 从 block_position 提取区块信息
+        JsonNode blockNode = dataNode.get("block_position");
+        if (blockNode != null && blockNode.isArray() && blockNode.size() > 0) {
+            JsonNode firstBlock = blockNode.get(0);
+            analysis.setLatitude(getDoubleValue(firstBlock, "latitude"));
+            analysis.setLongitude(getDoubleValue(firstBlock, "longitude"));
+            analysis.setAltitude(getDoubleValue(firstBlock, "altitude"));
+            analysis.setFullBlockCode(getStringValue(firstBlock, "full_block_code"));
+            analysis.setBigBlock(getStringValue(firstBlock, "big_block"));
+            analysis.setSubBlock(getStringValue(firstBlock, "sub_block"));
+        }
+
+        // 从 full_status_text 提取肥料等级
+        String statusText = getStringValue(dataNode, "full_status_text");
+        analysis.setFertilizer_level(parseFertilizerLevel(statusText));
+
+        return analysis;
     }
 
 

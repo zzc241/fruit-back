@@ -19,6 +19,6 @@ public class ApiResponse {
         // 多光谱指数数据
         private FullIndicesMean spectralIndices;
         // 可上传MinIO的分析图（MultipartFile）
-        private MultipartFile analysisImage;
+        private String analysisImage;
     }
 }
