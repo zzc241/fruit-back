@@ -248,8 +248,9 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
             queryWrapper.eq(Task::getOrchardId, orchardId);
             queryWrapper.eq(Task::getTaskType, type);
             queryWrapper.eq(Task::getTreeId, fruitTree.getId());
-            queryWrapper.eq(Task::getStatus, 2);
+            queryWrapper.eq(Task::getStatus, 1);
             List<Task> taskList = this.taskService.list(queryWrapper);
+            log.info(taskList.toString());
             List<TaskVo> taskVoList = new ArrayList<>();
             taskList.forEach(item -> {
                 TaskVo taskVo = taskService.taskToVo(item);

@@ -130,15 +130,10 @@
         FROM fruit_tree
         INNER JOIN task
         ON fruit_tree.orchard_id = task.orchard_id  -- 补充果园ID关联，缩小范围
-        AND fruit_tree.area_id = task.area_id       -- 原有的区域ID关联
-        AND (
-        task.tree_id = fruit_tree.id          -- 关联具体果树（精准匹配）
-        -- OR  task.tree_id IS NULL                   兼容任务未指定具体果树的场景
-        )
+        AND task.tree_id = fruit_tree.id          -- 关联具体果树
         WHERE fruit_tree.orchard_id = #{orchardId}
         AND task.task_type = #{type}
         AND task.tree_id IS NOT NULL
-        <!-- 可选：添加索引优化，提升查询速度 -->
     </select>
     <select id="getRipeSum" resultType="java.lang.Integer">
         SELECT SUM(fruit_tree.ripe_num)
