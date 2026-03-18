@@ -188,13 +188,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         
         // 查询1：基于 taskIds
         List<Long> taskIds = tasks.stream().map(Task::getId).collect(Collectors.toList());
-        LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(Task::getId, taskIds);
-        if (taskVo.getStatus() != null) {
-            queryWrapper.eq(Task::getStatus, taskVo.getStatus());
+        if (!taskIds.isEmpty()) {  // ⭐ 关键：只有非空才添加 IN 条件
+            LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.in(Task::getId, taskIds);
+            if (taskVo.getStatus() != null) {
+                queryWrapper.eq(Task::getStatus, taskVo.getStatus());
+            }
+            addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapper));
         }
-        addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapper));
-        
         // 查询2：基于 areaId
         List<Long> areaIds = areaDao.selectByEmpId(taskVo.getReceiverId());
         if (!areaIds.isEmpty()) {
