@@ -190,6 +190,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         List<Long> taskIds = tasks.stream().map(Task::getId).collect(Collectors.toList());
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Task::getId, taskIds);
+        if (taskVo.getStatus() != null) {
+            queryWrapper.eq(Task::getStatus, taskVo.getStatus());
+        }
         addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapper));
         
         // 查询2：基于 areaId
