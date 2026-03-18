@@ -16,7 +16,6 @@ import com.jhc.fruit.service.OrchardService;
 import com.jhc.fruit.service.TaskImgService;
 import com.jhc.fruit.service.TaskService;
 
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,6 +183,13 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         if (tasks == null || tasks.isEmpty()) {
             return new ArrayList<>();
         }
+        LambdaQueryWrapper<Task> queryWrapperArea = new LambdaQueryWrapper<>();
+        Long areaId = areaDao.selectByEmpId(taskVo.getReceiverId());
+        queryWrapperArea.eq(areaId != null, Task::getAreaId, areaId);
+
+        LambdaQueryWrapper<Task> queryWrapperOrchard = new LambdaQueryWrapper<>();
+        Long orchardId = areaDao.getOrchardIdByEmpId(taskVo.getReceiverId());
+        queryWrapperOrchard.eq(orchardId != null, Task::getOrchardId, orchardId);
         Task task = voToTask(taskVo);
         List<Long> taskIds = tasks.stream()
             .map(Task::getId)
@@ -202,6 +208,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
             queryWrapper.eq(Task::getGroupId, task.getGroupId());
         }
         tasks = taskDao.selectList(queryWrapper);
+        tasks.addAll(taskDao.selectList(queryWrapperArea));
+        tasks.addAll(taskDao.selectList(queryWrapperOrchard));
         List<TaskVo> taskVos = tasks.stream()
                 .map(this::taskToVo)
                 .collect(Collectors.toList());

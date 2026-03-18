@@ -80,4 +80,14 @@
         WHERE empgroup_emp.group_id = #{empGroup}
         AND empgroup_emp.emp_id = employee.id
     </select>
+    <select id="selectByEmpId" resultType="java.lang.Long">
+        SELECT area_info.id
+        FROM area_info
+        WHERE emp_id = #{empId}
+    </select>
+    <select id="getOrchardIdByEmpId" resultType="java.lang.Long">
+        SELECT area_info.orchard_id
+        FROM area_info
+        WHERE emp_id = #{empId}
+    </select>
 </mapper>
