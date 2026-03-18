@@ -84,8 +84,9 @@
     </select>
     <select id="myTree" resultType="com.jhc.fruit.entity.FruitTree">
         SELECT fruit_tree.id, fruit_tree.img, fruit_tree.type
-        FROM fruit_tree, fruit_emp
-        WHERE fruit_emp.id = #{id} AND fruit_tree.id = fruit_emp.tree_id
+        FROM fruit_tree, area_info
+        WHERE fruit_tree.area_id = area_info.id
+        AND area_info.emp_id = #{id}
     </select>
     <select id="checkEmpOfTree" resultType="java.lang.Boolean">
         SELECT *
@@ -130,14 +131,10 @@
         FROM fruit_tree
         INNER JOIN task
         ON fruit_tree.orchard_id = task.orchard_id  -- 补充果园ID关联，缩小范围
-        AND fruit_tree.area_id = task.area_id       -- 原有的区域ID关联
-        AND (
-        task.tree_id = fruit_tree.id OR         -- 关联具体果树（精准匹配）
-        task.tree_id IS NULL                    -- 兼容任务未指定具体果树的场景
-        )
+        AND task.tree_id = fruit_tree.id          -- 关联具体果树
         WHERE fruit_tree.orchard_id = #{orchardId}
         AND task.task_type = #{type}
-        <!-- 可选：添加索引优化，提升查询速度 -->
+        AND task.tree_id IS NOT NULL
     </select>
     <select id="getRipeSum" resultType="java.lang.Integer">
         SELECT SUM(fruit_tree.ripe_num)
