@@ -12,6 +12,8 @@ public class ApiResponse {
 
     @Data
     public static class ResponseData {
+        //分析建议
+        private String analyzeSuggestion;
         // 营养状态文本
         private String nutritionStatus;
         // 区块位置列表
@@ -20,5 +22,6 @@ public class ApiResponse {
         private FullIndicesMean spectralIndices;
         // 可上传MinIO的分析图（MultipartFile）
         private String analysisImage;
+        private String mergeImage;
     }
 }

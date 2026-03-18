@@ -112,4 +112,22 @@ public class AIController {
         }
     }
 
+    @ApiOperation("多光谱照片分析并返回建议")
+    @PostMapping(value = "/analyzePlus", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse analyzePlus(@RequestParam("images") List<MultipartFile> images) {
+        try {
+            return aiService.analyzeMultiSpectralImagesPlus(images);
+        } catch (IllegalArgumentException e) {
+            ApiResponse response = new ApiResponse();
+            response.setCode(400);
+            response.setMsg(e.getMessage());
+            return response;
+        } catch (Exception e) {
+            ApiResponse response = new ApiResponse();
+            response.setCode(500);
+            response.setMsg("分析失败：" + e.getMessage());
+            return response;
+        }
+    }
+
 }

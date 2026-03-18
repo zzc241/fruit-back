@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.dao.AIDao;
@@ -19,7 +21,6 @@ import com.jhc.fruit.service.FileService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import okhttp3.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -242,7 +243,45 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
         
         log.info(response);
-        return response;
+        String responseResult = extractResult(response);
+        return responseResult;
+    }
+
+    /**
+     * 提取水肥分析结果的result文本
+     * @param jsonResponse 从水肥分析服务返回的JSON
+     * @return result文本内容
+     */
+    private String extractResult(String jsonResponse) {
+        try {
+            log.info("开始解析水肥分析结果: {}", jsonResponse);
+
+            // 直接解析JSON（现在是单层结构）
+            JsonObject root = JsonParser.parseString(jsonResponse).getAsJsonObject();
+
+            // 检查返回码
+            int code = root.get("code").getAsInt();
+            if (code != 200) {
+                String msg = root.has("msg") ? root.get("msg").getAsString() : "未知错误";
+                log.error("水肥分析服务返回错误: code={}, msg={}", code, msg);
+                return "水肥分析失败：" + msg;
+            }
+
+            // 检查并获取result字段
+            if (!root.has("result")) {
+                log.error("返回结果中不存在result字段");
+                return null;
+            }
+
+            String result = root.get("result").getAsString();
+            log.info("成功提取result，长度: {}", result.length());
+
+            return result;
+
+        } catch (Exception e) {
+            log.error("解析水肥分析结果失败: {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     @Override
@@ -443,7 +482,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             }
         }
 
-        // 5. 调用第三方接口（保留）
+        // 5. 调用工具类
         Map<String, String> headers = new HashMap<>();
         String responseBody = httpUtil.doPostUploadMulti(THIRD_PARTY_API_URL, headers, fileParams);
 
@@ -462,6 +501,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         String photoPrefix = null;
         String imageUrl = null;  // 新增：保存图片URL
         String actualFileName = null;  // 新增：保存实际文件名
+        String mergeUrl = null; //合并后的多光谱图片url
 
         try {
             JsonNode rootNode = objectMapper.readTree(responseBody);
@@ -471,6 +511,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             if (rootNode.has("code") && rootNode.get("code").asInt() == 200) {
                 // 新格式：包含code, msg, data字段
                 JsonNode dataNode = rootNode.get("data");
+                log.info(dataNode.toString());
 
                 // 从data中获取照片编号和图片URL
                 if (dataNode.has("照片编号")) {
@@ -482,6 +523,12 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
                 if (dataNode.has("image_url") && !dataNode.get("image_url").isNull()) {
                     imageUrl = dataNode.get("image_url").asText();
                     log.info("图片URL: {}", imageUrl);
+                }
+
+                //获取合并后图片url
+                if (dataNode.has("merge_url") && !dataNode.get("merge_url").isNull()) {
+                    mergeUrl = dataNode.get("merge_url").asText();
+                    log.info("合成图URL: {}", mergeUrl);
                 }
 
                 // 获取实际的分析数据 - 注意字段名是中文的
@@ -621,6 +668,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         // responseData.setImageUrl(imageUrl);
 
         responseData.setAnalysisImage(imageUrl);
+        responseData.setMergeImage(mergeUrl);
 
         // 12. 组装最终响应
         ApiResponse apiResponse = new ApiResponse();
@@ -629,6 +677,27 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         apiResponse.setData(responseData);
 
         log.info("分析完成，照片编号: {}, 营养状态: {}", photoPrefix, analysis.getFertilizer_level());
+        return apiResponse;
+    }
+
+    @Override
+    public ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images) {
+        ApiResponse apiResponse = new ApiResponse();
+        try {
+            //获取rgb图片
+            MultipartFile rgbFile = images.remove(4);
+            //剩下4张tif用于分析
+            apiResponse = analyzeMultiSpectralImages(images);
+            //通过返回的url获取tif图片
+            MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
+                    apiResponse.getData().getMergeImage().substring(
+                            apiResponse.getData().getMergeImage().lastIndexOf("fruit-bucket/") + 13
+                    ));
+
+            apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
         return apiResponse;
     }
 
