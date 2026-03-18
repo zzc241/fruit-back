@@ -449,8 +449,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     @Override
     public ApiResponse analyzeMultiSpectralImages(List<MultipartFile> images) throws IOException {
         // 1. 原有校验逻辑（保留）
-        if (images == null || images.size() != 4) {
-            throw new IllegalArgumentException("必须上传且仅上传4张多光谱图片，当前数量：" + (images == null ? 0 : images.size()));
+        if (images == null || images.size() != 5) {
+            throw new IllegalArgumentException("必须上传且仅上传5张多光谱图片，当前数量：" + (images == null ? 0 : images.size()));
         }
         for (int i = 0; i < images.size(); i++) {
             MultipartFile image = images.get(i);
