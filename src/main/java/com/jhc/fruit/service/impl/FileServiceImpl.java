@@ -465,42 +465,73 @@ public class FileServiceImpl implements FileService {
      * @throws Exception 读取MinIO文件失败时抛出
      */
     @Override
-    public MultipartFile getMinioFileAsMultipartFile(String fileName){
-        try{
-            // 1. 校验文件是否存在
-            if (!exits(fileName)) {
-                throw new RuntimeException("MinIO中不存在文件：" + fileName);
+    public MultipartFile getMinioFileAsMultipartFile(String fileName) {
+        try {
+            // 1. 修复文件路径：将所有反斜杠替换为正斜杠
+            String fixedFileName = normalizePath(fileName);
+            log.info("原始文件名: {}, 修复后: {}", fileName, fixedFileName);
+
+            // 2. 校验文件是否存在
+            if (!exits(fixedFileName)) {
+                throw new RuntimeException("MinIO中不存在文件：" + fixedFileName);
             }
 
-            // 2. 从MinIO读取文件流到字节数组（避免流关闭后无法复用）
-            InputStream minioInputStream = getMinioFileInputStream(fileName);
+            // 3. 从MinIO读取文件流到字节数组
+            InputStream minioInputStream = getMinioFileInputStream(fixedFileName);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[8192]; // 增大缓冲区提高性能
             int len;
             while ((len = minioInputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, len);
             }
             byte[] fileBytes = outputStream.toByteArray();
 
-            // 3. 关闭流（避免资源泄漏）
+            // 4. 关闭流
             minioInputStream.close();
             outputStream.close();
 
-            // 4. 解析文件名和扩展名（用于构造MultipartFile）
-            String originalFilename = fileName; // 若存储时记录了原始文件名，可替换为真实名称
-            String contentType = getContentTypeByFileName(fileName); // 获取文件MIME类型
+            // 5. 提取安全的文件名（只取最后一部分，避免路径问题）
+            String safeFileName = extractFileName(fixedFileName);
+            String contentType = getContentTypeByFileName(safeFileName);
 
-            // 5. 封装为MockMultipartFile（Spring提供的MultipartFile实现类）
+            // 6. 封装为MockMultipartFile
             return new MockMultipartFile(
-                    "file",                // 参数名（可自定义，对应前端上传的name）
-                    originalFilename,      // 原始文件名
-                    contentType,           // 文件MIME类型
-                    new ByteArrayInputStream(fileBytes) // 文件字节流
+                    "file",
+                    safeFileName,  // 使用安全的文件名
+                    contentType,
+                    new ByteArrayInputStream(fileBytes)
             );
-        }catch (Exception e){
-            throw new RuntimeException(e);
+
+        } catch (Exception e) {
+            log.error("获取MinIO文件失败: {}", fileName, e);
+            throw new RuntimeException("获取MinIO文件失败: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 规范化文件路径：将所有反斜杠替换为正斜杠
+     */
+    private String normalizePath(String path) {
+        if (path == null) return null;
+        return path.replace('\\', '/');
+    }
+
+    /**
+     * 从路径中提取安全的文件名
+     */
+    private String extractFileName(String path) {
+        if (path == null) return null;
+
+        // 清理路径分隔符
+        String normalizedPath = normalizePath(path);
+
+        // 获取最后一个'/'之后的部分
+        int lastSlashIndex = normalizedPath.lastIndexOf('/');
+        if (lastSlashIndex != -1 && lastSlashIndex < normalizedPath.length() - 1) {
+            return normalizedPath.substring(lastSlashIndex + 1);
         }
 
+        return normalizedPath;
     }
 
     /**

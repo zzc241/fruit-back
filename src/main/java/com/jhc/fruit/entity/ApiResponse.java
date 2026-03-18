@@ -12,6 +12,8 @@ public class ApiResponse {
 
     @Data
     public static class ResponseData {
+        //分析建议
+        private String analyzeSuggestion;
         // 营养状态文本
         private String nutritionStatus;
         // 区块位置列表

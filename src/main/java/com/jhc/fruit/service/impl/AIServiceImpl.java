@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.dao.AIDao;
@@ -241,7 +243,45 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
         
         log.info(response);
-        return response;
+        String responseResult = extractResult(response);
+        return responseResult;
+    }
+
+    /**
+     * 提取水肥分析结果的result文本
+     * @param jsonResponse 从水肥分析服务返回的JSON
+     * @return result文本内容
+     */
+    private String extractResult(String jsonResponse) {
+        try {
+            log.info("开始解析水肥分析结果: {}", jsonResponse);
+
+            // 直接解析JSON（现在是单层结构）
+            JsonObject root = JsonParser.parseString(jsonResponse).getAsJsonObject();
+
+            // 检查返回码
+            int code = root.get("code").getAsInt();
+            if (code != 200) {
+                String msg = root.has("msg") ? root.get("msg").getAsString() : "未知错误";
+                log.error("水肥分析服务返回错误: code={}, msg={}", code, msg);
+                return "水肥分析失败：" + msg;
+            }
+
+            // 检查并获取result字段
+            if (!root.has("result")) {
+                log.error("返回结果中不存在result字段");
+                return null;
+            }
+
+            String result = root.get("result").getAsString();
+            log.info("成功提取result，长度: {}", result.length());
+
+            return result;
+
+        } catch (Exception e) {
+            log.error("解析水肥分析结果失败: {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     @Override
@@ -637,6 +677,27 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         apiResponse.setData(responseData);
 
         log.info("分析完成，照片编号: {}, 营养状态: {}", photoPrefix, analysis.getFertilizer_level());
+        return apiResponse;
+    }
+
+    @Override
+    public ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images) {
+        ApiResponse apiResponse = new ApiResponse();
+        try {
+            //获取rgb图片
+            MultipartFile rgbFile = images.remove(4);
+            //剩下4张tif用于分析
+            apiResponse = analyzeMultiSpectralImages(images);
+            //通过返回的url获取tif图片
+            MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
+                    apiResponse.getData().getMergeImage().substring(
+                            apiResponse.getData().getMergeImage().lastIndexOf("fruit-bucket/") + 13
+                    ));
+
+            apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
         return apiResponse;
     }
 

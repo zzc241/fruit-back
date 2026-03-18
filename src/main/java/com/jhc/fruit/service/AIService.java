@@ -37,4 +37,6 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
     R<AudioRecognitionSuccess> processAudio(MultipartFile wavFile);
 
     ApiResponse analyzeMultiSpectralImages(List<MultipartFile> images) throws IOException;
+
+    ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images);
 }
