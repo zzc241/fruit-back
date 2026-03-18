@@ -200,6 +200,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         if (!areaIds.isEmpty()) {
             LambdaQueryWrapper<Task> queryWrapperArea = new LambdaQueryWrapper<>();
             queryWrapperArea.in(Task::getAreaId, areaIds);  // 用 in，不是 eq
+            if (taskVo.getStatus() != null) {
+                queryWrapperArea.eq(Task::getStatus, taskVo.getStatus());
+            }
             addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapperArea));
         }
         
@@ -208,6 +211,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         if (orchardIds != null && !orchardIds.isEmpty()) {
             LambdaQueryWrapper<Task> queryWrapperOrchard = new LambdaQueryWrapper<>();
             queryWrapperOrchard.in(Task::getOrchardId, orchardIds);  // 用 in
+            if (taskVo.getStatus() != null) {
+                queryWrapperOrchard.eq(Task::getStatus, taskVo.getStatus());
+            }
             addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapperOrchard));
         }
         // 转换为 Vo 并设置图片
