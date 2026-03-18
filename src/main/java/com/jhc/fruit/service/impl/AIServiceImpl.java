@@ -19,7 +19,6 @@ import com.jhc.fruit.service.FileService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import okhttp3.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -443,7 +442,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             }
         }
 
-        // 5. 调用第三方接口（保留）
+        // 5. 调用工具类
         Map<String, String> headers = new HashMap<>();
         String responseBody = httpUtil.doPostUploadMulti(THIRD_PARTY_API_URL, headers, fileParams);
 
@@ -462,6 +461,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         String photoPrefix = null;
         String imageUrl = null;  // 新增：保存图片URL
         String actualFileName = null;  // 新增：保存实际文件名
+        String mergeUrl = null; //合并后的多光谱图片url
 
         try {
             JsonNode rootNode = objectMapper.readTree(responseBody);
@@ -471,6 +471,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             if (rootNode.has("code") && rootNode.get("code").asInt() == 200) {
                 // 新格式：包含code, msg, data字段
                 JsonNode dataNode = rootNode.get("data");
+                log.info(dataNode.toString());
 
                 // 从data中获取照片编号和图片URL
                 if (dataNode.has("照片编号")) {
@@ -482,6 +483,12 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
                 if (dataNode.has("image_url") && !dataNode.get("image_url").isNull()) {
                     imageUrl = dataNode.get("image_url").asText();
                     log.info("图片URL: {}", imageUrl);
+                }
+
+                //获取合并后图片url
+                if (dataNode.has("merge_url") && !dataNode.get("merge_url").isNull()) {
+                    mergeUrl = dataNode.get("merge_url").asText();
+                    log.info("合成图URL: {}", mergeUrl);
                 }
 
                 // 获取实际的分析数据 - 注意字段名是中文的
@@ -621,6 +628,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         // responseData.setImageUrl(imageUrl);
 
         responseData.setAnalysisImage(imageUrl);
+        responseData.setMergeImage(mergeUrl);
 
         // 12. 组装最终响应
         ApiResponse apiResponse = new ApiResponse();

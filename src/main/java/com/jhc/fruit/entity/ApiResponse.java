@@ -20,5 +20,6 @@ public class ApiResponse {
         private FullIndicesMean spectralIndices;
         // 可上传MinIO的分析图（MultipartFile）
         private String analysisImage;
+        private String mergeImage;
     }
 }
