@@ -35,7 +35,7 @@ public interface AreaDao extends BaseMapper<Area> {
 
     List<Employee> selectEmp(Long empGroup);
 
-    Long selectByEmpId(Long empId);
+    List<Long> selectByEmpId(Long empId);
 
-    Long getOrchardIdByEmpId(Long empId);
+    List<Long> getOrchardIdByEmpId(Long empId);
 }

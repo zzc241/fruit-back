@@ -178,49 +178,55 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     //    条件查询
     @Override
     public List<TaskVo> queryTasks(TaskVo taskVo) {
-
         List<Task> tasks = empGroupService.getTasks(taskVo.getReceiverId());
         if (tasks == null || tasks.isEmpty()) {
             return new ArrayList<>();
         }
-        LambdaQueryWrapper<Task> queryWrapperArea = new LambdaQueryWrapper<>();
-        Long areaId = areaDao.selectByEmpId(taskVo.getReceiverId());
-        queryWrapperArea.eq(areaId != null, Task::getAreaId, areaId);
-
-        LambdaQueryWrapper<Task> queryWrapperOrchard = new LambdaQueryWrapper<>();
-        Long orchardId = areaDao.getOrchardIdByEmpId(taskVo.getReceiverId());
-        queryWrapperOrchard.eq(orchardId != null, Task::getOrchardId, orchardId);
-        Task task = voToTask(taskVo);
-        List<Long> taskIds = tasks.stream()
-            .map(Task::getId)
-            .collect(Collectors.toList());
+        
+        Set<Long> taskIdSet = new HashSet<>();
+        List<Task> allTasks = new ArrayList<>();
+        
+        // 查询1：基于 taskIds
+        List<Long> taskIds = tasks.stream().map(Task::getId).collect(Collectors.toList());
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Task::getId, taskIds);
+        addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapper));
         
-        // 添加其他筛选条件（从 taskVo 来）
-        queryWrapper.eq(task.getId() != null, Task::getId, task.getId())
-                    .eq(task.getCreatorId() != null, Task::getCreatorId, task.getCreatorId())
-                    .eq(task.getOrchardId() != null, Task::getOrchardId, task.getOrchardId())
-                    .eq(task.getTaskType() != null, Task::getTaskType, task.getTaskType())
-                    .eq(task.getStatus() != null, Task::getStatus, task.getStatus());
-
-        if (task.getGroupId() != null) {
-            queryWrapper.eq(Task::getGroupId, task.getGroupId());
+        // 查询2：基于 areaId
+        List<Long> areaIds = areaDao.selectByEmpId(taskVo.getReceiverId());
+        if (!areaIds.isEmpty()) {
+            LambdaQueryWrapper<Task> queryWrapperArea = new LambdaQueryWrapper<>();
+            queryWrapperArea.in(Task::getAreaId, areaIds);  // 用 in，不是 eq
+            addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapperArea));
         }
-        tasks = taskDao.selectList(queryWrapper);
-        tasks.addAll(taskDao.selectList(queryWrapperArea));
-        tasks.addAll(taskDao.selectList(queryWrapperOrchard));
-        List<TaskVo> taskVos = tasks.stream()
+        
+        // 查询3：基于 orchardId
+        List<Long> orchardIds = areaDao.getOrchardIdByEmpId(taskVo.getReceiverId());
+        if (orchardIds != null && !orchardIds.isEmpty()) {
+            LambdaQueryWrapper<Task> queryWrapperOrchard = new LambdaQueryWrapper<>();
+            queryWrapperOrchard.in(Task::getOrchardId, orchardIds);  // 用 in
+            addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapperOrchard));
+        }
+        // 转换为 Vo 并设置图片
+        List<TaskVo> taskVos = allTasks.stream()
                 .map(this::taskToVo)
                 .collect(Collectors.toList());
-        Iterator<TaskVo> iterator = taskVos.iterator();
-        while(iterator.hasNext()){
-            TaskVo taskVoCurr = iterator.next();
-            Long taskId = taskVoCurr.getId();
-            taskVoCurr.setImgsURL(taskImgService.getImg(taskId));
-        }
-
+        
+        taskVos.forEach(taskVoCurr -> 
+            taskVoCurr.setImgsURL(taskImgService.getImg(taskVoCurr.getId()))
+        );
+        
         return taskVos;
+    }
+
+    // 辅助方法：添加任务到列表，避免重复
+    private void addTasksWithoutDuplicate(List<Task> allTasks, Set<Long> taskIdSet, List<Task> newTasks) {
+        for (Task task : newTasks) {
+            if (!taskIdSet.contains(task.getId())) {
+                taskIdSet.add(task.getId());
+                allTasks.add(task);
+            }
+        }
     }
 
     private Task voToTask(TaskVo taskVo) {
