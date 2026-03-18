@@ -244,12 +244,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         for (FruitTree fruitTree : fruitTreeList) {
             FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
             //查询相关任务
-            LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Task::getOrchardId, orchardId);
-            queryWrapper.eq(Task::getTaskType, type);
-            queryWrapper.eq(Task::getTreeId, fruitTree.getId());
-            queryWrapper.eq(Task::getStatus, 1);
-            List<Task> taskList = this.taskService.list(queryWrapper);
+            List<Task> taskList = fruitTreeDao.getByTask(fruitTree.getAreaId(), fruitTree.getId());
             log.info(taskList.toString());
             List<TaskVo> taskVoList = new ArrayList<>();
             taskList.forEach(item -> {

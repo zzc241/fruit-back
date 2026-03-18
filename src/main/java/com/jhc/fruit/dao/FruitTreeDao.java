@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
+import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -61,4 +62,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     Integer getAreaCountNumSum(Long orchardId, Long id);
 
     Long selectOrchardIdByTreeId(Long treeId);
+
+    List<Task> getByTask(Long areaId, Long treeId);
 }
