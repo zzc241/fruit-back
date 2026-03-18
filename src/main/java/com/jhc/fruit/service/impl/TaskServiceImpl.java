@@ -179,9 +179,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     @Override
     public List<TaskVo> queryTasks(TaskVo taskVo) {
         List<Task> tasks = empGroupService.getTasks(taskVo.getReceiverId());
-        if (tasks == null || tasks.isEmpty()) {
-            return new ArrayList<>();
-        }
+        // if (tasks == null || tasks.isEmpty()) {
+        //     return new ArrayList<>();
+        // }
         
         Set<Long> taskIdSet = new HashSet<>();
         List<Task> allTasks = new ArrayList<>();
