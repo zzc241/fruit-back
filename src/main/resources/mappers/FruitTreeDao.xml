@@ -136,7 +136,8 @@
             -- 关联area_info
                  JOIN area_info ON fruit_tree.area_id = area_info.id
         WHERE task.orchard_id = #{orchardId}
-          AND task.task_type = #{type};
+          AND task.task_type = #{type}
+          AND task.status = 1
     </select>
     <select id="getRipeSum" resultType="java.lang.Integer">
         SELECT SUM(fruit_tree.ripe_num)
