@@ -34,7 +34,7 @@ public class AIController {
     @Autowired
     private DisasterService disasterService;
 
-    @ApiOperation("YOLOv11 目标检测接口")
+    @ApiOperation("杂草识别")
     @PostMapping("/YOLOv11Weed")
     public R<List<AIWeeds.WeedDetection>> AIWeed(MultipartFile weedFile){
         return aiService.AIWeed(weedFile);

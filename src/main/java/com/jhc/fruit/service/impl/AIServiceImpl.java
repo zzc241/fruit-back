@@ -81,6 +81,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             //保存识别结果
             aiDao.save(detectionResponse.getResult().getDetections(), originUrl, outputUrl);
 
+            log.info("处理完成，识别结果图片路径:" + outputUrl);
+
             return R.success(detectionResponse.getResult().getDetections());
         } catch (Exception e) {
             throw new RuntimeException("解析杂草检测结果失败", e);

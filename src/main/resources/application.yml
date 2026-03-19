@@ -1,19 +1,9 @@
 server:
   port: 3388 #3388
-  ssl:
-    enabled: true # 开启HTTPS
-    key-store: classpath:test-cert.p12 # 证书文件（resources下）
-    key-store-type: PKCS12 # 证书格式固定
-    key-store-password: 123456 # 生成证书时的密码
-    key-alias: springboot-cert # 生成证书时的别名
-    # 解决内网测试证书信任问题
-    trust-store: classpath:test-cert.p12
-    trust-store-password: 123456
-    trust-store-type: PKCS12
-    # 关键补充：指定TLS版本，适配微信小程序
-    protocols: TLSv1.2,TLSv1.3
-    # 可选：关闭SSL重定向（避免自动跳转到443端口）
-    redirect-to-https: false
+#  ssl:
+#    key-store-password: fz5cdIT4
+#    key-store-type: PKCS12
+#    key-store: classpath:8062640_fruit.lookyousmileface.icu.pfx
 
 spring:
   port: 3388
@@ -67,7 +57,7 @@ minio:
   bucket-name: fruit-bucket
 ai-api:
   aiCzm: http://192.168.123.94:8000
-  aiZen: http://192.168.123.94:8002
+  aiZen: http://172.16.0.204:8000
   aiAudio: http://192.168.123.94:5001
   aiCbh: http://192.168.123.94:8003
 txt:
