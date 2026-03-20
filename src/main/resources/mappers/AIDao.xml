@@ -23,4 +23,13 @@
         WHERE orchard_id = #{orchardId}
         LIMIT 1
     </select>
+<!--    查询最新的数据-->
+    <select id="getAnalyze" resultType="com.jhc.fruit.entity.Analyze">
+        SELECT `analyze`.*
+        FROM `analyze`
+        WHERE `analyze`.areaId = #{areaId}
+          AND `analyze`.orchard_id = #{orchardId}
+        ORDER BY `analyze`.create_time DESC, `analyze`.id DESC
+        LIMIT 1
+    </select>
 </mapper>

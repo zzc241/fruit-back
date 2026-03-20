@@ -12,6 +12,7 @@ import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.dao.AIDao;
 import com.jhc.fruit.entity.*;
+import com.jhc.fruit.entity.vo.AnalyzeVo;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
 import com.jhc.fruit.entity.vo.MaturityResponse;
@@ -716,6 +717,26 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             throw new RuntimeException(e);
         }
         return apiResponse;
+    }
+
+    @Override
+    public R<List<AnalyzeVo>> getAnalyze(Long orchardId, Long areaId) {
+        List<Analyze> analyzeList = aiDao.getAnalyze(orchardId,areaId);
+        List<AnalyzeVo> voList = new ArrayList<>();
+        for (Analyze analyze : analyzeList) {
+            AnalyzeVo vo = new AnalyzeVo();
+            vo.setAreaId(analyze.getAreaId());
+            vo.setOrchardId(orchardId);
+            vo.setAnalysisImage(analyze.getAnalysisImage());
+            vo.setNutritionStatus(analyze.getNutritionStatus());
+            vo.setAnalyzeSuggestion(analyze.getAnalyzeSuggestion());
+            vo.setMergeImage(analyze.getMergeImage());
+            vo.setNutritionStatus(analyze.getNutritionStatus());
+            vo.setBlockPositions(analyze.getBlockPositions());
+            vo.setSpectralIndices(analyze.getSpectralIndices());
+            voList.add(vo);
+        }
+        return R.success(voList);
     }
 
     // 辅助方法：安全的获取double值

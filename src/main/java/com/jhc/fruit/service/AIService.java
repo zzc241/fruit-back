@@ -5,6 +5,7 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.entity.ApiResponse;
 import com.jhc.fruit.entity.AudioRecognitionSuccess;
+import com.jhc.fruit.entity.vo.AnalyzeVo;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
 import com.jhc.fruit.entity.vo.MaturityResponse;
@@ -39,4 +40,6 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
     ApiResponse analyzeMultiSpectralImages(List<MultipartFile> images) throws IOException;
 
     ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images, Long orchardId, Long areaId) throws IOException;
+
+    R<List<AnalyzeVo>> getAnalyze(Long orchardId, Long areaId);
 }

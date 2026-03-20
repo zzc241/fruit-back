@@ -5,6 +5,7 @@ import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.entity.Analyze;
 import com.jhc.fruit.entity.ApiResponse;
 import com.jhc.fruit.entity.AudioRecognitionSuccess;
+import com.jhc.fruit.entity.vo.AnalyzeVo;
 import com.jhc.fruit.entity.vo.DisasterVo;
 import com.jhc.fruit.entity.vo.DiseaseResponse;
 import com.jhc.fruit.entity.vo.MaturityResponse;
@@ -126,5 +127,12 @@ public class AIController {
             return response;
         }
     }
+
+    @ApiOperation("获取果园最新多光谱数据")
+    @GetMapping("/getAnalyze/{orchardId}/{areaId}")
+    public R<List<AnalyzeVo>> getAnalyze(@PathVariable Long orchardId, @PathVariable Long areaId) {
+        return aiService.getAnalyze(orchardId, areaId);
+    }
+
 
 }
