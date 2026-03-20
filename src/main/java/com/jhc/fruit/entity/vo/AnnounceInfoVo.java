@@ -2,6 +2,8 @@ package com.jhc.fruit.entity.vo;
 
 import java.time.LocalDateTime;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -68,4 +70,13 @@ public class AnnounceInfoVo {
     //薪资
     @ApiModelProperty(value = "薪资")
     private Long salary;
+
+
+    @ApiModelProperty(value = "地址")
+    @TableField("address")
+    private String address;
+
+    @ApiModelProperty(value = "距离")
+    @TableField("distance")
+    private Double distance;
 }

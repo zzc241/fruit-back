@@ -73,4 +73,12 @@ public class AnnounceInfo {
     private Long createUser;
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+
+    @ApiModelProperty(value = "地址")
+    @TableField("address")
+    private String address;
+
+    @ApiModelProperty(value = "距离")
+    @TableField("distance")
+    private Double distance;
 }
