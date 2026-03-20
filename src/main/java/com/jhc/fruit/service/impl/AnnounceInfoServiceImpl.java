@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -151,6 +152,10 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
             Long isReadInt = pickInfoVo.getIsRead();
             queryWrapper.eq(AnnounceInfo::getIsRead, isReadInt);
         }
+        //如果前端传过来salary，则将所有salary不等于null的都返回
+        if(pickInfoVo.getSalary() != null){
+            queryWrapper.ne(AnnounceInfo::getSalary, null);
+        }
         
         // 按时间倒序排列
         queryWrapper.orderByDesc(AnnounceInfo::getCreateTime);
@@ -253,6 +258,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
 
     //TODO : 实现消息群发特定组功能
     public String saveDeployInfo(AnnounceInfoVo announceInfoVo){
+        Random random = new Random();
         Long senderId = announceInfoVo.getSenderId();
         log.info("senderId:" + senderId);
         Long userId = BaseContext.getId();
@@ -270,6 +276,8 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         
         AnnounceInfo announceInfo = new AnnounceInfo();
         BeanUtils.copyProperties(announceInfoVo, announceInfo);
+        announceInfo.setAddress("浙江省山东市甘肃镇内蒙古自治区");
+        announceInfo.setDistance(random.nextDouble() * 100);
         this.save(announceInfo);
         return "发布成功";
     }
