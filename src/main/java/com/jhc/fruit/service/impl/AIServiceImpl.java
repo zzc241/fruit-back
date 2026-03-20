@@ -76,10 +76,15 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             //处理图片
             String outputUrl = AIWeedImg(originUrl, outputPrefix, detectionResponse.getResult().getDetections());
             if (outputUrl.equals("err")) {
-                outputUrl = "test.png";
+                outputUrl = "ERROR.png";
             }
             //保存识别结果
             aiDao.save(detectionResponse.getResult().getDetections(), originUrl, outputUrl);
+            String finalOutputUrl = outputUrl;
+            detectionResponse.getResult().getDetections().forEach(item ->{
+                item.setOriginImg(fileService.getImageUrl(originUrl));
+                item.setOutputImg(fileService.getImageUrl(finalOutputUrl));
+            });
 
             log.info("处理完成，识别结果图片路径:" + outputUrl);
 
@@ -665,10 +670,6 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         responseData.setBlockPositions(blockPositions);
         responseData.setSpectralIndices(spectralIndices);
 
-        // 如果有图片URL，可以设置到某个字段（假设你的ResponseData有imageUrl字段）
-        // 如果没有，可以暂时忽略或后续扩展
-        // responseData.setImageUrl(imageUrl);
-
         responseData.setAnalysisImage(imageUrl);
         responseData.setMergeImage(mergeUrl);
 
@@ -683,7 +684,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     }
 
     @Override
-    public ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images) {
+    public ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images, Long orchardId, Long areaId) {
         ApiResponse apiResponse = new ApiResponse();
         try {
             //获取rgb图片
@@ -697,6 +698,20 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
                     ));
 
             apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
+            //保存数据
+            Analyze analyze = new Analyze();
+            analyze.setAreaId(areaId);
+            analyze.setOrchardId(orchardId);
+            analyze.setAnalyzeSuggestion(apiResponse.getData().getAnalyzeSuggestion());
+            analyze.setMergeImage(apiResponse.getData().getMergeImage());
+            analyze.setAnalysisImage(apiResponse.getData().getAnalysisImage());
+            analyze.setNutritionStatus(apiResponse.getData().getNutritionStatus());
+            analyze.setSpectralIndices(apiResponse.getData().getSpectralIndices());
+            analyze.setBlockPositions(apiResponse.getData().getBlockPositions().get(0));
+            log.info(analyze.getBlockPositions());
+            log.info(analyze.getSpectralIndices());
+
+            aiDao.saveAnalyze(analyze);
         }catch (Exception e){
             throw new RuntimeException(e);
         }

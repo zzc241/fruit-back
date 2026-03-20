@@ -2,6 +2,7 @@ package com.jhc.fruit.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jhc.fruit.entity.AIWeeds;
+import com.jhc.fruit.entity.Analyze;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface AIDao extends BaseMapper<AIWeeds.WeedDetection> {
     void save(List<AIWeeds.WeedDetection> detections, String originUrl, String outputUrl);
 
     String getCityByOrchardId(Long orchardId);
+
+    void saveAnalyze(Analyze analyze);
 }
