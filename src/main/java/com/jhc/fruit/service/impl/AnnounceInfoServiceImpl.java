@@ -152,6 +152,10 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
             Long isReadInt = pickInfoVo.getIsRead();
             queryWrapper.eq(AnnounceInfo::getIsRead, isReadInt);
         }
+        //如果前端传过来salary，则将所有salary不等于null的都返回
+        if(pickInfoVo.getSalary() != null){
+            queryWrapper.ne(AnnounceInfo::getSalary, null);
+        }
         
         // 按时间倒序排列
         queryWrapper.orderByDesc(AnnounceInfo::getCreateTime);
