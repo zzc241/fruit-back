@@ -57,7 +57,7 @@ minio:
   bucket-name: fruit-bucket
 ai-api:
   aiCzm: http://192.168.123.94:8000
-  aiZen: http://172.16.0.204:8000
+  aiZen: http://192.168.123.94:5002
   aiAudio: http://192.168.123.94:5001
   aiCbh: http://192.168.123.94:8003
 txt:

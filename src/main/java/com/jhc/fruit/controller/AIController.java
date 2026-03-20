@@ -2,6 +2,7 @@ package com.jhc.fruit.controller;
 
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.AIWeeds;
+import com.jhc.fruit.entity.Analyze;
 import com.jhc.fruit.entity.ApiResponse;
 import com.jhc.fruit.entity.AudioRecognitionSuccess;
 import com.jhc.fruit.entity.vo.DisasterVo;
@@ -15,12 +16,7 @@ import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -113,10 +109,11 @@ public class AIController {
     }
 
     @ApiOperation("多光谱照片分析并返回建议")
-    @PostMapping(value = "/analyzePlus", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse analyzePlus(@RequestParam("images") List<MultipartFile> images) {
+    @PostMapping(value = "/analyzePlus/{orchardId}/{areaId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse analyzePlus(@RequestParam("images") List<MultipartFile> images, @PathVariable Long orchardId, @PathVariable Long areaId) {
         try {
-            return aiService.analyzeMultiSpectralImagesPlus(images);
+            ApiResponse apiResponse = aiService.analyzeMultiSpectralImagesPlus(images, orchardId, areaId);
+            return apiResponse;
         } catch (IllegalArgumentException e) {
             ApiResponse response = new ApiResponse();
             response.setCode(400);

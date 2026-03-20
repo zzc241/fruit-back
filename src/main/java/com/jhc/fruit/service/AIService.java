@@ -38,5 +38,5 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
 
     ApiResponse analyzeMultiSpectralImages(List<MultipartFile> images) throws IOException;
 
-    ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images);
+    ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images, Long orchardId, Long areaId) throws IOException;
 }
