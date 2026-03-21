@@ -258,4 +258,23 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             return null;
         }
     }
+
+    public List<ReportVo> selectByUserId(Long userId) { 
+        List<Report> reports = reportDao.selectByUserId(userId);
+
+        List<ReportVo> reportVos = new ArrayList<>();
+        for (Report report : reports) { 
+            ReportVo reportVo = new ReportVo();
+            Long id = report.getId();
+            //获取对应图片的临时访问url
+            BeanUtils.copyProperties(report, reportVo);
+
+            List<String> urls = getUrlsByType(id, reportVo.getTypeId());
+            //保存url
+            reportVo.setUrlList(urls);
+            reportVos.add(reportVo);
+        }
+
+        return reportVos;
+    }
 }
