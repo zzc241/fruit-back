@@ -87,5 +87,11 @@ public class ReportController {
     public R<String> saveWeedsImg(@RequestParam MultipartFile file) {
         return reportService.saveWeedsImg(file);
     }
+    @ApiOperation("通过userId查询报告")
+    @GetMapping("/selectByUserId/{userId}")
+    public R<List<ReportVo>> selectByUserId(@PathVariable Long userId) {
+        List<ReportVo> reportList = reportService.selectByUserId(userId);
+        return R.success(reportList);
+    }
 
 }

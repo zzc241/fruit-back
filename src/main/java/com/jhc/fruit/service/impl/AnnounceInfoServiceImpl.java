@@ -154,7 +154,7 @@ public class AnnounceInfoServiceImpl extends ServiceImpl<AnnounceInfoDao, Announ
         }
         //如果前端传过来salary，则将所有salary不等于null的都返回
         if(pickInfoVo.getSalary() != null){
-            queryWrapper.ne(AnnounceInfo::getSalary, null);
+            queryWrapper.isNotNull(AnnounceInfo::getSalary);
         }
         
         // 按时间倒序排列
