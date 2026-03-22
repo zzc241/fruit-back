@@ -26,6 +26,10 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+// ========== 新增：导入SSL相关依赖 ==========
+import okhttp3.OkHttpClient;
+import javax.net.ssl.*;
+import java.security.cert.X509Certificate;
 
 @Slf4j
 @Service
@@ -38,18 +42,60 @@ public class FileServiceImpl implements FileService {
     //全局单例MinioClient
     private final MinioClient minioClient;
 
-    //通过构造器注入 + @Autowired，保证MinioConfig加载完成后初始化MinioClient
+    //通过构造器注入 + @Autowired，保证MinIOConfig加载完成后初始化MinioClient
     // （Spring会先注入minioProperties，再执行构造函数）
     @Autowired
     public FileServiceImpl(MinioConfig minioProperties) {
         this.minioProperties = minioProperties;
+        // ========== 修改：初始化MinioClient时添加忽略SSL的HttpClient ==========
+        // 构建忽略SSL证书的OkHttpClient
+        OkHttpClient okHttpClient = getIgnoreSslOkHttpClient();
+
         // 初始化MinioClient（仅执行一次，全局复用）
         this.minioClient = MinioClient.builder()
                 .endpoint(minioProperties.getEndpoint())
                 .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .httpClient(okHttpClient) // 核心：添加忽略SSL的客户端
                 .build();
         log.info("MinioClient 单例初始化完成，Endpoint：{}", minioProperties.getEndpoint());
     }
+
+    // ========== 新增：忽略SSL证书验证的OkHttpClient构建方法 ==========
+    private OkHttpClient getIgnoreSslOkHttpClient() {
+        try {
+            // 1. 创建信任所有证书的TrustManager
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[0];
+                        }
+                    }
+            };
+
+            // 2. 初始化SSL上下文，信任所有证书
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            // 3. 创建忽略主机名验证的HostnameVerifier
+            HostnameVerifier trustAllHostnames = (hostname, session) -> true;
+
+            // 4. 构建OkHttpClient
+            return new OkHttpClient.Builder()
+                    .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0])
+                    .hostnameVerifier(trustAllHostnames)
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException("构建忽略SSL的OkHttpClient失败", e);
+        }
+    }
+
     /**
      * 上传图片到minio
      * @param file
@@ -380,7 +426,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * 解析MinIO临时访问URL，返回关键信息Map
-     * @param presignedUrl MinIO生成的预签名URL（如：http://192.168.123.92:9000/my-bucket/test.jpg?X-Amz-Algorithm=...&X-Amz-Expires=3600...）
+     * @param presignedUrl MinIO生成的预签名URL（如：https://192.168.123.92:9000/my-bucket/test.jpg?X-Amz-Algorithm=...&X-Amz-Expires=3600...）
      * @return 解析结果Map，key包含：
      *         - endpoint: MinIO服务地址（如http://192.168.123.92:9000）
      *         - bucket: 存储桶名称

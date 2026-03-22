@@ -693,10 +693,12 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             //剩下4张tif用于分析
             apiResponse = analyzeMultiSpectralImages(images);
             //通过返回的url获取tif图片
-            MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
+/*            MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
                     apiResponse.getData().getMergeImage().substring(
                             apiResponse.getData().getMergeImage().lastIndexOf("fruit-bucket/") + 13
-                    ));
+                    ));*/
+                        MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
+                    apiResponse.getData().getMergeImage());
 
             apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
             //保存数据
