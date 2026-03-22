@@ -1,13 +1,12 @@
 server:
   port: 3388
-  ssl:
-    key-store: classpath:private.jks
-    key-store-password: changeit
-    key-store-type: JKS
-    key-alias: private-cert               # 别名不变（只要生成时没改）
-    enabled: true
+#  ssl:
+#    key-store: classpath:private.jks
+#    key-store-password: changeit
+#    key-store-type: JKS
+#    key-alias: private-cert               # 别名不变（只要生成时没改）
+#    enabled: true
 spring:
-  port: 3388
   # Tomcat文件上传大小限制（核心）
   tomcat:
     max-swallow-size: 50MB  # 允许Tomcat接收的最大请求体大小

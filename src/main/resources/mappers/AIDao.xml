@@ -15,7 +15,7 @@
     </insert>
     <insert id="saveAnalyze">
         INSERT INTO `analyze` (orchard_id,nutrition_status, areaId, block_positions, spectral_indices, analysis_image, merge_image, analyze_suggestion)
-        VALUES (#{orchardId}, #{nutritionStatus}, #{areaId}, #{blockPositions}, #{spectralIndices}, #{analysisImage}, #{mergeImage}, #{analysisImage})
+        VALUES (#{orchardId}, #{nutritionStatus}, #{areaId}, #{blockPositions}, #{spectralIndices}, #{analysisImage}, #{mergeImage}, #{analyzeSuggestion})
     </insert>
     <select id="getCityByOrchardId" parameterType="java.lang.Long" resultType="java.lang.String">
         SELECT city

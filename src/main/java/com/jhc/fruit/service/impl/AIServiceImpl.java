@@ -706,6 +706,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             analyze.setAreaId(areaId);
             analyze.setOrchardId(orchardId);
             analyze.setAnalyzeSuggestion(apiResponse.getData().getAnalyzeSuggestion());
+            log.info("suggestion: {}", analyze.getAnalyzeSuggestion());
             analyze.setMergeImage(apiResponse.getData().getMergeImage());
             analyze.setAnalysisImage(apiResponse.getData().getAnalysisImage());
             analyze.setNutritionStatus(apiResponse.getData().getNutritionStatus());
