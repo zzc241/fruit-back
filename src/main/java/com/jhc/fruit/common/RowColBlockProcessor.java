@@ -1,5 +1,7 @@
 package com.jhc.fruit.common;
 
+import lombok.Data;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -148,6 +150,7 @@ public class RowColBlockProcessor {
     /**
      * 拆分结果封装，兼顾易用性和字符串转换
      */
+    @Data
     public static class SplitResult {
         private final int rowNum;    // 行号（纯数字）
         private final int colNum;    // 列号（纯数字）

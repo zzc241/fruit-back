@@ -148,6 +148,9 @@ public class EmployeeController {
             //如果没有设置过用户类型，默认用户为游客5
             employee.setIsAdmin(5);
         }
+        if (employee.getHeadImg() == null || "".equals(employee.getHeadImg())){
+            employee.setHeadImg("headImg/default.png");
+        }
         //设置创建时间（新增时创建时间和修改时间同步）
 //        employee.setCreateTime(LocalDateTime.now());
 //        employee.setUpdateTime(LocalDateTime.now());
