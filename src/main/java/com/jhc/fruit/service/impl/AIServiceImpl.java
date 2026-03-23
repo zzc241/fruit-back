@@ -12,10 +12,7 @@ import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.dao.AIDao;
 import com.jhc.fruit.entity.*;
-import com.jhc.fruit.entity.vo.AnalyzeVo;
-import com.jhc.fruit.entity.vo.DisasterVo;
-import com.jhc.fruit.entity.vo.DiseaseResponse;
-import com.jhc.fruit.entity.vo.MaturityResponse;
+import com.jhc.fruit.entity.vo.*;
 import com.jhc.fruit.service.AIService;
 import com.jhc.fruit.service.DisasterService;
 import com.jhc.fruit.service.FileService;
@@ -52,10 +49,11 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
     /**
      * 调用AI接口检测杂草
+     *
      * @param imageFile 待检测的图像文件
      * @return 解析后的检测结果
      */
-    public R<List<AIWeeds.WeedDetection>> AIWeed(MultipartFile imageFile) {
+    public R<AIWeedVo> AIWeed(MultipartFile imageFile) {
         StringBuffer sb = new StringBuffer();
         sb.append(aiConfig.getAiZen());
         sb.append("/predict");
@@ -79,7 +77,6 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             if (outputUrl.equals("err")) {
                 outputUrl = "ERROR.png";
             }
-            log.info("--test--:" + detectionResponse.getResult().getDetections());
             if (detectionResponse.getResult().getDetections() == null || detectionResponse.getResult().getDetections().isEmpty()) {
                 return R.error("识别失败，请上传包含杂草的图片");
             }
@@ -92,12 +89,41 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             });
 
             log.info("处理完成，识别结果图片路径:" + outputUrl);
+            AIWeedVo aiWeedVo = new AIWeedVo();
+            //杂草种类及其数量
+            List<Map<String, Integer>> classList = countClassWeed(detectionResponse.getResult().getDetections());
+            aiWeedVo.setClassCount(classList);
+            Double confidence = 0.0;
+            for(AIWeeds.WeedDetection detection : detectionResponse.getResult().getDetections()) {
+                confidence += detection.getConfidence();
+            }
+            //平均置信度
+            aiWeedVo.setConfidence(confidence/detectionResponse.getResult().getDetections().size());
+            //处理图像路径
+            aiWeedVo.setOutputImg(fileService.getImageUrl(outputUrl));
 
-            return R.success(detectionResponse.getResult().getDetections());
+            return R.success(aiWeedVo);
         } catch (Exception e) {
             log.info("解析杂草检测结果失败:", e);
             return R.error("解析杂草检测结果失败");
         }
+    }
+
+    //统计杂草种类和数量
+    private List<Map<String, Integer>> countClassWeed(List<AIWeeds.WeedDetection> detections) {
+        //统计杂草种类
+        if (detections == null || detections.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Map<String, Integer> map = new HashMap<>();
+        for (AIWeeds.WeedDetection detection : detections) {
+            String className = detection.getClassName();
+            map.put(className, map.getOrDefault(className, 0) + 1);
+        }
+
+        List<Map<String, Integer>> resultList = new ArrayList<>();
+        map.forEach((key, value) -> resultList.add((Map.of(key, value))));
+        return resultList;
     }
 
     /**

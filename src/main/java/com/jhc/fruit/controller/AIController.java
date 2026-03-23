@@ -5,10 +5,7 @@ import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.entity.Analyze;
 import com.jhc.fruit.entity.ApiResponse;
 import com.jhc.fruit.entity.AudioRecognitionSuccess;
-import com.jhc.fruit.entity.vo.AnalyzeVo;
-import com.jhc.fruit.entity.vo.DisasterVo;
-import com.jhc.fruit.entity.vo.DiseaseResponse;
-import com.jhc.fruit.entity.vo.MaturityResponse;
+import com.jhc.fruit.entity.vo.*;
 import com.jhc.fruit.service.AIService;
 import com.jhc.fruit.service.DisasterService;
 import io.swagger.annotations.Api;
@@ -33,7 +30,7 @@ public class AIController {
 
     @ApiOperation("杂草识别")
     @PostMapping("/YOLOv11Weed")
-    public R<List<AIWeeds.WeedDetection>> AIWeed(MultipartFile weedFile){
+    public R<AIWeedVo> AIWeed(MultipartFile weedFile){
         return aiService.AIWeed(weedFile);
     }
 

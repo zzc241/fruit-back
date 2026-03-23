@@ -5,10 +5,7 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.AIWeeds;
 import com.jhc.fruit.entity.ApiResponse;
 import com.jhc.fruit.entity.AudioRecognitionSuccess;
-import com.jhc.fruit.entity.vo.AnalyzeVo;
-import com.jhc.fruit.entity.vo.DisasterVo;
-import com.jhc.fruit.entity.vo.DiseaseResponse;
-import com.jhc.fruit.entity.vo.MaturityResponse;
+import com.jhc.fruit.entity.vo.*;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +14,7 @@ import java.util.List;
 
 public interface AIService extends IService<AIWeeds.WeedDetection> {
 
-    R<List<AIWeeds.WeedDetection>> AIWeed(MultipartFile weedFile);
+    R<AIWeedVo> AIWeed(MultipartFile weedFile);
 
     String AIWeedImg(String originalMinioPath,
                             String outputPrefix,
