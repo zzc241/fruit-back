@@ -226,6 +226,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         // 4. 直接返回响应内容
         return response;
     }
+
     public String analyzeWaterFertilizer(MultipartFile msFile, MultipartFile rgbFile) {
         String url = aiConfig.getAiCzm() + "/api/analyze-water-fertilizer";
 
@@ -456,7 +457,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
     @Override
     public ApiResponse analyzeMultiSpectralImages(List<MultipartFile> images) throws IOException {
-        // 1. 原有校验逻辑（保留）
+        // 1. 校验逻辑
         if (images == null || images.size() != 4) {
             throw new IllegalArgumentException("必须上传且仅上传4张多光谱图片，当前数量：" + (images == null ? 0 : images.size()));
         }
@@ -467,7 +468,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             }
         }
 
-        // 2. 构建第三方接口地址（保留）
+        // 2. 构建第三方接口地址
         String THIRD_PARTY_API_URL = aiConfig.getAiCbh() + "/analyze";
         if (THIRD_PARTY_API_URL == null || THIRD_PARTY_API_URL.trim().isEmpty()) {
             throw new RuntimeException("第三方接口地址为空，请检查AIConfig配置");
@@ -494,7 +495,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         Map<String, String> headers = new HashMap<>();
         String responseBody = httpUtil.doPostUploadMulti(THIRD_PARTY_API_URL, headers, fileParams);
 
-        // 6. 校验响应（保留）
+        // 6. 校验响应
         if (responseBody == null || responseBody.isEmpty()) {
             throw new RuntimeException("第三方接口返回空响应");
         }
@@ -692,11 +693,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             MultipartFile rgbFile = images.remove(4);
             //剩下4张tif用于分析
             apiResponse = analyzeMultiSpectralImages(images);
-            //通过返回的url获取tif图片
             MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
-                    apiResponse.getData().getMergeImage().substring(
-                            apiResponse.getData().getMergeImage().lastIndexOf("fruit-bucket/") + 13
-                    ));
+                    apiResponse.getData().getMergeImage());
 
             apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
             //保存数据
@@ -707,10 +705,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             analyze.setMergeImage(apiResponse.getData().getMergeImage());
             analyze.setAnalysisImage(apiResponse.getData().getAnalysisImage());
             analyze.setNutritionStatus(apiResponse.getData().getNutritionStatus());
-            analyze.setSpectralIndices(apiResponse.getData().getSpectralIndices());
-            analyze.setBlockPositions(apiResponse.getData().getBlockPositions().get(0));
-            log.info(analyze.getBlockPositions());
-            log.info(analyze.getSpectralIndices());
+            analyze.updateSpectralIndices(apiResponse.getData().getSpectralIndices());
+            analyze.updateBlockPositions(apiResponse.getData().getBlockPositions().get(0));
 
             aiDao.saveAnalyze(analyze);
         }catch (Exception e){
@@ -722,15 +718,16 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     @Override
     public R<List<AnalyzeVo>> getAnalyze(Long orchardId, Long areaId) {
         List<Analyze> analyzeList = aiDao.getAnalyze(orchardId,areaId);
+        log.info(analyzeList.toString());
         List<AnalyzeVo> voList = new ArrayList<>();
         for (Analyze analyze : analyzeList) {
             AnalyzeVo vo = new AnalyzeVo();
             vo.setAreaId(analyze.getAreaId());
             vo.setOrchardId(orchardId);
-            vo.setAnalysisImage(analyze.getAnalysisImage());
+            vo.setAnalysisImage(fileService.getImageUrl(analyze.getAnalysisImage()));
             vo.setNutritionStatus(analyze.getNutritionStatus());
             vo.setAnalyzeSuggestion(analyze.getAnalyzeSuggestion());
-            vo.setMergeImage(analyze.getMergeImage());
+            vo.setMergeImage(fileService.getImageUrl(analyze.getMergeImage()));
             vo.setNutritionStatus(analyze.getNutritionStatus());
             vo.setBlockPositions(analyze.getBlockPositions());
             vo.setSpectralIndices(analyze.getSpectralIndices());

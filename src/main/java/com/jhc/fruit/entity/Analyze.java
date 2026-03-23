@@ -28,7 +28,7 @@ public class Analyze {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime createTime;
 
-    public void setSpectralIndices(FullIndicesMean fullIndicesMean) {
+    public void updateSpectralIndices(FullIndicesMean fullIndicesMean) {
         this.spectralIndices = toJsonByGson(fullIndicesMean);
     }
 
@@ -47,7 +47,7 @@ public class Analyze {
         return gson.toJson(object);
     }
 
-    public void setBlockPositions(BlockPosition blockPosition){
+    public void updateBlockPositions(BlockPosition blockPosition){
         this.blockPositions = toJsonByGson(blockPosition);
     }
 
