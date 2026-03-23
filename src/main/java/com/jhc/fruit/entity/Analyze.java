@@ -2,6 +2,7 @@ package com.jhc.fruit.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,6 +11,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@TableName("analyze")
 @Data
 public class Analyze {
     private Long id;
