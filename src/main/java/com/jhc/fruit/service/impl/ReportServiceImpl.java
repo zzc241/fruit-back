@@ -1,5 +1,7 @@
 package com.jhc.fruit.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.ReportDao;
@@ -276,5 +278,21 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         }
 
         return reportVos;
+    }
+
+    @Override
+    public R<List<ReportVo>> getByTree(Long treeId) {
+        LambdaQueryWrapper<Report> queryWrapper = new LambdaQueryWrapper<Report>();
+        queryWrapper.eq(Report::getTreeId, treeId);
+        List<Report> reports = reportDao.selectList(queryWrapper);
+        List<ReportVo> reportVos = new ArrayList<>();
+        for (Report report : reports) {
+            ReportVo reportVo = new ReportVo();
+            BeanUtils.copyProperties(report, reportVo);
+            List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
+            reportVo.setUrlList(fileService.getImageUrls(urls));
+            reportVos.add(reportVo);
+        }
+        return R.success(reportVos);
     }
 }

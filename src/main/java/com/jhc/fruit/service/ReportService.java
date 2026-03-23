@@ -29,4 +29,6 @@ public interface ReportService extends IService<Report> {
     R<String> saveWeedsImg(MultipartFile file);
 
     List<ReportVo> selectByUserId(Long userId);
+
+    R<List<ReportVo>> getByTree(Long treeId);
 }
