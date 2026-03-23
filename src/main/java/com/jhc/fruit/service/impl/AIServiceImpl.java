@@ -79,6 +79,10 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             if (outputUrl.equals("err")) {
                 outputUrl = "ERROR.png";
             }
+            log.info("--test--:" + detectionResponse.getResult().getDetections());
+            if (detectionResponse.getResult().getDetections() == null || detectionResponse.getResult().getDetections().isEmpty()) {
+                return R.error("识别失败，请上传包含杂草的图片");
+            }
             //保存识别结果
             aiDao.save(detectionResponse.getResult().getDetections(), originUrl, outputUrl);
             String finalOutputUrl = outputUrl;
@@ -91,7 +95,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
             return R.success(detectionResponse.getResult().getDetections());
         } catch (Exception e) {
-            throw new RuntimeException("解析杂草检测结果失败", e);
+            log.info("解析杂草检测结果失败:", e);
+            return R.error("解析杂草检测结果失败");
         }
     }
 
