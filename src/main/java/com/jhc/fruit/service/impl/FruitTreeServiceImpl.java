@@ -237,9 +237,9 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     }
 
     @Override
-    public R<List<FruitTreeVo>> getByTask(Long orchardId, String type) {
+    public R<List<FruitTreeVo>> getByTask(Long orchardId, String type, Long empId) {
         //找出相关果树
-        List<FruitTree> fruitTreeList = fruitTreeDao.selectByTaskType(orchardId, type);
+        List<FruitTree> fruitTreeList = fruitTreeDao.selectByTaskType(orchardId, type, empId);
         List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
         for (FruitTree fruitTree : fruitTreeList) {
             FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);

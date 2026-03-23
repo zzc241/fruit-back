@@ -104,8 +104,8 @@ public class TaskController {
     }
 
     @ApiOperation("获取类型任务列表")
-    @GetMapping("/getTypeTask/{orchardId}/{type}")
-    public R<List<TaskVo>> getTypeTask(@PathVariable Long orchardId, @PathVariable String type) {
-        return taskService.getTypeTask(orchardId, type);
+    @GetMapping("/getTypeTask/{orchardId}/{type}/{empId}")
+    public R<List<TaskVo>> getTypeTask(@PathVariable Long orchardId, @PathVariable String type, @PathVariable Long empId) {
+        return taskService.getTypeTask(orchardId, type, empId);
     }
 }

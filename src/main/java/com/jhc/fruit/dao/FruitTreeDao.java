@@ -51,7 +51,7 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
 
     Integer countType(Long orchardId, Long typeId);
 
-    List<FruitTree> selectByTaskType(Long orchardId, String type);
+    List<FruitTree> selectByTaskType(Long orchardId, String type, Long empId);
 
     Integer getRipeSum(Long orchardId, Long typeId);
 

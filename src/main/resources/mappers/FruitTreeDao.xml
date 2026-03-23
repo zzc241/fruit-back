@@ -135,7 +135,9 @@
             (task.tree_id IS NULL AND fruit_tree.area_id = task.area_id)
             -- 关联area_info
                  JOIN area_info ON fruit_tree.area_id = area_info.id
+                 JOIN employee ON emp_id = area_info.emp_id
         WHERE task.orchard_id = #{orchardId}
+          AND employee.id = #{empId}
           AND task.task_type = #{type}
           AND task.status = 1
     </select>

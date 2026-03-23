@@ -361,8 +361,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     }
 
     @Override
-    public R<List<TaskVo>> getTypeTask(Long orchardId, String type) {
-        List<Task> tasks = taskDao.getTaskByType(orchardId, type);
+    public R<List<TaskVo>> getTypeTask(Long orchardId, String type, Long empId) {
+        List<Task> tasks = taskDao.getTaskByType(orchardId, type, empId);
         List<TaskVo> taskVos = new ArrayList<>();
         for (Task task : tasks) {
             taskVos.add(taskToVo(task));

@@ -268,8 +268,8 @@ public class FruitTreeController {
 
     @ApiOperation("根据任务类型和果园id查询果树")
     @GetMapping("/getByTask")
-    public R<List<FruitTreeVo>> getByTask(@RequestParam Long orchardId, @RequestParam String type){
-        return fruitTreeService.getByTask(orchardId, type);
+    public R<List<FruitTreeVo>> getByTask(@RequestParam Long orchardId, @RequestParam String type, @RequestParam Long empId){
+        return fruitTreeService.getByTask(orchardId, type, empId);
     }
 
     @ApiOperation("统计各个品种熟果率")

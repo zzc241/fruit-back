@@ -38,5 +38,5 @@ public interface TaskService extends IService<Task> {
 
     R<List<TaskVo>> getMyTask(Long orchardId, Long empId);
 
-    R<List<TaskVo>> getTypeTask(Long orchardId, String type);
+    R<List<TaskVo>> getTypeTask(Long orchardId, String type, Long empId);
 }

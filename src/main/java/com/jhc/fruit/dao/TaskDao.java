@@ -28,5 +28,5 @@ public interface TaskDao extends BaseMapper<Task> {
 
     List<Task> getMyTask(Long orchardId, Long empId);
 
-    List<Task> getTaskByType(Long orchardId, String type);
+    List<Task> getTaskByType(Long orchardId, String type,Long empId);
 }
