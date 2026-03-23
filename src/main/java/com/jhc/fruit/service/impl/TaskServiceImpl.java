@@ -188,7 +188,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         
         // 查询1：基于 taskIds
         List<Long> taskIds = tasks.stream().map(Task::getId).collect(Collectors.toList());
-        if (!taskIds.isEmpty()) {  // ⭐ 关键：只有非空才添加 IN 条件
+        if (!taskIds.isEmpty()) {  // 关键：只有非空才添加 IN 条件
             LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.in(Task::getId, taskIds);
             if (taskVo.getStatus() != null) {
@@ -347,5 +347,26 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         }
         ownTaskVo.setFertCount(fertCount);
         return R.success(ownTaskVo);
+    }
+
+    @Override
+    public R<List<TaskVo>> getMyTask(Long orchardId, Long empId) {
+        List<Task> tasks = new ArrayList<>();
+        tasks = taskDao.getMyTask(orchardId, empId);
+        List<TaskVo> taskVos = new ArrayList<>();
+        for (Task task : tasks) {
+            taskVos.add(taskToVo(task));
+        }
+        return R.success(taskVos);
+    }
+
+    @Override
+    public R<List<TaskVo>> getTypeTask(Long orchardId, String type) {
+        List<Task> tasks = taskDao.getTaskByType(orchardId, type);
+        List<TaskVo> taskVos = new ArrayList<>();
+        for (Task task : tasks) {
+            taskVos.add(taskToVo(task));
+        }
+        return R.success(taskVos);
     }
 }

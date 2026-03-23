@@ -96,5 +96,16 @@ public class TaskController {
     public R<OwnTaskVo> getOwnTask(@PathVariable Long empId) {
         return taskService.getOwnTask(empId);
     }
-    
+
+    @ApiOperation("获取个人任务列表")
+    @GetMapping("/getMyTask/{orchardId}/{empId}")
+    public R<List<TaskVo>> getMyTask(@PathVariable Long orchardId, @PathVariable Long empId) {
+        return taskService.getMyTask(orchardId, empId);
+    }
+
+    @ApiOperation("获取类型任务列表")
+    @GetMapping("/getTypeTask/{orchardId}/{type}")
+    public R<List<TaskVo>> getTypeTask(@PathVariable Long orchardId, @PathVariable String type) {
+        return taskService.getTypeTask(orchardId, type);
+    }
 }

@@ -25,4 +25,8 @@ public interface TaskDao extends BaseMapper<Task> {
     List<String> getpesticideType(Long empId);
 
     Double getPesticideUseCount(Long empId, String pesticideType);
+
+    List<Task> getMyTask(Long orchardId, Long empId);
+
+    List<Task> getTaskByType(Long orchardId, String type);
 }

@@ -60,4 +60,20 @@
           AND fert_water.brand = #{pesticideType}
           AND fert_water.tree_id = task.tree_id
     </select>
+    <select id="getMyTask" resultType="com.jhc.fruit.entity.Task">
+        SELECT task.*
+        FROM task
+                 INNER JOIN area_info ON task.area_id = area_info.id
+                 INNER JOIN employee ON area_info.emp_id = employee.id
+        WHERE task.orchard_id = #{orchardId}
+          AND employee.id = #{empId}
+    </select>
+    <select id="getTaskByType" resultType="com.jhc.fruit.entity.Task">
+        SELECT task.*
+        FROM task
+                 INNER JOIN area_info ON task.area_id = area_info.id
+                 INNER JOIN employee ON area_info.emp_id = employee.id
+        WHERE task.orchard_id = #{orchardId}
+          AND task_type = #{type}
+    </select>
 </mapper>
