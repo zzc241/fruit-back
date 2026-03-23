@@ -8,6 +8,7 @@ import com.jhc.fruit.entity.vo.TaskVo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zyr
@@ -39,4 +40,6 @@ public interface TaskService extends IService<Task> {
     R<List<TaskVo>> getMyTask(Long orchardId, Long empId);
 
     R<List<TaskVo>> getTypeTask(Long orchardId, String type, Long empId);
+
+    R<List<Map<String, Integer>>> getTaskType(Long empId);
 }

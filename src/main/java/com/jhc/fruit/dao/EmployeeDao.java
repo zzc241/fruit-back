@@ -9,4 +9,6 @@ public interface EmployeeDao extends BaseMapper<Employee> {
     Integer statisticsEmployee(Long orchardId);
 
     Integer statisticsAreaEmployee(Long areaId);
+
+    Long selectAreaId(Long id);
 }

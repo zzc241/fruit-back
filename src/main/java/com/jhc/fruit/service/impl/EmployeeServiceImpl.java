@@ -247,6 +247,10 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
         if(employee.getStatus() != 1){
             return R.error("员工状态被禁用");
         }
+        //获取负责的区域
+        if(employee.getIsAdmin() == 3){
+            employee.setAreaId(employeeDao.selectAreaId(employee.getId()));
+        }
 
         //登录成功，将用户id存入Session
         request.getSession().setAttribute("employee",employee.getId());

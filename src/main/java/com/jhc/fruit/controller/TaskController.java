@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ：zyr
@@ -103,9 +104,15 @@ public class TaskController {
         return taskService.getMyTask(orchardId, empId);
     }
 
-    @ApiOperation("获取类型任务列表")
+    @ApiOperation("获取指定类型任务列表")
     @GetMapping("/getTypeTask/{orchardId}/{type}/{empId}")
     public R<List<TaskVo>> getTypeTask(@PathVariable Long orchardId, @PathVariable String type, @PathVariable Long empId) {
         return taskService.getTypeTask(orchardId, type, empId);
+    }
+
+    @ApiOperation("获取未完成的任务类型")
+    @GetMapping("/getTaskType/{empId}")
+    public R<List<Map<String, Integer>>> getTaskType(@PathVariable Long empId) {
+        return taskService.getTaskType(empId);
     }
 }

@@ -16,4 +16,9 @@
           AND empgroup_emp.emp_id = employee.id
           AND employee.is_admin IN (3, 6)
     </select>
+    <select id="selectAreaId" resultType="java.lang.Long">
+        SELECT area_info.id
+        FROM area_info
+        WHERE area_info.emp_id = #{id}
+    </select>
 </mapper>

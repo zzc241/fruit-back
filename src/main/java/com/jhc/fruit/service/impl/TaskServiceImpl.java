@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.AreaDao;
+import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.dao.TaskDao;
-import com.jhc.fruit.entity.EmpGroup;
-import com.jhc.fruit.entity.Task;
-import com.jhc.fruit.entity.TaskImg;
+import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.OwnTaskVo;
 import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.EmpGroupService;
@@ -42,24 +41,50 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     private EmpGroupService empGroupService;
     @Autowired
     private AreaDao areaDao;
+    @Autowired
+    private EmployeeDao employeeDao;
 
     /*新增任务*/
     @Override
     public Long addTask(TaskVo taskVo) {
         try {
             Task task = voToTask(taskVo);
-            //设置创建时间
-            this.save(task);
-            Long id = task.getId();
-            List<String> img = taskVo.getImgsURL();
-            Iterator<String> iterator = img.iterator();
-            while (iterator.hasNext()) {
-                String imgUrl = iterator.next();
-                TaskImg taskImg = new TaskImg();
-                taskImg.setImg(imgUrl);
-                taskImg.setTaskId(id);
-                taskImgService.addTaskImg(taskImg);
+            //设置了区域范围任务
+            if (task.getTreeId() == null && task.getAreaId() != null) {
+                List<FruitTree> treeList = taskDao.getTreeByAreaId(task.getAreaId());
+                for (FruitTree fruitTree : treeList) {
+                    Task taskArea = new Task();
+                    BeanUtils.copyProperties(task, taskArea);
+                    taskArea.setTreeId(fruitTree.getId());
+                    this.taskDao.insert(taskArea);
+                    //保存任务图片
+                    Long id = task.getId();
+                    List<String> img = taskVo.getImgsURL();
+                    Iterator<String> iterator = img.iterator();
+                    while (iterator.hasNext()) {
+                        String imgUrl = iterator.next();
+                        TaskImg taskImg = new TaskImg();
+                        taskImg.setImg(imgUrl);
+                        taskImg.setTaskId(id);
+                        taskImgService.addTaskImg(taskImg);
+                    }
+                }
+            }else {
+                //设置创建时间
+                this.save(task);
+                Long id = task.getId();
+                List<String> img = taskVo.getImgsURL();
+                Iterator<String> iterator = img.iterator();
+                while (iterator.hasNext()) {
+                    String imgUrl = iterator.next();
+                    TaskImg taskImg = new TaskImg();
+                    taskImg.setImg(imgUrl);
+                    taskImg.setTaskId(id);
+                    taskImgService.addTaskImg(taskImg);
+                }
             }
+
+
             //判断前端是否传回员工组id
             if(taskVo.getEmpIds() != null){
                 //如果返回员工组id，则创建一个groupId
@@ -368,5 +393,22 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
             taskVos.add(taskToVo(task));
         }
         return R.success(taskVos);
+    }
+
+    @Override
+    public R<List<Map<String, Integer>>> getTaskType(Long empId) {
+        Employee employee = employeeDao.selectById(empId);
+        //获取个人的所有任务
+        R<List<TaskVo>> taskVos = getMyTask(employee.getOrchardId(), empId);
+        List<TaskVo> taskVoList = taskVos.getData();
+        //统计类型以及未完成的数量
+        Map<String, Integer> map = new HashMap<>();
+        for (TaskVo taskVo : taskVoList) {
+            String type = taskVo.getTaskType();
+            map.put(type, map.getOrDefault(type, 0) + 1);
+        }
+        List<Map<String, Integer>> resultList = new ArrayList<>();
+        map.forEach((key, value) -> resultList.add((Map.of(key, value))));
+        return R.success(resultList);
     }
 }

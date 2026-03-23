@@ -23,7 +23,6 @@
         FROM task, empgroup_emp
         WHERE empgroup_emp.emp_id = #{empId}
           AND empgroup_emp.group_id = task.group_id
-          AND task.status = 2
           AND task_type = #{type}
     </select>
     <select id="getFertType" resultType="java.lang.String">
@@ -31,7 +30,6 @@
         FROM task, empgroup_emp, fert_water
         WHERE empgroup_emp.emp_id = #{empId}
           AND empgroup_emp.group_id = task.group_id
-          AND task.status = 2
           AND fert_water.type = 2
     </select>
     <select id="getfertUseCount" resultType="java.lang.Double">
@@ -48,7 +46,6 @@
         FROM task, empgroup_emp, fert_water
         WHERE empgroup_emp.emp_id = #{empId}
           AND empgroup_emp.group_id = task.group_id
-          AND task.status = 2
           AND fert_water.type = 3
     </select>
     <select id="getPesticideUseCount" resultType="java.lang.Double">
@@ -56,7 +53,6 @@
         FROM task, empgroup_emp, fert_water
         WHERE empgroup_emp.emp_id = #{empId}
           AND empgroup_emp.group_id = task.group_id
-          AND task.status = 2
           AND fert_water.brand = #{pesticideType}
           AND fert_water.tree_id = task.tree_id
     </select>
@@ -67,6 +63,7 @@
                  INNER JOIN employee ON area_info.emp_id = employee.id
         WHERE task.orchard_id = #{orchardId}
           AND employee.id = #{empId}
+          AND task.status = 1
     </select>
     <select id="getTaskByType" resultType="com.jhc.fruit.entity.Task">
         SELECT task.*
@@ -76,5 +73,12 @@
         WHERE task.orchard_id = #{orchardId}
           AND employee.id = #{empId}
           AND task_type = #{type}
+          AND task.status = 1
+    </select>
+    <select id="getTreeByAreaId" resultType="com.jhc.fruit.entity.FruitTree">
+        SELECT fruit_tree.*
+        FROM fruit_tree, area_info
+        WHERE area_info.id = #{areaId}
+          AND fruit_tree.area_id = area_info.id
     </select>
 </mapper>
