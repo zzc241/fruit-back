@@ -705,8 +705,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             analyze.setMergeImage(apiResponse.getData().getMergeImage());
             analyze.setAnalysisImage(apiResponse.getData().getAnalysisImage());
             analyze.setNutritionStatus(apiResponse.getData().getNutritionStatus());
-            analyze.setSpectralIndices(apiResponse.getData().getSpectralIndices());
-            analyze.setBlockPositions(apiResponse.getData().getBlockPositions().get(0));
+            analyze.updateSpectralIndices(apiResponse.getData().getSpectralIndices());
+            analyze.updateBlockPositions(apiResponse.getData().getBlockPositions().get(0));
 
             aiDao.saveAnalyze(analyze);
         }catch (Exception e){
@@ -718,15 +718,16 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     @Override
     public R<List<AnalyzeVo>> getAnalyze(Long orchardId, Long areaId) {
         List<Analyze> analyzeList = aiDao.getAnalyze(orchardId,areaId);
+        log.info(analyzeList.toString());
         List<AnalyzeVo> voList = new ArrayList<>();
         for (Analyze analyze : analyzeList) {
             AnalyzeVo vo = new AnalyzeVo();
             vo.setAreaId(analyze.getAreaId());
             vo.setOrchardId(orchardId);
-            vo.setAnalysisImage(analyze.getAnalysisImage());
+            vo.setAnalysisImage(fileService.getImageUrl(analyze.getAnalysisImage()));
             vo.setNutritionStatus(analyze.getNutritionStatus());
             vo.setAnalyzeSuggestion(analyze.getAnalyzeSuggestion());
-            vo.setMergeImage(analyze.getMergeImage());
+            vo.setMergeImage(fileService.getImageUrl(analyze.getMergeImage()));
             vo.setNutritionStatus(analyze.getNutritionStatus());
             vo.setBlockPositions(analyze.getBlockPositions());
             vo.setSpectralIndices(analyze.getSpectralIndices());
