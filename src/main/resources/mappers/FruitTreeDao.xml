@@ -184,6 +184,7 @@
                  JOIN area_info ON fruit_tree.area_id = area_info.id
         WHERE task.area_id = #{areaId}
         AND (task.tree_id IS NULL OR task.tree_id = #{treeId})
+        AND status = 1
         GROUP BY task.id
     </select>
 </mapper>
