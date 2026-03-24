@@ -31,14 +31,14 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss.SSS
     time-zone: GMT+8
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
 #   RabbitMQ 核心配置
   rabbitmq:
     host: 192.168.123.92  # RabbitMQ 服务器地址（默认localhost）
     port: 5672       # 默认端口
-    username: guest  # 默认用户名（本地开发用guest即可）
-    password: guest  # 默认密码
+    username: rc  # 默认用户名（本地开发用guest即可）
+    password: 123456  # 默认密码
     virtual-host: /  # 虚拟主机（默认/）
     # 可选：连接池配置（提升性能）
     connection-timeout: 15000  # 连接超时时间
@@ -54,7 +54,7 @@ spring:
   redis:
     host: 192.168.123.92
     port: 6379
-    password:  # 本地Redis默认无密码
+    password: 123456 # 本地Redis默认无密码
     database: 0
     timeout: 10000
 

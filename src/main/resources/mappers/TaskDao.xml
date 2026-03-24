@@ -81,4 +81,14 @@
         WHERE area_info.id = #{areaId}
           AND fruit_tree.area_id = area_info.id
     </select>
+    <select id="getOrchardName" resultType="java.lang.String">
+        SELECT orchard.name
+        FROM orchard
+        WHERE orchard.id = #{orchardId}
+    </select>
+    <select id="getReceiverName" resultType="java.lang.String">
+        SELECT employee.name
+        FROM employee
+        WHERE id = #{receiverId}
+    </select>
 </mapper>

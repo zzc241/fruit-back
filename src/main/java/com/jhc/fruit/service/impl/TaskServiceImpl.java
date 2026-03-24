@@ -86,14 +86,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
 
 
             //判断前端是否传回员工组id
-            if(taskVo.getEmpIds() != null){
-                //如果返回员工组id，则创建一个groupId
-                EmpGroup empGroup = new EmpGroup();
-                empGroup.setGroupName(taskVo.getGroupName());
-                empGroup.setDescription(taskVo.getGroupDescription());
-                Long groupId = empGroupService.saveEmpGroup(taskVo.getEmpIds() , empGroup);
-                task.setGroupId(groupId);
-                return groupId;
+            if(taskVo.getReceiverId() != null){
+                task.setReceiverId(taskVo.getReceiverId());
             }
             return taskVo.getOrchardId();
             
@@ -285,7 +279,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
             priorityName = "紧急任务";
         }
         taskVo.setPriority(priorityName);
-
+        taskVo.setOrchardName(taskDao.getOrchardName(task.getOrchardId()));
+        taskVo.setReceiverName(taskDao.getReceiverName(task.getReceiverId()));
         taskVo.setUsername(
                 employeeService.getEmpNameById(
                         task.getCreatorId()));

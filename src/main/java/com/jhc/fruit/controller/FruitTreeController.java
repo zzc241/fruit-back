@@ -174,7 +174,8 @@ public class FruitTreeController {
         //按区域id查询果树
         LambdaQueryWrapper<FruitTree> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(FruitTree::getAreaId, areaId);
-        queryWrapper.orderByDesc(FruitTree::getCreateTime); 
+        queryWrapper.orderByDesc(FruitTree::getCreateTime);
+        queryWrapper.orderByAsc(FruitTree::getId);
         List<FruitTree> fruitTreeList = fruitTreeService.list(queryWrapper);
         if(fruitTreeList == null && fruitTreeList.size() == 0){
             return R.error("查找失败");

@@ -75,4 +75,7 @@ public class Task {
     private Integer priority;
     @ApiModelProperty("失败原因")
     private String failure;
+    private Double salary;
+    @ApiModelProperty(value = "接收者id")
+    private Long receiverId;
 }

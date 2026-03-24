@@ -79,6 +79,9 @@ public class TaskVo {
 
     @ApiModelProperty(value = "接收者id")
     private Long receiverId;
+    @ApiModelProperty(value = "接收者名称")
+    private String receiverName;
     @ApiModelProperty("优先级（0日常任务，1紧急任务）")
     private String priority;
+    private Double salary;
 }
