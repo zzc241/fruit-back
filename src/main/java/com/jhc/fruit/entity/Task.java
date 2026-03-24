@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 @Data
 @ApiModel(value = "任务表")
 public class Task {
-    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "任务id")
     private Long id;
     @ApiModelProperty(value = "创建人id")

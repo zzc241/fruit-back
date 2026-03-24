@@ -49,48 +49,24 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     public Long addTask(TaskVo taskVo) {
         try {
             Task task = voToTask(taskVo);
-            //设置了区域范围任务
-            if (task.getTreeId() == null && task.getAreaId() != null) {
-                List<FruitTree> treeList = taskDao.getTreeByAreaId(task.getAreaId());
-                for (FruitTree fruitTree : treeList) {
-                    Task taskArea = new Task();
-                    BeanUtils.copyProperties(task, taskArea);
-                    taskArea.setTreeId(fruitTree.getId());
-                    this.taskDao.insert(taskArea);
-                    //保存任务图片
-                    Long id = task.getId();
-                    List<String> img = taskVo.getImgsURL();
-                    Iterator<String> iterator = img.iterator();
-                    while (iterator.hasNext()) {
-                        String imgUrl = iterator.next();
-                        TaskImg taskImg = new TaskImg();
-                        taskImg.setImg(imgUrl);
-                        taskImg.setTaskId(id);
-                        taskImgService.addTaskImg(taskImg);
-                    }
-                }
-            }else {
-                //设置创建时间
-                this.save(task);
-                Long id = task.getId();
-                List<String> img = taskVo.getImgsURL();
-                Iterator<String> iterator = img.iterator();
-                while (iterator.hasNext()) {
-                    String imgUrl = iterator.next();
-                    TaskImg taskImg = new TaskImg();
-                    taskImg.setImg(imgUrl);
-                    taskImg.setTaskId(id);
-                    taskImgService.addTaskImg(taskImg);
-                }
+            //设置创建时间
+            this.save(task);
+            Long id = task.getId();
+            List<String> img = taskVo.getImgsURL();
+            Iterator<String> iterator = img.iterator();
+            while (iterator.hasNext()) {
+                String imgUrl = iterator.next();
+                TaskImg taskImg = new TaskImg();
+                taskImg.setImg(imgUrl);
+                taskImg.setTaskId(id);
+                taskImgService.addTaskImg(taskImg);
             }
-
-
             //判断前端是否传回员工组id
             if(taskVo.getReceiverId() != null){
                 task.setReceiverId(taskVo.getReceiverId());
             }
             return taskVo.getOrchardId();
-            
+
         }catch (Exception e){
             log.error(e.getMessage());
             throw new RuntimeException(e);
