@@ -59,7 +59,7 @@
     <select id="getMyTask" resultType="com.jhc.fruit.entity.Task">
         SELECT task.*
         FROM task
-                 INNER JOIN area_info ON task.area_id = area_info.id
+                 INNER JOIN area_info ON task.orchard_id = area_info.orchard_id
                  INNER JOIN employee ON area_info.emp_id = employee.id
         WHERE task.orchard_id = #{orchardId}
           AND employee.id = #{empId}

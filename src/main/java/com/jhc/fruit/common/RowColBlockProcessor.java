@@ -13,6 +13,7 @@ import java.util.Objects;
  * 2. 区块格式：1→A，26→Z，27→AA，28→AB...（支持Long类型输入）
  * 3. 拆分：提取纯数字行列号，区块保留字母
  * 4. 组合：数字+区块 → 字母+数字格式的行列-区块字符串
+ * 5. 新增：区域ID数字转顺序字母（1→A,2→B,26→Z,27→AA）
  */
 public class RowColBlockProcessor {
 
@@ -21,6 +22,7 @@ public class RowColBlockProcessor {
 
     /**
      * 拆分行列区块数据（格式如：B01-C01-A）
+     * 【优化】去除字母校验，仅提取纯数字行列号
      * @param rowColBlockStr 行列区块组合字符串（行-列-区块）
      * @return 拆分结果对象，包含：行号(纯数字)、列号(纯数字)、区块字母
      */
@@ -34,9 +36,9 @@ public class RowColBlockProcessor {
             throw new IllegalArgumentException("格式错误，正确格式应为：行-列-区块（如B01-C01-A），当前值：" + rowColBlockStr);
         }
 
-        // 解析行（如B01 → 2）、列（如C01 → 3），提取纯数字
-        int rowNum = parseAlphaNumToNumber(parts[0].trim());
-        int colNum = parseAlphaNumToNumber(parts[1].trim());
+        // 【优化】直接提取纯数字，去除字母逻辑
+        int rowNum = extractPureNumber(parts[0].trim());
+        int colNum = extractPureNumber(parts[1].trim());
         // 区块直接提取（如A），统一转大写
         String block = parts[2].trim().toUpperCase();
 
@@ -63,7 +65,7 @@ public class RowColBlockProcessor {
         String rowStr = parseNumberToAlphaNum(rowNum);
         String colStr = parseNumberToAlphaNum(colNum);
         // 组合为 行-列-区块 格式
-        return String.format("%s-%s-%s", rowStr, colStr, block.trim().toUpperCase());
+        return String.format("%s-%s-%s", rowStr, colNum, block.trim().toUpperCase());
     }
 
     /**
@@ -82,40 +84,56 @@ public class RowColBlockProcessor {
             if (Objects.isNull(num) || num < 1) {
                 throw new IllegalArgumentException("区块编号必须为正整数，第" + (i+1) + "个值：" + num);
             }
-            result[i] = numberToAlpha(num.intValue()); // 转换为字母（支持Long→int，因26进制递增足够覆盖常规场景）
+            result[i] = numberToAlpha(num.intValue());
+        }
+        return result;
+    }
+
+    // ===================== 新增方法 =====================
+    /**
+     * 【新增】区域ID数字转顺序字母编号（核心需求）
+     * 输入：1→A, 2→B, ...,26→Z,27→AA,28→AB
+     * @param areaId 区域ID（正整数）
+     * @return 字母编号
+     */
+    public static String areaIdToLetter(int areaId) {
+        if (areaId < 1) {
+            throw new IllegalArgumentException("区域ID必须为正整数，当前值：" + areaId);
+        }
+        return numberToAlpha(areaId);
+    }
+
+    /**
+     * 【新增】批量区域ID转字母编号
+     * @param areaIds 区域ID数组
+     * @return 字母数组（顺序与输入一致）
+     */
+    public static String[] areaIdsToLetters(int... areaIds) {
+        if (Objects.isNull(areaIds) || areaIds.length == 0) {
+            throw new IllegalArgumentException("区域ID数组不能为空");
+        }
+        String[] result = new String[areaIds.length];
+        for (int i = 0; i < areaIds.length; i++) {
+            result[i] = areaIdToLetter(areaIds[i]);
         }
         return result;
     }
 
     // ===================== 私有辅助方法 =====================
+
     /**
-     * 辅助：字母+数字 → 纯数字（如A01→1，K11→11，AA27→27）
+     * 【新增辅助】从字符串中提取纯数字（去除所有非数字字符）
      */
-    private static int parseAlphaNumToNumber(String alphaNumStr) {
-        if (Objects.isNull(alphaNumStr) || alphaNumStr.trim().isEmpty()) {
-            throw new IllegalArgumentException("字母数字字符串不能为空");
+    private static int extractPureNumber(String str) {
+        if (Objects.isNull(str) || str.trim().isEmpty()) {
+            throw new IllegalArgumentException("字符串不能为空");
         }
-
-        // 分离字母和数字部分
-        StringBuilder alphaPart = new StringBuilder();
-        StringBuilder numPart = new StringBuilder();
-        for (char c : alphaNumStr.toCharArray()) {
-            if (Character.isLetter(c)) {
-                alphaPart.append(Character.toUpperCase(c));
-            } else if (Character.isDigit(c)) {
-                numPart.append(c);
-            } else {
-                throw new IllegalArgumentException("包含非法字符，仅支持字母和数字：" + alphaNumStr);
-            }
+        // 正则匹配所有数字字符
+        String numStr = str.replaceAll("[^0-9]", "");
+        if (numStr.isEmpty()) {
+            throw new IllegalArgumentException("未提取到有效数字：" + str);
         }
-
-        // 校验必填部分
-        if (alphaPart.length() == 0 || numPart.length() == 0) {
-            throw new IllegalArgumentException("格式错误，必须包含字母+数字（如A01）：" + alphaNumStr);
-        }
-
-        // 字母部分仅用于验证（保证格式合法），最终返回数字部分的纯数值（去前导0）
-        return Integer.parseInt(numPart.toString());
+        return Integer.parseInt(numStr);
     }
 
     /**
@@ -125,7 +143,6 @@ public class RowColBlockProcessor {
         if (number < 1) {
             throw new IllegalArgumentException("数字必须为正整数：" + number);
         }
-        // 数字转26进制字母（1→A，11→K，27→AA） + 原数字（保留序号）
         String alphaPart = numberToAlpha(number);
         return alphaPart + number;
     }
@@ -139,7 +156,7 @@ public class RowColBlockProcessor {
         }
         StringBuilder sb = new StringBuilder();
         while (number > 0) {
-            number--; // 调整为0开始（A对应0，Z对应25）
+            number--;
             sb.append((char) ('A' + number % 26));
             number = number / 26;
         }
@@ -147,9 +164,6 @@ public class RowColBlockProcessor {
     }
 
     // ===================== 拆分结果封装类 =====================
-    /**
-     * 拆分结果封装，兼顾易用性和字符串转换
-     */
     @Data
     public static class SplitResult {
         private final int rowNum;    // 行号（纯数字）
@@ -173,7 +187,6 @@ public class RowColBlockProcessor {
             return String.format("%d-%d-%s", rowNum, colNum, block);
         }
 
-        // Getter方法
         public int getRowNum() { return rowNum; }
         public int getColNum() { return colNum; }
         public String getBlock() { return block; }
@@ -181,21 +194,33 @@ public class RowColBlockProcessor {
 
     // ===================== 测试方法 =====================
     public static void main(String[] args) {
-        // 1. 测试拆分
+        // 1. 测试拆分（已去除字母逻辑）
         String testStr = "B01-C01-A";
         SplitResult splitResult = splitRowColBlock(testStr);
-        System.out.println("拆分结果对象：" + splitResult); // 2-3-A
-        System.out.println("纯数字行列：" + Arrays.toString(splitResult.getNumberArray())); // [2, 3]
-        System.out.println("区块：" + splitResult.getBlock()); // A
+        System.out.println("拆分结果对象：" + splitResult);
+        System.out.println("纯数字行列：" + Arrays.toString(splitResult.getNumberArray()));
+        System.out.println("区块：" + splitResult.getBlock());
 
         // 2. 测试组合
         String combineResult1 = combineRowColBlock(11, 2, "B");
-        System.out.println("组合结果1：" + combineResult1); // K11-B02-B
+        System.out.println("组合结果1：" + combineResult1);
         String combineResult2 = combineRowColBlock(27, 3, "AA");
-        System.out.println("组合结果2：" + combineResult2); // AA27-C03-AA
+        System.out.println("组合结果2：" + combineResult2);
 
         // 3. 测试区块转换
         String[] blockLetters = convertBlockNumbersToLetters(1L, 11L, 26L, 27L, 28L);
-        System.out.println("区块转换结果：" + Arrays.toString(blockLetters)); // [A, K, Z, AA, AB]
+        System.out.println("区块转换结果：" + Arrays.toString(blockLetters));
+
+        // 4. 【新增测试】区域ID转字母
+        System.out.println("===== 新增功能测试 =====");
+        System.out.println("1→" + areaIdToLetter(1));      // A
+        System.out.println("3→" + areaIdToLetter(3));      // C
+        System.out.println("26→" + areaIdToLetter(26));    // Z
+        System.out.println("27→" + areaIdToLetter(27));   // AA
+        System.out.println("28→" + areaIdToLetter(28));   // AB
+
+        // 批量转换
+        String[] areaLetters = areaIdsToLetters(1,2,3,26,27);
+        System.out.println("批量转换结果：" + Arrays.toString(areaLetters));
     }
 }
