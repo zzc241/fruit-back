@@ -36,4 +36,6 @@ public interface TaskDao extends BaseMapper<Task> {
     String getOrchardName(Long orchardId);
 
     String getReceiverName(Long receiverId);
+
+    String selectRecName(Task task);
 }

@@ -280,7 +280,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         }
         taskVo.setPriority(priorityName);
         taskVo.setOrchardName(taskDao.getOrchardName(task.getOrchardId()));
-        taskVo.setReceiverName(taskDao.getReceiverName(task.getReceiverId()));
+        if(task.getReceiverId() != null){
+            taskVo.setReceiverName(taskDao.getReceiverName(task.getReceiverId()));
+        }else {
+            taskVo.setReceiverName(taskDao.selectRecName(task));
+        }
+
         taskVo.setUsername(
                 employeeService.getEmpNameById(
                         task.getCreatorId()));
@@ -301,17 +306,19 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         if (tasks == null || tasks.isEmpty()) {
             return new ArrayList<>();
         }
+
         List<Long> taskIds = tasks.stream()
             .map(Task::getId)
             .collect(Collectors.toList());
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Task::getId, taskIds);
+
         if (taskVo.getOrchardId() != null) {
             queryWrapper.eq(Task::getOrchardId, taskVo.getOrchardId());
         }
-        if (taskVo.getGroupId() != null) {
-            queryWrapper.eq(Task::getGroupId, taskVo.getGroupId());
-        }
+//        if (taskVo.getGroupId() != null) {
+//            queryWrapper.eq(Task::getGroupId, taskVo.getGroupId());
+//        }
         List<TaskVo> taskVos = tasks.stream()
                 .map(this::taskToVo)
                 .collect(Collectors.toList());

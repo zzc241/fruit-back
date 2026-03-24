@@ -43,9 +43,6 @@ public class Task {
     private String taskTitle;
     @ApiModelProperty(value = "任务类型")
     private String taskType;
-    @ApiModelProperty(value = "任务范围")
-    @TableField("group_id")
-    private Long groupId;
 
     /*绑定员工组empGroup的groupId，用来表示发布范围*/
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")

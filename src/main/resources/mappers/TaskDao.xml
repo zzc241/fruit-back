@@ -91,4 +91,17 @@
         FROM employee
         WHERE id = #{receiverId}
     </select>
+    <select id="selectRecName" resultType="java.lang.String">
+        SELECT e.name
+        FROM employee e
+        JOIN area_info ai ON ai.emp_id = e.id
+        WHERE
+        <!-- 情况1：传入了区域ID → 直接用区域查负责人 -->
+        ( #{areaId} IS NOT NULL AND ai.id = #{areaId} )
+        OR
+        <!-- 情况2：没传区域ID → 根据果树ID查区域，再查负责人 -->
+        ( #{areaId} IS NULL AND #{treeId} IS NOT NULL
+        AND ai.id = (SELECT area_id FROM fruit_tree WHERE id = #{treeId}) )
+        LIMIT 1
+    </select>
 </mapper>

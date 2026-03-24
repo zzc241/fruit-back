@@ -63,19 +63,19 @@ public class TaskVo {
     private LocalDateTime postTime;
     @ApiModelProperty(value = "任务状态")
     private Integer status;
-    @ApiModelProperty(value = "用户组id")
-    private Long empgroupId;
-    @ApiModelProperty(value = "用户组id列表")
-    private List<Long> empIds;
-    @ApiModelProperty(value = "员工姓名列表")
-    private List<String> empNames;
+//    @ApiModelProperty(value = "用户组id")
+//    private Long empgroupId;
+//    @ApiModelProperty(value = "用户组id列表")
+//    private List<Long> empIds;
+//    @ApiModelProperty(value = "员工姓名列表")
+//    private List<String> empNames;
 
-    @ApiModelProperty(value = "员工组名称")
-    private String groupName;
-    @ApiModelProperty(value = "员工组描述")
-    private String groupDescription;
-    @ApiModelProperty(value = "员工组内容")
-    private String groupContent;
+//    @ApiModelProperty(value = "员工组名称")
+//    private String groupName;
+//    @ApiModelProperty(value = "员工组描述")
+//    private String groupDescription;
+//    @ApiModelProperty(value = "员工组内容")
+//    private String groupContent;
 
     @ApiModelProperty(value = "接收者id")
     private Long receiverId;
