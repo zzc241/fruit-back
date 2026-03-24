@@ -278,6 +278,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     public TaskVo taskToVo(Task task) {
         TaskVo taskVo = new TaskVo();
         BeanUtils.copyProperties(task, taskVo);
+        String priorityName;
+        if (task.getPriority() == null || task.getPriority() == 0) {
+            priorityName = "日常任务";
+        } else {
+            priorityName = "紧急任务";
+        }
+        taskVo.setPriority(priorityName);
+
         taskVo.setUsername(
                 employeeService.getEmpNameById(
                         task.getCreatorId()));

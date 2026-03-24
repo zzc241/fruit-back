@@ -71,4 +71,8 @@ public class Task {
     private Long createUser;
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+    @ApiModelProperty("优先级（0日常任务，1紧急任务）")
+    private Integer priority;
+    @ApiModelProperty("失败原因")
+    private String failure;
 }
