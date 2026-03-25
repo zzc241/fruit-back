@@ -14,6 +14,7 @@ import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.dao.FruitTreeDao;
 import com.jhc.fruit.entity.Area;
 import com.jhc.fruit.entity.Employee;
+import com.jhc.fruit.entity.TotalCost;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
 import com.jhc.fruit.service.AreaService;
@@ -510,6 +511,12 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeDao, Employee> impl
             mapList.add(map);
         }
         return R.success(mapList);
+    }
+
+    @Override
+    public R<TotalCost> getTotal() {
+        TotalCost totalCost = employeeDao.getTotalCost();
+        return R.success(totalCost);
     }
 
 

@@ -74,4 +74,5 @@ public class Task {
     private Double salary;
     @ApiModelProperty(value = "接收者id")
     private Long receiverId;
+    private Long groupId;
 }

@@ -179,6 +179,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         fruitTreeVo.setType(fruitTreeDao.selectByType(fruitTree.getType()));
         fruitTreeVo.setAreaName(fruitTreeDao.selectByAreaId(fruitTree.getAreaId()));
         fruitTreeVo.setAreaManagerName(fruitTreeDao.getAreaManagerName(fruitTree.getAreaId()));
+        fruitTreeVo.setImg(fileService.getImageUrl(fruitTree.getImg()));
         if(fruitTreeDao.selectQR(fruitTree.getId()) != null){
 
             String url = fileService.getImageUrl(fruitTreeDao.selectQR(fruitTree.getId()));

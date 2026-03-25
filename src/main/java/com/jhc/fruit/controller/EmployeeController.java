@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.WxConfig;
 import com.jhc.fruit.entity.Employee;
+import com.jhc.fruit.entity.TotalCost;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
 import com.jhc.fruit.service.EmployeeService;
@@ -357,6 +358,12 @@ public class EmployeeController {
     @GetMapping("/statisticsAreaEmployee/{orchardId}")
     public R<List<Map<String, Integer>>> statisticsAreaEmployee(@PathVariable Long orchardId){
         return employeeService.statisticsAreaEmployee(orchardId);
+    }
+
+    @ApiOperation("获取用工人次及用工总花销")
+    @GetMapping("/getTotal")
+    public R<TotalCost> getTotal(){
+        return employeeService.getTotal();
     }
 
 }
