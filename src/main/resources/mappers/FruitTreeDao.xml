@@ -87,6 +87,7 @@
         FROM fruit_tree, area_info
         WHERE fruit_tree.area_id = area_info.id
         AND area_info.emp_id = #{id}
+        LIMIT 100
     </select>
     <select id="checkEmpOfTree" resultType="java.lang.Boolean">
         SELECT *
@@ -178,10 +179,10 @@
                  JOIN fruit_tree ON
             -- 核心逻辑：动态匹配tree_id或area_id
             (task.tree_id IS NOT NULL AND fruit_tree.id = task.tree_id)
-                OR
-            (task.tree_id IS NULL AND fruit_tree.area_id = task.area_id)
-            -- 关联area_info
-                 JOIN area_info ON fruit_tree.area_id = area_info.id
+#                 OR
+#             (task.tree_id IS NULL AND fruit_tree.area_id = task.area_id)
+#             -- 关联area_info
+#                  JOIN area_info ON fruit_tree.area_id = area_info.id
         WHERE task.area_id = #{areaId}
         AND (task.tree_id IS NULL OR task.tree_id = #{treeId})
         AND status = 1
