@@ -142,4 +142,9 @@ public class TaskController {
         return  taskService.getTaskReport(taskId);
     }
 
+    @ApiOperation("countTaskByType")
+    @GetMapping("/countTaskByType")
+    public R<Map<String, Double>> countTaskByType() {
+        return taskService.countTaskByType();
+    }
 }

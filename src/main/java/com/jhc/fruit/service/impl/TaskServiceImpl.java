@@ -443,4 +443,26 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     public R<List<TaskVo>> getTaskReport(Long taskId) {
         return null;
     }
+
+    @Override
+    public R<Map<String, Double>> countTaskByType() {
+        log.info("=====================================countTaskByType=============================\n");
+        //先统计各类任务的总数
+        List<String> typeList = taskDao.getAllType();
+        Map<String, Integer> map = new HashMap<>();
+        for (String type : typeList) {
+            Integer count = taskDao.countByType(type);
+            map.put(type, count);
+        }
+        //统计各个任务类型的完成的数量并计算占比
+        Map<String, Double> result = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            String type = entry.getKey();
+            Integer count = taskDao.countCompletedByType(type);
+            result.put(type, count * 1.0 / entry.getValue());
+        }
+        log.info(result.toString());
+        log.info("=====================================countTaskByType=============================");
+        return R.success(result);
+    }
 }

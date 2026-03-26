@@ -116,4 +116,19 @@
         FROM fruit.report
         WHERE report.id = #{reportId}
     </select>
+    <select id="getAllType" resultType="java.lang.String">
+        SELECT DISTINCT task.task_type
+        FROM fruit.task
+    </select>
+    <select id="countByType" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        FROM fruit.task
+        WHERE task_type = #{type}
+    </select>
+    <select id="countCompletedByType" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        FROM fruit.task
+        WHERE task_type = #{type}
+          AND status = 3
+    </select>
 </mapper>

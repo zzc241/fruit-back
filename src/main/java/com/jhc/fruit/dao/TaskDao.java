@@ -43,4 +43,10 @@ public interface TaskDao extends BaseMapper<Task> {
     List<Task> getReview(Long orchardId);
 
     Report getReviewReport(Long reportId);
+
+    List<String> getAllType();
+
+    Integer countByType(String type);
+
+    Integer countCompletedByType(String type);
 }
