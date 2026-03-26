@@ -14,6 +14,7 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+    static-path-pattern: /**
   servlet:
     multipart:
       max-file-size: 50MB
@@ -38,36 +39,36 @@ spring:
 #    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
 #   RabbitMQ 核心配置
 
-#  rabbitmq:
-#    host: 192.168.123.92  # RabbitMQ 服务器地址（默认localhost）
-#    port: 5672       # 默认端口
-#    username: rc  # 默认用户名（本地开发用guest即可）
-#    password: 123456  # 默认密码
-#    virtual-host: /  # 虚拟主机（默认/）
-#    # 可选：连接池配置（提升性能）
-#    connection-timeout: 15000  # 连接超时时间
-#    cache:
-#      channel:
-#        size: 50  # 通道缓存大小
-#      connection:
-#        size: 10  # 连接池大小
-#        mode: CONNECTION
-#    publisher-confirm-type: correlated  # 开启生产者确认（correlated：异步回调）
-#    publisher-returns: true             # 开启消息返回（路由失败时回调）
-#  # Redis 配置
-#  redis:
-#    host: 192.168.123.92
-#    port: 6379
-#    password: 123456 # 本地Redis默认无密码
-#    database: 0
-#    timeout: 10000
+  rabbitmq:
+    host: 192.168.123.92  # RabbitMQ 服务器地址（默认localhost）
+    port: 5672       # 默认端口
+    username: rc  # 默认用户名（本地开发用guest即可）
+    password: 123456  # 默认密码
+    virtual-host: /  # 虚拟主机（默认/）
+    # 可选：连接池配置（提升性能）
+    connection-timeout: 15000  # 连接超时时间
+    cache:
+      channel:
+        size: 50  # 通道缓存大小
+      connection:
+        size: 10  # 连接池大小
+        mode: CONNECTION
+    publisher-confirm-type: correlated  # 开启生产者确认（correlated：异步回调）
+    publisher-returns: true             # 开启消息返回（路由失败时回调）
+  # Redis 配置
+  redis:
+    host: 192.168.123.92
+    port: 6379
+    password: 123456 # 本地Redis默认无密码
+    database: 0
+    timeout: 10000
 
-#  web:
-#    resources:
-#      static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
-#        classpath:/static/,classpath:/public/,classpath:/backend/,classpath:/front/
-#  mvc:
-#    static-path-pattern: /**
+
+
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
+        classpath:/static/,classpath:/public/,classpath:/backend/,classpath:/front/
 
 mybatis-plus:
   configuration:

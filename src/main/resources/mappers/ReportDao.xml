@@ -33,5 +33,10 @@
         FROM report
         WHERE report.user_id = #{userId}
     </select>
+    <select id="getOrchardId" resultType="java.lang.Long">
+        SELECT employee.orchard_id
+        FROM fruit.employee
+        WHERE employee.id = #{userId}
+    </select>
 
 </mapper>

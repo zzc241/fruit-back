@@ -8,12 +8,9 @@ import com.jhc.fruit.dao.EmployeeDao;
 import com.jhc.fruit.dao.TaskDao;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.OwnTaskVo;
+import com.jhc.fruit.entity.vo.ReportVo;
 import com.jhc.fruit.entity.vo.TaskVo;
-import com.jhc.fruit.service.EmpGroupService;
-import com.jhc.fruit.service.EmployeeService;
-import com.jhc.fruit.service.OrchardService;
-import com.jhc.fruit.service.TaskImgService;
-import com.jhc.fruit.service.TaskService;
+import com.jhc.fruit.service.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +40,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     private AreaDao areaDao;
     @Autowired
     private EmployeeDao employeeDao;
+    @Autowired
+    private ReportService reportService;
 
     /*新增任务*/
     @Override
@@ -396,5 +395,33 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         List<Map<String, Integer>> resultList = new ArrayList<>();
         map.forEach((key, value) -> resultList.add((Map.of(key, value))));
         return R.success(resultList);
+    }
+
+    @Override
+    public R<List<TaskVo>> getReview(Long orchardId) {
+        //查询待审核的任务
+        //查询该果园待审核的任务
+        List<Task> tasks = taskDao.getReview(orchardId);
+        List<TaskVo> taskVos = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskVo taskVo = taskToVo(task);
+            //填充任务报告
+            Report report = taskDao.getReviewReport(task.getReportId());
+            ReportVo reportVo = reportService.selectReport(List.of(report.getId())).getData().get(0);
+            taskVo.setReportVo(reportVo);
+            taskVos.add(taskVo);
+        }
+        return R.success(taskVos);
+    }
+
+    @Override
+    public R<String> reviewOk(List<Long> taskIds) {
+        List<Task> tasks = new ArrayList<>();
+        for (Long taskId : taskIds) {
+            Task task = taskDao.selectById(taskId);
+            task.setStatus(3);
+            taskDao.updateById(task);
+        }
+        return R.success();
     }
 }

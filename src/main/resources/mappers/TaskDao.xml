@@ -104,4 +104,16 @@
         AND ai.id = (SELECT area_id FROM fruit_tree WHERE id = #{treeId}) )
         LIMIT 1
     </select>
+<!--    查询该果园下等待审核的任务,任务状态为0-->
+    <select id="getReview" resultType="com.jhc.fruit.entity.Task">
+        SELECT task.*
+        FROM task
+        WHERE task.orchard_id = #{orchardId}
+        AND task.status = 0
+    </select>
+    <select id="getReviewReport" resultType="com.jhc.fruit.entity.Report">
+        SELECT report.*
+        FROM fruit.report
+        WHERE report.id = #{reportId}
+    </select>
 </mapper>

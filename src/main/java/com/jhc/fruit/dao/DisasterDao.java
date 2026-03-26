@@ -14,4 +14,8 @@ public interface DisasterDao extends BaseMapper<Disaster> {
     Integer getTypeCount(Long orchardId, String type);
 
     Integer getTypeCountArea(Long orchardId, String type, Long areaId);
+
+    List<String> countDisasterAll(Long typeId);
+
+    Integer getTypeCount(String type);
 }

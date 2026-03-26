@@ -586,6 +586,9 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
                     pythonData.setJson_file_path(getStringValue(analysisDataNode, "visual_save_path"));
 
                     // 从block_position获取实际文件名（修复关键点）
+                    if(actualFileName == null){
+                        
+                    }
                     JsonNode blockNode = analysisDataNode.get("block_position");
                     if (blockNode != null && blockNode.isArray() && blockNode.size() > 0) {
                         JsonNode firstBlock = blockNode.get(0);

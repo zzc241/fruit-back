@@ -6,6 +6,7 @@ import com.jhc.fruit.common.*;
 import com.jhc.fruit.config.AIConfig;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
+import com.jhc.fruit.entity.vo.HealthTreeVo;
 import com.jhc.fruit.entity.vo.TreeTypeVo;
 import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.FruitGrowService;
@@ -50,16 +51,13 @@ public class FruitTreeController {
             @ApiImplicitParam(name = "page",value = "当前页"),
             @ApiImplicitParam(name = "pageSize", value = "最大页码")
     })
-    public R<Page> page(int page,int pageSize,String type){
-        //模糊查询添加符号
-        if(type != null){
-            type += "%";
-        }
+    public R<Page> page(int page,int pageSize,Long areaId){
+
         Page<FruitTreeVo> pageInfo = new Page(page,pageSize);
         Page<FruitTree> page1 = new Page(page,pageSize);
         pageInfo.setTotal(fruitTreeService.page(page1).getTotal());
         pageInfo.setPages(fruitTreeService.page(page1).getPages());
-        List<FruitTreeVo> result = fruitTreeService.pageSelect(pageInfo, type);
+        List<FruitTreeVo> result = fruitTreeService.pageSelect(pageInfo, areaId);
         pageInfo.setRecords(result);
 
         System.out.println(pageInfo.getRecords());
@@ -283,5 +281,11 @@ public class FruitTreeController {
     @GetMapping("/statisticsAreaRipe/{orchardId}")
     public R<List<Map<String, Double>>> statisticsAreaRipe(@PathVariable Long orchardId){
         return fruitTreeService.statisticsAreaRipe(orchardId);
+    }
+
+    @ApiOperation("统计病树")
+    @GetMapping("/countIllness")
+    public R<HealthTreeVo> countIllness(){
+        return fruitTreeService.countIllness();
     }
 }

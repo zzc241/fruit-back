@@ -18,4 +18,9 @@
         WHERE disaster_type = #{type}
         AND disaster.area_id = #{areaId}
     </select>
+    <select id="countDisasterAll" resultType="java.lang.String">
+        SELECT COUNT(*)
+        FROM fruit.disaster
+        WHERE type_id = #{typeId}
+    </select>
 </mapper>

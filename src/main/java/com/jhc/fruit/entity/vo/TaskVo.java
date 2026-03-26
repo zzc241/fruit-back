@@ -84,4 +84,5 @@ public class TaskVo {
     @ApiModelProperty("优先级（0日常任务，1紧急任务）")
     private String priority;
     private Double salary;
+    private ReportVo reportVo;
 }

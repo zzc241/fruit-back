@@ -11,6 +11,7 @@ import com.jhc.fruit.dao.FertWaterDao;
 import com.jhc.fruit.dao.FruitTreeDao;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
+import com.jhc.fruit.entity.vo.HealthTreeVo;
 import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.entity.vo.TreeTypeVo;
 import com.jhc.fruit.service.AreaService;
@@ -131,9 +132,14 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     }
 
     @Override
-    public List<FruitTreeVo> pageSelect(Page<FruitTreeVo> pageInfo,String type) {
-        List<FruitTreeVo> page = fruitTreeDao.pageSelect(pageInfo,type);
-        return page;
+    public List<FruitTreeVo> pageSelect(Page<FruitTreeVo> pageInfo,Long areaId) {
+        List<FruitTree> page = fruitTreeDao.pageSelect(pageInfo,areaId);
+        List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
+        page.forEach(fruitTree -> {
+            fruitTreeVoList.add(fruitToVo(fruitTree));
+        });
+
+        return fruitTreeVoList;
     }
 
     @Override
@@ -421,6 +427,19 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
 
     public Long selectOrchardIdByTreeId(Long treeId){
         return fruitTreeDao.selectOrchardIdByTreeId(treeId);
+    }
+
+    @Override
+    public R<HealthTreeVo> countIllness() {
+        HealthTreeVo healthTreeVo = new HealthTreeVo();
+        Integer disasterTree = fruitTreeDao.countDisasterTree();
+        healthTreeVo.setDisasterTree(disasterTree);
+        Integer total = fruitTreeDao.getTotal();
+        Integer healthTree = total - disasterTree;
+        healthTreeVo.setHealthTree(healthTree);
+        healthTreeVo.setHealth((double) (healthTree/total));
+        healthTreeVo.setDisaster((double) (disasterTree/total));
+        return R.success(healthTreeVo);
     }
 
 

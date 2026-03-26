@@ -16,4 +16,6 @@ public interface DisasterService extends IService<Disaster> {
     R<List<DisasterTypeVo>> statisticsDisaster(Long orchardId);
 
     R<List<Map<Area,List<DisasterTypeVo>>>> statisticsAreaDisaster(Long orchardId);
+
+    Map<String, Integer> getDisasterCount();
 }

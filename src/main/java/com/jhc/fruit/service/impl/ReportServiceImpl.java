@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.ReportDao;
+import com.jhc.fruit.dao.TaskDao;
 import com.jhc.fruit.entity.Report;
+import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.entity.vo.ReportVo;
 import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.ReportService;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,8 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     @Autowired
     private FileService fileService;
     private final List<Long> typeIds = List.of(1L, 2L, 3L, 4L);
+    @Autowired
+    private TaskDao taskDao;
 
     @Override
     public void update(ReportVo reportVo) {
@@ -180,6 +185,17 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         }
 
         reportDao.insert(report);
+        //新增任务
+        Task task = new Task();
+        task.setCreatorId(report.getUserId());
+        task.setCreateTime(report.getCreateTime());
+        task.setTaskType("浇水");
+        task.setTaskInfo("给该区域所有果树浇水，每株5L");
+        task.setOrchardId(reportDao.getOrchardId(report.getUserId()));
+        task.setTaskTitle("浇水");
+        task.setDeadline(LocalDateTime.now().plusDays(1));
+        taskDao.insert(task);
+
         Long id = report.getId();
         Long typeId = report.getTypeId();
         if (id == null) {
@@ -294,5 +310,24 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             reportVos.add(reportVo);
         }
         return R.success(reportVos);
+    }
+
+    @Override
+    public R<String> reportTask(ReportVo reportVo) {
+        //上报任务状态 -》任务文本汇报和任务完成图片
+        Report report = new Report();
+        BeanUtils.copyProperties(reportVo, report);
+        //保存图片信息
+        for (String url : reportVo.getUrlList()) {
+            reportDao.saveImg(url, reportVo.getId(), 6);
+        }
+        reportDao.insert(report);
+        //修改任务状态为待审核0
+        Task task = taskDao.selectById(reportVo.getTaskId());
+        task.setStatus(0);
+        //绑定报告
+        task.setReportId(reportVo.getId());
+        taskDao.updateById(task);
+        return R.success();
     }
 }

@@ -101,4 +101,10 @@ public class ReportController {
         return reportService.getByTree(treeId);
     }
 
+    @ApiOperation("任务进度报告")
+    @PostMapping("/task")
+    public R<String> reportTask(@RequestParam ReportVo reportVo) {
+        return reportService.reportTask(reportVo);
+    }
+
 }

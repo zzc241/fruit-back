@@ -75,4 +75,5 @@ public class Task {
     @ApiModelProperty(value = "接收者id")
     private Long receiverId;
     private Long groupId;
+    private Long reportId;
 }

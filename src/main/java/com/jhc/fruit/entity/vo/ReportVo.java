@@ -17,7 +17,7 @@ public class ReportVo {
     private Long userId;
     @ApiModelProperty(value = "果树id")
     private Long treeId;
-    @ApiModelProperty(value = "报告类型(1水肥，2病虫害，3杂草，4成熟度)")
+    @ApiModelProperty(value = "报告类型(1水肥，2病害,3虫害，4杂草，5成熟度,6任务汇报)")
     private Long typeId;
     @ApiModelProperty(value = "报告内容")
     private String content;
@@ -30,4 +30,5 @@ public class ReportVo {
     private LocalDateTime updateTime;
     @ApiModelProperty(value = "图片")
     private List<String> urlList;
+    private Long taskId;
 }

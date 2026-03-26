@@ -30,11 +30,9 @@ public class DisasterController {
     @ApiOperation(value = "添加灾害接口")
     @PostMapping("/add")
     public R<String> add(@RequestBody DisasterVo disasterVo){
-        log.info("添加灾害1：{}", disasterVo);
         Disaster disaster = new Disaster();
         //将disasterVo中的属性值复制到disaster中
         BeanUtils.copyProperties(disasterVo, disaster);
-        log.info("添加灾害：{}", disaster);
         //调用service层的save方法将disaster保存到数据库中
         boolean saveResult = disasterService.save(disaster);
         return R.success("添加灾害成功");
@@ -75,5 +73,11 @@ public class DisasterController {
     @GetMapping("/statisticsAreaDisaster/{orchardId}")
     public R<List<Map<Area,List<DisasterTypeVo>>>> statisticsAreaDisaster(@PathVariable Long orchardId){
         return disasterService.statisticsAreaDisaster(orchardId);
+    }
+
+    @ApiOperation("统计病害")
+    @GetMapping("/getDisasterCount")
+    public Map<String, Integer> getDisasterCount(){
+        return disasterService.getDisasterCount();
     }
 }

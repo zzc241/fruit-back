@@ -7,6 +7,7 @@ import com.jhc.fruit.entity.FruitTree;
 import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.AnnounceInfo;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
+import com.jhc.fruit.entity.vo.HealthTreeVo;
 import com.jhc.fruit.entity.vo.QRTreeVo;
 import com.jhc.fruit.entity.vo.TreeTypeVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface FruitTreeService extends IService<FruitTree> {
-    public List<FruitTreeVo> pageSelect(Page<FruitTreeVo> page,String type);
+    public List<FruitTreeVo> pageSelect(Page<FruitTreeVo> page,Long areaId);
     public Long getTypeId(Long areaId);
     public List<FruitType> showType();
     public FruitTree getById(Long id);
@@ -55,4 +56,6 @@ public interface FruitTreeService extends IService<FruitTree> {
     R<List<Map<String, Double>>> statisticsAreaRipe(Long orchardId);
 
     Long selectOrchardIdByTreeId(Long treeId);
+
+    R<HealthTreeVo> countIllness();
 }

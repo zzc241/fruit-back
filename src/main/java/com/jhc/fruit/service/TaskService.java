@@ -42,4 +42,8 @@ public interface TaskService extends IService<Task> {
     R<List<TaskVo>> getTypeTask(Long orchardId, String type, Long empId);
 
     R<List<Map<String, Integer>>> getTaskType(Long empId);
+
+    R<List<TaskVo>> getReview(Long orchardId);
+
+    R<String> reviewOk(List<Long> taskIds);
 }

@@ -115,4 +115,17 @@ public class TaskController {
     public R<List<Map<String, Integer>>> getTaskType(@PathVariable Long empId) {
         return taskService.getTaskType(empId);
     }
+
+    @ApiOperation("查询待审核任务")
+    @GetMapping("getReview/{orchardId}")
+    public R<List<TaskVo>> getReview(@PathVariable Long orchardId) {
+        return taskService.getReview(orchardId);
+    }
+
+    @ApiOperation("审核通过")
+    @PostMapping("/reviewOk")
+    public R<String> reviewOk(@RequestBody List<Long> taskIds) {
+        return taskService.reviewOk(taskIds);
+    }
+
 }

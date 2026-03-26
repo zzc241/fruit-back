@@ -23,4 +23,6 @@ public interface ReportDao extends BaseMapper<Report> {
     List<String> getImgs(Long id);
 
     List<Report> selectByUserId(Long userId);
+
+    Long getOrchardId(Long userId);
 }

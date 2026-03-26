@@ -16,7 +16,7 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     /**
      * 由于水果种类不能以种类id形式展露【可读性太差】
      */
-    public List<FruitTreeVo> pageSelect(Page<FruitTreeVo> page, String type);
+    public List<FruitTree> pageSelect(Page<FruitTreeVo> page,Long areaId);
 //    public List<Integer> getAreaId();
     public Long getTypeId(Long areaId);
     public List<FruitType> showType();
@@ -64,4 +64,8 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     Long selectOrchardIdByTreeId(Long treeId);
 
     List<Task> getByTask(Long areaId, Long treeId);
+
+    Integer countDisasterTree();
+
+    Integer getTotal();
 }

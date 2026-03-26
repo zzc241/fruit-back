@@ -31,4 +31,6 @@ public interface ReportService extends IService<Report> {
     List<ReportVo> selectByUserId(Long userId);
 
     R<List<ReportVo>> getByTree(Long treeId);
+
+    R<String> reportTask(ReportVo reportVo);
 }

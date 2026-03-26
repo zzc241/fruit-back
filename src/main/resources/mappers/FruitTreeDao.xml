@@ -36,13 +36,11 @@
     <select id = "selectBy2Id" resultType="com.jhc.fruit.entity.FruitTree">
         SELECT * from fruit_tree where id = #{id}
     </select>
-    <select id="pageSelect" resultMap="TreeVo">
-        SELECT fruit_tree.`id`,fruit_type.`type`,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,area_info.`name`,fruit_tree.`area_id`
+    <select id="pageSelect" resultMap="ResultMap">
+        SELECT fruit_tree.*
         FROM fruit_tree,area_info,fruit_type
         WHERE fruit_tree.`area_id` = area_info.`id` AND fruit_tree.`type` = fruit_type.`id`
-        <if test ="type != null">
-            AND fruit_type.`type` like #{type}
-        </if>
+          AND fruit_tree.area_id = #{areaId}
     </select>
     <select id="getById" parameterType="LONG" resultMap="ResultMap">
         SELECT fruit_tree.`id`,fruit_tree.`type`,fruit_tree.`count_num`,fruit_tree.`ripe_num`,fruit_tree.`img`,fruit_tree.`area_id`
@@ -187,5 +185,14 @@
         AND (task.tree_id IS NULL OR task.tree_id = #{treeId})
         AND status = 1
         GROUP BY task.id
+    </select>
+    <select id="countDisasterTree" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        FROM fruit.disaster
+        GROUP BY disaster.tree_id
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        FROM fruit.fruit_tree
     </select>
 </mapper>

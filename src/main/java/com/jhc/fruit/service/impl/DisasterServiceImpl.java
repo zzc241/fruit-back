@@ -109,6 +109,25 @@ public class DisasterServiceImpl  extends ServiceImpl<DisasterDao, Disaster> imp
         return R.success(result);
     }
 
+    @Override
+    public Map<String, Integer> getDisasterCount() {
+        //查询除了气象外所有灾害
+        //遍历灾害类别
+        Map<String, Integer> map = new HashMap<>();
+        List<Long> typeIds = List.of(2L, 3L);
+        typeIds.forEach(typeId -> {
+            //统计该类型下出现过的灾害
+            List<String> typeList = disasterDao.countDisasterAll(typeId);
+            //获取对应灾害出现次数
+            typeList.forEach(type -> {
+                Integer count = disasterDao.getTypeCount(type);
+                //记录灾害发生次数
+                map.put(type, count);
+            });
+        });
+        return map;
+    }
+
     /**
      * 统计出现过的灾害类型
      * */

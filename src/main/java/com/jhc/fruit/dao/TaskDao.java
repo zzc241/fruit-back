@@ -2,6 +2,7 @@ package com.jhc.fruit.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jhc.fruit.entity.FruitTree;
+import com.jhc.fruit.entity.Report;
 import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.entity.vo.TaskVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -38,4 +39,8 @@ public interface TaskDao extends BaseMapper<Task> {
     String getReceiverName(Long receiverId);
 
     String selectRecName(Task task);
+
+    List<Task> getReview(Long orchardId);
+
+    Report getReviewReport(Long reportId);
 }
