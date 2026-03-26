@@ -128,4 +128,9 @@ public class TaskController {
         return taskService.reviewOk(taskIds);
     }
 
+    @ApiOperation("审核不通过")
+    @PostMapping("/reviewFaile")
+    public R<String> reviewFaile(@RequestBody List<Long> taskIds) {
+        return taskService.reviewFaile(taskIds);
+    }
 }

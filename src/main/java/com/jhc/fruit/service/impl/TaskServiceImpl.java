@@ -424,4 +424,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         }
         return R.success();
     }
+
+    @Override
+    public R<String> reviewFaile(List<Long> taskIds) {
+        List<Task> tasks = new ArrayList<>();
+        for (Long taskId : taskIds) {
+            Task task = taskDao.selectById(taskId);
+            task.setStatus(5);
+            taskDao.updateById(task);
+        }
+        return R.success();
+    }
 }
