@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.AreaDao;
 import com.jhc.fruit.dao.EmployeeDao;
+import com.jhc.fruit.dao.ReportDao;
 import com.jhc.fruit.dao.TaskDao;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.OwnTaskVo;
@@ -42,6 +43,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     private EmployeeDao employeeDao;
     @Autowired
     private ReportService reportService;
+    @Autowired
+    private ReportDao reportDao;
 
     /*新增任务*/
     @Override
@@ -434,5 +437,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
             taskDao.updateById(task);
         }
         return R.success();
+    }
+
+    @Override
+    public R<List<TaskVo>> getTaskReport(Long taskId) {
+        return null;
     }
 }

@@ -48,4 +48,6 @@ public interface TaskService extends IService<Task> {
     R<String> reviewOk(List<Long> taskIds);
 
     R<String> reviewFaile(List<Long> taskIds);
+
+    R<List<TaskVo>> getTaskReport(Long taskId);
 }

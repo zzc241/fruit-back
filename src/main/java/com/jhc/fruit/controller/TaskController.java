@@ -136,4 +136,10 @@ public class TaskController {
         return taskService.reviewFaile(taskIds);
     }
 
+    @ApiOperation("获取该任务的报告")
+    @GetMapping("/getTaskReport/{taskId}")
+    public R<List<TaskVo>> getTaskReport(@PathVariable Long taskId) {
+        return  taskService.getTaskReport(taskId);
+    }
+
 }
