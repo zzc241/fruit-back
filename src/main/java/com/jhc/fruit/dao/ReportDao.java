@@ -2,6 +2,7 @@ package com.jhc.fruit.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jhc.fruit.entity.Report;
+import com.jhc.fruit.entity.Task;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,4 +26,6 @@ public interface ReportDao extends BaseMapper<Report> {
     List<Report> selectByUserId(Long userId);
 
     Long getOrchardId(Long userId);
+
+    Report getOwnTaskReport(Long empId, Long taskId, Long typeId);
 }

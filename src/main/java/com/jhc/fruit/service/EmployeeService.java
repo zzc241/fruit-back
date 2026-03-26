@@ -7,7 +7,6 @@ import java.util.Set;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Employee;
-import com.jhc.fruit.entity.TotalCost;
 import com.jhc.fruit.entity.vo.EmployeeVo;
 import com.jhc.fruit.entity.vo.loginEmployeeVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,5 +50,4 @@ public interface EmployeeService extends IService<Employee> {
 
     R<List<Map<String, Integer>>> statisticsAreaEmployee(Long orchardId);
 
-    R<TotalCost> getTotal();
 }

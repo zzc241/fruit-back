@@ -33,4 +33,6 @@ public interface ReportService extends IService<Report> {
     R<List<ReportVo>> getByTree(Long treeId);
 
     R<String> reportTask(ReportVo reportVo);
+
+    R<ReportVo> getOwnTaskReport(Long empId, Long treeId, Long typeId);
 }

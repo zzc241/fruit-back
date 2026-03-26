@@ -21,9 +21,4 @@
         FROM area_info
         WHERE area_info.emp_id = #{id}
     </select>
-    <select id="getTotalCost" resultType="com.jhc.fruit.entity.TotalCost">
-        SELECT worker_times.*
-        FROM worker_times
-        LIMIT 1
-    </select>
 </mapper>

@@ -38,5 +38,14 @@
         FROM fruit.employee
         WHERE employee.id = #{userId}
     </select>
+    <select id="getOwnTaskReport" resultType="com.jhc.fruit.entity.Report">
+        SELECT report.*
+        FROM fruit.report
+        WHERE report.user_id = #{empId}
+          AND report.tree_id = #{treeId}
+          AND report.type_id = #{typeId}
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
 
 </mapper>

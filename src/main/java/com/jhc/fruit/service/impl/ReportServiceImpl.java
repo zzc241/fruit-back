@@ -330,4 +330,20 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         taskDao.updateById(task);
         return R.success();
     }
+
+    @Override
+    public R<ReportVo> getOwnTaskReport(Long empId, Long treeId, Long typeId) {
+        //查询该员工的该类型下的任务的最近一次的报告
+        Report report = reportDao.getOwnTaskReport(empId, treeId, typeId);
+        ReportVo reportVo = new ReportVo();
+        //获取对应图片的临时访问url
+        BeanUtils.copyProperties(report, reportVo);
+        if (reportVo.getTypeId() == null || !typeIds.contains(reportVo.getTypeId())){
+            return R.error("类型非法");
+        }
+        List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
+        //保存url
+        reportVo.setUrlList(urls);
+        return R.success(reportVo);
+    }
 }

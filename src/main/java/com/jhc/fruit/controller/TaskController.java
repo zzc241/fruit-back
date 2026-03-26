@@ -1,7 +1,9 @@
 package com.jhc.fruit.controller;
 
 import com.jhc.fruit.common.R;
+import com.jhc.fruit.entity.Report;
 import com.jhc.fruit.entity.vo.OwnTaskVo;
+import com.jhc.fruit.entity.vo.ReportVo;
 import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.TaskService;
 import io.swagger.annotations.Api;
@@ -133,4 +135,5 @@ public class TaskController {
     public R<String> reviewFaile(@RequestBody List<Long> taskIds) {
         return taskService.reviewFaile(taskIds);
     }
+
 }

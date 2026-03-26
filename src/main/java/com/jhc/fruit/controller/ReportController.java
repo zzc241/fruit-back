@@ -107,4 +107,10 @@ public class ReportController {
         return reportService.reportTask(reportVo);
     }
 
+    @ApiOperation("查询上次报告")
+    @GetMapping("/getOwnTaskReport/{empId}/{treeId}/{typeId}")
+    public R<ReportVo> getOwnTaskReport(@PathVariable Long empId, @PathVariable Long treeId, @PathVariable Long typeId) {
+        return reportService.getOwnTaskReport(empId, treeId, typeId);
+    }
+
 }
