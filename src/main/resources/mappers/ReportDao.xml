@@ -53,5 +53,10 @@
         WHERE fruit_tree.orchard_id = #{orchardId}
           AND report.tree_id = fruit_tree.id
     </select>
+    <select id="getUserName" resultType="java.lang.String">
+        SELECT employee.name
+        FROM fruit.employee
+        WHERE employee.id = #{userId}
+    </select>
 
 </mapper>

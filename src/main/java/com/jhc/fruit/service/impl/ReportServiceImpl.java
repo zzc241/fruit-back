@@ -162,6 +162,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
                 List<String> urls = getUrlsByType(id, reportVo.getTypeId());
                 //保存url
                 reportVo.setUrlList(urls);
+                reportVo.setUserName(reportDao.getUserName(report.getUserId()));
                 reportVos.add(reportVo);
             }
         }
@@ -307,6 +308,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             BeanUtils.copyProperties(report, reportVo);
             List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
             reportVo.setUrlList(fileService.getImageUrls(urls));
+            reportVo.setUserName(reportDao.getUserName(report.getUserId()));
             reportVos.add(reportVo);
         }
         return R.success(reportVos);
@@ -337,7 +339,11 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         Report report = reportDao.getOwnTaskReport(empId, treeId, typeId);
         ReportVo reportVo = new ReportVo();
         //获取对应图片的临时访问url
-        BeanUtils.copyProperties(report, reportVo);
+        if (report != null) {
+            BeanUtils.copyProperties(report, reportVo);
+        }else {
+            return R.error("no own task report");
+        }
         if (reportVo.getTypeId() == null || !typeIds.contains(reportVo.getTypeId())){
             return R.error("类型非法");
         }
@@ -357,6 +363,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             BeanUtils.copyProperties(report, reportVo);
             List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
             reportVo.setUrlList(urls);
+            reportVo.setUserName(reportDao.getUserName(report.getUserId()));
             reportVos.add(reportVo);
         }
         return R.success(reportVos);
