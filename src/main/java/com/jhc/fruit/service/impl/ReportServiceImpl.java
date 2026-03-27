@@ -350,7 +350,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     //获取果园范围内的报告
     @Override
     public R<List<ReportVo>> getOrchardReport(Long orchardId) {
-        List<Report> reportList = reportDao.getOrchardReport();
+        List<Report> reportList = reportDao.getOrchardReport(orchardId);
         List<ReportVo> reportVos = new ArrayList<>();
         for (Report report : reportList) {
             ReportVo reportVo = new ReportVo();
