@@ -16,11 +16,6 @@ public class TaskStatisticsVO {
     private Integer pendingDispatchCount;
 
     /**
-     * 待派发任务较昨日变化数
-     */
-    private Integer pendingDispatchChange;
-
-    /**
      * 待执行任务数
      */
     private Integer pendingExecuteCount;
@@ -28,7 +23,7 @@ public class TaskStatisticsVO {
     /**
      * 待执行任务剩余比例（%）
      */
-    private BigDecimal pendingExecuteRemainingRate;
+    private Double pendingExecuteRemainingRate;
 
     /**
      * 已完成任务数
@@ -38,15 +33,11 @@ public class TaskStatisticsVO {
     /**
      * 任务完成率（%）
      */
-    private BigDecimal completionRate;
+    private Double completionRate;
 
     /**
      * 逾期任务数
      */
     private Integer overdueCount;
 
-    /**
-     * 逾期任务较昨日变化数
-     */
-    private Integer overdueChange;
 }

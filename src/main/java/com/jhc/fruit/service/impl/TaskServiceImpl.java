@@ -493,9 +493,19 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         Integer completedTasks = taskDao.getByStatus(3L);
         //统计逾期任务
         Integer overdueCount = taskDao.getOverDue();
-        //未完成任务占比(未完成 / )
+        //未完成任务占比(未完成 / 未完成+已完成)
+        Double pendingExecuteRemainingRate = unCompletedTasks / (double) (unCompletedTasks + completedTasks);
+        Double completionRate = 1 - pendingExecuteRemainingRate;
+        //待发布任务
+        Integer pendingDispatchCount = taskDao.getByStatus(6L);
+        //存入属性
+        taskStatisticsVO.setPendingDispatchCount(pendingDispatchCount);
+        taskStatisticsVO.setCompletionRate(completionRate);
+        taskStatisticsVO.setOverdueCount(overdueCount);
+        taskStatisticsVO.setPendingExecuteRemainingRate(pendingExecuteRemainingRate);
+        taskStatisticsVO.setPendingDispatchCount(pendingDispatchCount);
+        taskStatisticsVO.setCompletedCount(completedTasks);
 
-
-        return null;
+        return R.success(taskStatisticsVO);
     }
 }
