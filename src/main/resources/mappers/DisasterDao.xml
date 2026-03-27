@@ -19,7 +19,7 @@
         AND disaster.area_id = #{areaId}
     </select>
     <select id="countDisasterAll" resultType="java.lang.String">
-        SELECT COUNT(*)
+        SELECT disaster_type
         FROM fruit.disaster
         WHERE type_id = #{typeId}
     </select>
