@@ -487,7 +487,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     public R<TaskStatisticsVO> countByStatus() {
         //统计待完成的任务、待发布的任务、已完成的任务、逾期任务
         TaskStatisticsVO taskStatisticsVO = new TaskStatisticsVO();
-        //统计已接收但是还没有完成的任务
+        //统计已接收但是还没有完成的任务,待执行任务
         Integer unCompletedTasks = taskDao.getByStatus(1L);
         //统计已完成任务
         Integer completedTasks = taskDao.getByStatus(3L);
@@ -503,7 +503,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         taskStatisticsVO.setCompletionRate(completionRate);
         taskStatisticsVO.setOverdueCount(overdueCount);
         taskStatisticsVO.setPendingExecuteRemainingRate(pendingExecuteRemainingRate);
-        taskStatisticsVO.setPendingDispatchCount(pendingDispatchCount);
+        taskStatisticsVO.setPendingExecuteCount(unCompletedTasks);
         taskStatisticsVO.setCompletedCount(completedTasks);
 
         return R.success(taskStatisticsVO);
