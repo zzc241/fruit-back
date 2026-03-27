@@ -32,4 +32,6 @@ public class ReportVo {
     @ApiModelProperty(value = "图片")
     private List<String> urlList;
     private Long taskId;
+    @ApiModelProperty("报告状态（0任务期间，1任务结束）")
+    private Integer status;
 }

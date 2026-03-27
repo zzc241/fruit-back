@@ -42,10 +42,12 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         reportDao.updateById(report);
         //更新图片
         Long id = reportVo.getId();
-        //查找已有的图片
         List<String> bcUrls = getUrlsByType(id, reportVo.getTypeId());
-        //更新图片，删除旧图片，增加新图片
-        handleUrl(reportVo.getUrlList(), bcUrls, id, reportVo.getTypeId());
+        if (bcUrls != null && !bcUrls.isEmpty()) {
+            //更新图片，删除旧图片，增加新图片
+            handleUrl(reportVo.getUrlList(), bcUrls, id, reportVo.getTypeId());
+        }
+        reportDao.updateById(report);
     }
 
     //更新图片

@@ -34,4 +34,6 @@ public class Report {
     private Long createUser;
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+    @ApiModelProperty("报告状态（0任务期间，1任务结束）")
+    private Integer status;
 }
