@@ -49,4 +49,8 @@ public interface TaskDao extends BaseMapper<Task> {
     Integer countByType(String type);
 
     Integer countCompletedByType(String type);
+
+    Integer getByStatus(Long status);
+
+    Integer getOverDue();
 }

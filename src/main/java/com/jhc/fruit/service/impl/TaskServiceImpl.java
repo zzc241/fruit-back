@@ -10,6 +10,7 @@ import com.jhc.fruit.dao.TaskDao;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.OwnTaskVo;
 import com.jhc.fruit.entity.vo.ReportVo;
+import com.jhc.fruit.entity.vo.TaskStatisticsVO;
 import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.*;
 
@@ -483,8 +484,18 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     }
 
     @Override
-    public R<Map<String, Integer>> countByStatus() {
+    public R<TaskStatisticsVO> countByStatus() {
         //统计待完成的任务、待发布的任务、已完成的任务、逾期任务
+        TaskStatisticsVO taskStatisticsVO = new TaskStatisticsVO();
+        //统计已接收但是还没有完成的任务
+        Integer unCompletedTasks = taskDao.getByStatus(1L);
+        //统计已完成任务
+        Integer completedTasks = taskDao.getByStatus(3L);
+        //统计逾期任务
+        Integer overdueCount = taskDao.getOverDue();
+        //未完成任务占比(未完成 / )
+
+
         return null;
     }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.entity.vo.OwnTaskVo;
+import com.jhc.fruit.entity.vo.TaskStatisticsVO;
 import com.jhc.fruit.entity.vo.TaskVo;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +54,5 @@ public interface TaskService extends IService<Task> {
 
     R<Map<String, Double>> countTaskByType();
 
-    R<Map<String, Integer>> countByStatus();
+    R<TaskStatisticsVO> countByStatus();
 }

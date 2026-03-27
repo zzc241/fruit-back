@@ -4,6 +4,7 @@ import com.jhc.fruit.common.R;
 import com.jhc.fruit.entity.Report;
 import com.jhc.fruit.entity.vo.OwnTaskVo;
 import com.jhc.fruit.entity.vo.ReportVo;
+import com.jhc.fruit.entity.vo.TaskStatisticsVO;
 import com.jhc.fruit.entity.vo.TaskVo;
 import com.jhc.fruit.service.TaskService;
 import io.swagger.annotations.Api;
@@ -150,7 +151,7 @@ public class TaskController {
 
     @ApiOperation("统计任务执行状态")
     @GetMapping("/countByStatus")
-    public R<Map<String, Integer>> countByStatus() {
+    public R<TaskStatisticsVO> countByStatus() {
         return taskService.countByStatus();
     }
 }

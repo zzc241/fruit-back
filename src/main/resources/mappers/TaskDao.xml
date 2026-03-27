@@ -131,4 +131,17 @@
         WHERE task_type = #{type}
           AND status = 3
     </select>
+    <!--判断条件：任务状态为待完成-->
+    <select id="getByStatus" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM fruit.task
+        WHERE status = #{status}
+    </select>
+    <!--查询逾期任务：任务状态不为3已完成并且时间超过deadLine-->
+    <select id="getOverDue" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM fruit.task
+        WHERE task.status not in (3)
+          AND NOW() > task.deadline
+    </select>
 </mapper>
