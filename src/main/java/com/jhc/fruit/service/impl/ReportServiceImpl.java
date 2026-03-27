@@ -339,6 +339,10 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     public R<ReportVo> getOwnTaskReport(Long empId, Long treeId, Long typeId) {
         //查询该员工的该类型下的任务的最近一次的报告
         Report report = reportDao.getOwnTaskReport(empId, treeId, typeId);
+        if (report == null) {
+            log.info("没有报告，返回空");
+            return R.success(new ReportVo());
+        }
         ReportVo reportVo = new ReportVo();
         //获取对应图片的临时访问url
         if (report != null) {
