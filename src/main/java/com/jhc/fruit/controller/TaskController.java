@@ -136,15 +136,21 @@ public class TaskController {
         return taskService.reviewFaile(taskIds);
     }
 
-    @ApiOperation("获取该任务的报告")
+    @ApiOperation("获取该任务的报告" )
     @GetMapping("/getTaskReport/{taskId}")
     public R<List<TaskVo>> getTaskReport(@PathVariable Long taskId) {
         return  taskService.getTaskReport(taskId);
     }
 
-    @ApiOperation("countTaskByType")
+    @ApiOperation("统计各类型任务百分比完成度(还需要完善)")
     @GetMapping("/countTaskByType")
     public R<Map<String, Double>> countTaskByType() {
         return taskService.countTaskByType();
+    }
+
+    @ApiOperation("统计任务执行状态")
+    @GetMapping("/countByStatus")
+    public R<Map<String, Integer>> countByStatus() {
+        return taskService.countByStatus();
     }
 }

@@ -17,7 +17,7 @@ public class ReportVo {
     private Long userId;
     @ApiModelProperty(value = "果树id")
     private Long treeId;
-    @ApiModelProperty(value = "报告类型(1水肥，2病害,3虫害，4杂草，5成熟度,6任务汇报)")
+    @ApiModelProperty(value = "上报类型(1水,2肥，3病害,4虫害，5杂草,6任务汇报，7成熟度)")
     private Long typeId;
     @ApiModelProperty(value = "报告内容")
     private String content;

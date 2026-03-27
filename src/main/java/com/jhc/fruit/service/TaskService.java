@@ -52,4 +52,6 @@ public interface TaskService extends IService<Task> {
     R<List<TaskVo>> getTaskReport(Long taskId);
 
     R<Map<String, Double>> countTaskByType();
+
+    R<Map<String, Integer>> countByStatus();
 }

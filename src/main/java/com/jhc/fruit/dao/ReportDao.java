@@ -28,4 +28,6 @@ public interface ReportDao extends BaseMapper<Report> {
     Long getOrchardId(Long userId);
 
     Report getOwnTaskReport(Long empId, Long taskId, Long typeId);
+
+    List<Report> getOrchardReport();
 }

@@ -113,4 +113,10 @@ public class ReportController {
         return reportService.getOwnTaskReport(empId, treeId, typeId);
     }
 
+
+    @ApiOperation("查询果园内任务报告")
+    @GetMapping("/getOrchardReport/{orchardId}")
+    public R<List<ReportVo>> getOrchardReport(@PathVariable Long orchardId) {
+        return reportService.getOrchardReport(orchardId);
+    }
 }

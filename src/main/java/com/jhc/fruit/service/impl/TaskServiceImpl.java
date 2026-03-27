@@ -444,25 +444,47 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         return null;
     }
 
+    /**
+     * 根据任务类型统计完成率
+     * @return 封装好的结果，key=任务类型，value=该类型任务完成率（0~1之间）
+     */
     @Override
     public R<Map<String, Double>> countTaskByType() {
-        log.info("=====================================countTaskByType=============================\n");
-        //先统计各类任务的总数
+        // 1. 获取数据库中所有的任务类型列表
         List<String> typeList = taskDao.getAllType();
-        Map<String, Integer> map = new HashMap<>();
+
+        // 2. 遍历任务类型，统计每种类型的任务总数量
+        Map<String, Integer> totalCountMap = new HashMap<>();
         for (String type : typeList) {
-            Integer count = taskDao.countByType(type);
-            map.put(type, count);
+            // 根据任务类型查询总数量
+            Integer totalCount = taskDao.countByType(type);
+            totalCountMap.put(type, totalCount);
         }
-        //统计各个任务类型的完成的数量并计算占比
-        Map<String, Double> result = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            String type = entry.getKey();
-            Integer count = taskDao.countCompletedByType(type);
-            result.put(type, count * 1.0 / entry.getValue());
+
+        // 3. 遍历任务类型，统计每种类型已完成的任务数量，并计算完成率
+        Map<String, Double> completionRateMap = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : totalCountMap.entrySet()) {
+            String taskType = entry.getKey();
+            // 当前类型任务总数
+            Integer total = entry.getValue();
+            // 当前类型已完成任务数
+            Integer completedCount = taskDao.countCompletedByType(taskType);
+
+            // 计算完成率：已完成数量 / 总数量，转为double避免整数除法
+            double rate = completedCount * 1.0 / total;
+            completionRateMap.put(taskType, rate);
         }
-        log.info(result.toString());
-        log.info("=====================================countTaskByType=============================");
-        return R.success(result);
+
+        // 打印任务完成率结果日志
+        log.info("各类型任务完成率统计结果：{}", completionRateMap.toString());
+
+        // 封装并返回成功结果
+        return R.success(completionRateMap);
+    }
+
+    @Override
+    public R<Map<String, Integer>> countByStatus() {
+        //统计待完成的任务、待发布的任务、已完成的任务、逾期任务
+        return null;
     }
 }

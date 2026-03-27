@@ -47,5 +47,11 @@
         ORDER BY create_time DESC
         LIMIT 1
     </select>
+    <select id="getOrchardReport" resultType="com.jhc.fruit.entity.Report">
+        SELECT report.*
+        FROM fruit.report, fruit.fruit_tree
+        WHERE fruit_tree.orchard_id = #{orchardId}
+          AND report.tree_id = fruit_tree.id
+    </select>
 
 </mapper>

@@ -346,4 +346,19 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         reportVo.setUrlList(urls);
         return R.success(reportVo);
     }
+
+    //获取果园范围内的报告
+    @Override
+    public R<List<ReportVo>> getOrchardReport(Long orchardId) {
+        List<Report> reportList = reportDao.getOrchardReport();
+        List<ReportVo> reportVos = new ArrayList<>();
+        for (Report report : reportList) {
+            ReportVo reportVo = new ReportVo();
+            BeanUtils.copyProperties(report, reportVo);
+            List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
+            reportVo.setUrlList(urls);
+            reportVos.add(reportVo);
+        }
+        return R.success(reportVos);
+    }
 }

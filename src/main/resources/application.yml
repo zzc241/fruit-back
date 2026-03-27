@@ -92,12 +92,12 @@ ai-api:
   aiCbh: http://192.168.123.94:8003
 txt:
   descriptionConfig:
-    email: test@qq.com
+    email: 1660985901@qq.com
     title: 果园项目后端API接口文档
-    version: default
+    version: 1.0
     description: 果园项目后端API接口文档
-    name: 开发团队
-    url: url
+    name: 果园开放
+    url: 192.168.100.2
   filter:
     flag: true
 wx:
