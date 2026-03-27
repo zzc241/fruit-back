@@ -500,9 +500,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         Integer pendingDispatchCount = taskDao.getByStatus(6L);
         //存入属性
         taskStatisticsVO.setPendingDispatchCount(pendingDispatchCount);
-        taskStatisticsVO.setCompletionRate(completionRate);
+        taskStatisticsVO.setCompletionRate(completionRate * 100);
         taskStatisticsVO.setOverdueCount(overdueCount);
-        taskStatisticsVO.setPendingExecuteRemainingRate(pendingExecuteRemainingRate);
+        taskStatisticsVO.setPendingExecuteRemainingRate(pendingExecuteRemainingRate * 100);
         taskStatisticsVO.setPendingExecuteCount(unCompletedTasks);
         taskStatisticsVO.setCompletedCount(completedTasks);
 
