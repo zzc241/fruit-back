@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -500,12 +502,21 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         Integer pendingDispatchCount = taskDao.getByStatus(6L);
         //存入属性
         taskStatisticsVO.setPendingDispatchCount(pendingDispatchCount);
-        taskStatisticsVO.setCompletionRate(completionRate * 100);
+        taskStatisticsVO.setCompletionRate(roundDouble(completionRate * 100, 1));
         taskStatisticsVO.setOverdueCount(overdueCount);
-        taskStatisticsVO.setPendingExecuteRemainingRate(pendingExecuteRemainingRate * 100);
+        taskStatisticsVO.setPendingExecuteRemainingRate(roundDouble(pendingExecuteRemainingRate * 100, 1));
         taskStatisticsVO.setPendingExecuteCount(unCompletedTasks);
         taskStatisticsVO.setCompletedCount(completedTasks);
 
         return R.success(taskStatisticsVO);
+    }
+
+    public static Double roundDouble(Double value, int scale) {
+        if (value == null) {
+            return 0.0;
+        }
+        return new BigDecimal(value)
+                .setScale(scale, RoundingMode.HALF_UP) // 四舍五入
+                .doubleValue();
     }
 }
