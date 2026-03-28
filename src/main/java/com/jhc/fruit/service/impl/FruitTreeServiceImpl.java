@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.QRCodeUtil;
 import com.jhc.fruit.common.R;
-import com.jhc.fruit.dao.AreaDao;
-import com.jhc.fruit.dao.DisasterDao;
-import com.jhc.fruit.dao.FertWaterDao;
-import com.jhc.fruit.dao.FruitTreeDao;
+import com.jhc.fruit.dao.*;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.entity.vo.HealthTreeVo;
@@ -50,6 +47,8 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     private TaskService taskService;
     @Autowired
     private AreaDao areaDao;
+    @Autowired
+    private TaskDao taskDao;
 
     @Override
     public Page<FruitTreeVo> page(Page<FruitTreeVo> page) {
@@ -251,7 +250,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         for (FruitTree fruitTree : fruitTreeList) {
             FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
             //查询相关任务
-            List<Task> taskList = fruitTreeDao.getByTask(fruitTree.getAreaId(), fruitTree.getId());
+            List<Task> taskList = taskDao.getTaskByType(orchardId, type, empId);
             log.info(taskList.toString());
             List<TaskVo> taskVoList = new ArrayList<>();
             taskList.forEach(item -> {
