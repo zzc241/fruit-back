@@ -174,6 +174,7 @@ public class FruitTreeController {
         queryWrapper.eq(FruitTree::getAreaId, areaId);
         queryWrapper.orderByDesc(FruitTree::getCreateTime);
         queryWrapper.orderByAsc(FruitTree::getId);
+        queryWrapper.last("LIMIT 50");
         List<FruitTree> fruitTreeList = fruitTreeService.list(queryWrapper);
         if(fruitTreeList == null && fruitTreeList.size() == 0){
             return R.error("查找失败");
