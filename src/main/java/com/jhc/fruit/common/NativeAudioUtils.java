@@ -1,5 +1,10 @@
 package com.jhc.fruit.common;
 
+import ws.schild.jave.Encoder;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.AudioAttributes;
+import ws.schild.jave.encode.EncodingAttributes;
+
 import javax.sound.sampled.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -278,4 +283,38 @@ public class NativeAudioUtils {
             e.printStackTrace();
         }
     }
+
+    /**
+     * MP4 转 WAV（JAVE2 3.3.1 专用）
+     */
+    public static void convertMp4ToWav(File mp4File, File wavFile,
+                                       Float targetSampleRate, Integer targetChannels) throws Exception {
+        if (!mp4File.exists() || !mp4File.isFile()) {
+            throw new IOException("MP4文件不存在：" + mp4File.getAbsolutePath());
+        }
+
+        // 音频配置
+        AudioAttributes audio = new AudioAttributes();
+        audio.setCodec("pcm_s16le");  // WAV 固定编码
+
+        // 采样率
+        if (targetSampleRate != null && targetSampleRate > 0) {
+            audio.setSamplingRate(targetSampleRate.intValue());
+        }
+        // 声道
+        if (targetChannels != null && (targetChannels == 1 || targetChannels == 2)) {
+            audio.setChannels(targetChannels);
+        }
+
+        // 关键修复：3.x 新版 EncodingAttributes 不需要 setFormat()
+        EncodingAttributes attrs = new EncodingAttributes();
+        attrs.setAudioAttributes(audio);
+        // 关闭视频（只保留音频）
+        attrs.setVideoAttributes(null);
+
+        // 执行转换
+        Encoder encoder = new Encoder();
+        encoder.encode(new MultimediaObject(mp4File), wavFile, attrs);
+    }
+
 }

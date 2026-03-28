@@ -21,10 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -364,49 +367,92 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         private String error; // Flask返回的error字段
     }
 
-    // ========== 修改后的processAudio方法 ==========
+    private NativeAudioUtils nativeAudioUtils = new NativeAudioUtils();
+
+    //语音转文字
     @Override
-    public R<AudioRecognitionSuccess> processAudio(MultipartFile wavFile) {
+    public R<AudioRecognitionSuccess> processAudio(MultipartFile file) {
         StringBuffer sb = new StringBuffer();
         sb.append(aiConfig.getAiAudio());
-        sb.append("/process_audio"); // 路径已修复为下划线
+        sb.append("/process_audio");
         String url = sb.toString();
 
-        // 初始化ObjectMapper（建议注入全局实例，此处简化）
         ObjectMapper objectMapper = new ObjectMapper();
+        File tempWavFile = null;
+        File tempSourceFile = null;
 
         try {
-            // 1. 调用工具类上传文件（参数名改为audio，匹配Flask）
-            String responseData = httpUtil.doPostUpload(url, null, "audio", wavFile);
+            // 1. 获取文件名和后缀
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null) {
+                return R.error("文件名为空");
+            }
+            String suffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
 
-            // 2. 校验响应非空
+            // 2. 创建临时文件（MultipartFile 必须转成 File 才能给 JAVE 使用）
+            tempSourceFile = File.createTempFile("source_" + UUID.randomUUID(), "." + suffix);
+            file.transferTo(tempSourceFile);
+
+            // 3. 判断：如果是 MP4，先转换成 WAV
+            if ("mp4".equals(suffix)) {
+                tempWavFile = File.createTempFile("converted_" + UUID.randomUUID(), ".wav");
+                // 执行转换：44100采样率 + 单声道（通用语音识别标准）
+                nativeAudioUtils.convertMp4ToWav(tempSourceFile, tempWavFile, 44100.0f, 1);
+            }
+            // 如果是 WAV，直接使用
+            else if ("wav".equals(suffix)) {
+                tempWavFile = tempSourceFile;
+            }
+            // 不支持的格式
+            else {
+                return R.error("仅支持 MP4 和 WAV 格式");
+            }
+
+            // 4. 把转换后的 WAV 包装成 MultipartFile 传给接口
+            MultipartFile finalWavFile = new MockMultipartFile(
+                    "audio",
+                    tempWavFile.getName(),
+                    "audio/wav",
+                    Files.newInputStream(tempWavFile.toPath())
+            );
+
+            // 5. 调用语音转文字接口
+            String responseData = httpUtil.doPostUpload(url, null, "audio", finalWavFile);
+
+            // 6. 解析返回结果（原有逻辑不变）
             if (responseData == null || responseData.isEmpty()) {
                 return R.error("检测失败：AI接口返回空结果");
             }
 
-            // 3. 先尝试解析为成功响应
             try {
                 AudioRecognitionSuccess successResp = objectMapper.readValue(responseData, AudioRecognitionSuccess.class);
                 if (successResp.isSuccess()) {
                     return R.success(successResp);
                 }
             } catch (JsonProcessingException e) {
-                // 不是成功响应，尝试解析为失败响应
                 try {
                     AudioRecognitionError errorResp = objectMapper.readValue(responseData, AudioRecognitionError.class);
                     return R.error("AI接口处理失败：" + errorResp.getError());
                 } catch (JsonProcessingException ex) {
-                    // 既不是成功也不是失败格式，返回原始错误
                     return R.error("AI接口响应格式异常：" + responseData);
                 }
             }
 
-            // 兜底返回
             return R.error("AI接口响应解析失败");
 
         } catch (Exception e) {
-            log.error("音频处理失败", e); // 打印完整堆栈
-            return R.error("WAV接口报错：" + e.getMessage());
+            log.error("音频处理失败", e);
+            return R.error("音频处理报错：" + e.getMessage());
+        } finally {
+            // 7. 清理临时文件（必须删，否则占磁盘）
+            try {
+                if (tempWavFile != null && !tempWavFile.equals(tempSourceFile)) {
+                    tempWavFile.delete();
+                }
+                if (tempSourceFile != null) {
+                    tempSourceFile.delete();
+                }
+            } catch (Exception ignored) {}
         }
     }
 
@@ -726,7 +772,11 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             //获取rgb图片
             MultipartFile rgbFile = images.remove(4);
             //剩下4张tif用于分析
+            images.forEach(img -> {
+                log.info(img.getOriginalFilename());
+            });
             apiResponse = analyzeMultiSpectralImages(images);
+            log.info(apiResponse.getData().toString());
             MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
                     apiResponse.getData().getMergeImage());
 
