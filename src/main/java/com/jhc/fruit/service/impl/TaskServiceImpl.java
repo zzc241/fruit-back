@@ -116,7 +116,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
             taskVo.setOrchardName(orchardService.getOrchardNameById(task.getOrchardId()));
             taskVo.setImgsURL(taskImgService.getImg(task.getId()));
         }
-        
+
         return taskVos;
     }
 
@@ -178,10 +178,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         // if (tasks == null || tasks.isEmpty()) {
         //     return new ArrayList<>();
         // }
-        
+
         Set<Long> taskIdSet = new HashSet<>();
         List<Task> allTasks = new ArrayList<>();
-        
+
         // 查询1：基于 taskIds
         List<Long> taskIds = tasks.stream().map(Task::getId).collect(Collectors.toList());
         if (!taskIds.isEmpty()) {  // 关键：只有非空才添加 IN 条件
@@ -202,7 +202,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
             }
             addTasksWithoutDuplicate(allTasks, taskIdSet, taskDao.selectList(queryWrapperArea));
         }
-        
+
         // 查询3：基于 orchardId
         List<Long> orchardIds = areaDao.getOrchardIdByEmpId(taskVo.getReceiverId());
         if (orchardIds != null && !orchardIds.isEmpty()) {
@@ -217,11 +217,11 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         List<TaskVo> taskVos = allTasks.stream()
                 .map(this::taskToVo)
                 .collect(Collectors.toList());
-        
-        taskVos.forEach(taskVoCurr -> 
+
+        taskVos.forEach(taskVoCurr ->
             taskVoCurr.setImgsURL(taskImgService.getImg(taskVoCurr.getId()))
         );
-        
+
         return taskVos;
     }
 
@@ -308,7 +308,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         return taskVos;
     }
 
-    public List<TaskVo> getByAreaId(Long areaId) { 
+    public List<TaskVo> getByAreaId(Long areaId) {
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Task::getAreaId, areaId);
         List<Task> tasks = this.list(queryWrapper);
@@ -386,35 +386,32 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     public R<List<Map<String, Integer>>> getTaskType(Long empId) {
         Employee employee = employeeDao.selectById(empId);
         Long orchardId = employeeDao.getOrchardId(empId);
-        List<TaskVo> taskVos = new ArrayList<>();
-        //为了和果树方法查询带有任务的果树同步，这里调用部分getTaskByType方法的逻辑
-        //找出相关果树
+
+        // 使用 Set 自动去重，根据任务ID唯一
+        Set<TaskVo> taskSet = new HashSet<>();
+
         List<FruitTree> fruitTreeList = fruitTreeDao.selectByTask(orchardId, empId);
-        List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
+
         for (FruitTree fruitTree : fruitTreeList) {
-            FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
-            //查询相关任务
             List<Task> taskList = fruitTreeDao.getByTask(fruitTree.getAreaId(), fruitTree.getId());
-            log.info(taskList.toString());
             List<TaskVo> taskVoList = new ArrayList<>();
             taskList.forEach(item -> {
                 TaskVo taskVo = taskToVo(item);
                 taskVoList.add(taskVo);
             });
-            taskVos.addAll(taskVoList);
+            // 改用 addAll 加入 Set 自动去重
+            taskSet.addAll(taskVoList);
         }
 
-//        //获取个人的所有任务
-//        R<List<TaskVo>> taskVos = getMyTask(employee.getOrchardId(), empId);
-//        List<TaskVo> taskVoList = taskVos.getData();
-        //统计类型以及未完成的数量
+        // 统计 → 从 Set 里取，不会重复
         Map<String, Integer> map = new HashMap<>();
-        for (TaskVo taskVo : taskVos) {
+        for (TaskVo taskVo : taskSet) {
             String type = taskVo.getTaskType();
             map.put(type, map.getOrDefault(type, 0) + 1);
         }
+
         List<Map<String, Integer>> resultList = new ArrayList<>();
-        map.forEach((key, value) -> resultList.add((Map.of(key, value))));
+        map.forEach((key, value) -> resultList.add(Map.of(key, value)));
         return R.success(resultList);
     }
 

@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @ApiModel
@@ -85,4 +86,17 @@ public class TaskVo {
     private String priority;
     private Double salary;
     private ReportVo reportVo;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskVo taskVo = (TaskVo) o;
+        return Objects.equals(id, taskVo.id); // 根据任务ID去重
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
