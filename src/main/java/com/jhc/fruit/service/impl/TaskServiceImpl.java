@@ -43,7 +43,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     @Autowired
     private FruitTreeDao fruitTreeDao;
     @Autowired
-    private FruitTreeService fruitTreeService;
+    private FileService fileService;
 
     /*新增任务*/
     @Override
@@ -392,7 +392,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         List<FruitTree> fruitTreeList = fruitTreeDao.selectByTask(orchardId, empId);
         List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
         for (FruitTree fruitTree : fruitTreeList) {
-            FruitTreeVo fruitTreeVo = fruitTreeService.fruitToVo(fruitTree);
+            FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
             //查询相关任务
             List<Task> taskList = fruitTreeDao.getByTask(fruitTree.getAreaId(), fruitTree.getId());
             log.info(taskList.toString());
@@ -416,6 +416,28 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         List<Map<String, Integer>> resultList = new ArrayList<>();
         map.forEach((key, value) -> resultList.add((Map.of(key, value))));
         return R.success(resultList);
+    }
+
+
+    private FruitTreeVo fruitToVo(FruitTree fruitTree){
+        FruitTreeVo fruitTreeVo = new FruitTreeVo();
+        BeanUtils.copyProperties(fruitTree,fruitTreeVo);
+        fruitTreeVo.setTypeId(fruitTree.getType());
+        fruitTreeVo.setType(fruitTreeDao.selectByType(fruitTree.getType()));
+        fruitTreeVo.setAreaName(fruitTreeDao.selectByAreaId(fruitTree.getAreaId()));
+        fruitTreeVo.setAreaManagerName(fruitTreeDao.getAreaManagerName(fruitTree.getAreaId()));
+        fruitTreeVo.setImg(fileService.getImageUrl(fruitTree.getImg()));
+        if(fruitTreeDao.selectQR(fruitTree.getId()) != null){
+
+            String url = fileService.getImageUrl(fruitTreeDao.selectQR(fruitTree.getId()));
+            if(fileService.isPresignedUrlExpired(url)){
+                fruitTreeVo.setUrl("URLExpired");
+            }else {
+                fruitTreeVo.setUrl(url);
+            }
+
+        }
+        return fruitTreeVo;
     }
 
     @Override
