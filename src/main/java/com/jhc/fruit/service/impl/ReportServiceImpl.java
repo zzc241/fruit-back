@@ -29,7 +29,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     private ReportDao reportDao;
     @Autowired
     private FileService fileService;
-    private final List<Long> typeIds = List.of(1L, 2L, 3L, 4L);
+    private final List<Long> typeIds = List.of(1L, 2L, 3L, 4L, 5L , 6L, 7L);
     @Autowired
     private TaskDao taskDao;
 
