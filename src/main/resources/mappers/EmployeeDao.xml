@@ -21,4 +21,9 @@
         FROM area_info
         WHERE area_info.emp_id = #{id}
     </select>
+    <select id="getOrchardId" resultType="java.lang.Long">
+        SELECT employee.orchard_id
+        FROM fruit.employee
+        WHERE orchard_id = #{orchardId}
+    </select>
 </mapper>

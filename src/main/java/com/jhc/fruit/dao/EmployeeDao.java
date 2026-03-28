@@ -12,4 +12,5 @@ public interface EmployeeDao extends BaseMapper<Employee> {
 
     Long selectAreaId(Long id);
 
+    Long getOrchardId(Long empId);
 }

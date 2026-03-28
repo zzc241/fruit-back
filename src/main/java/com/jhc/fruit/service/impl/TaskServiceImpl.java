@@ -3,15 +3,9 @@ package com.jhc.fruit.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.R;
-import com.jhc.fruit.dao.AreaDao;
-import com.jhc.fruit.dao.EmployeeDao;
-import com.jhc.fruit.dao.ReportDao;
-import com.jhc.fruit.dao.TaskDao;
+import com.jhc.fruit.dao.*;
 import com.jhc.fruit.entity.*;
-import com.jhc.fruit.entity.vo.OwnTaskVo;
-import com.jhc.fruit.entity.vo.ReportVo;
-import com.jhc.fruit.entity.vo.TaskStatisticsVO;
-import com.jhc.fruit.entity.vo.TaskVo;
+import com.jhc.fruit.entity.vo.*;
 import com.jhc.fruit.service.*;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +41,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     @Autowired
     private ReportService reportService;
     @Autowired
-    private ReportDao reportDao;
+    private FruitTreeDao fruitTreeDao;
+    @Autowired
+    private FruitTreeService fruitTreeService;
 
     /*新增任务*/
     @Override
@@ -389,12 +385,31 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     @Override
     public R<List<Map<String, Integer>>> getTaskType(Long empId) {
         Employee employee = employeeDao.selectById(empId);
-        //获取个人的所有任务
-        R<List<TaskVo>> taskVos = getMyTask(employee.getOrchardId(), empId);
-        List<TaskVo> taskVoList = taskVos.getData();
+        Long orchardId = employeeDao.getOrchardId(empId);
+        List<TaskVo> taskVos = new ArrayList<>();
+        //为了和果树方法查询带有任务的果树同步，这里调用部分getTaskByType方法的逻辑
+        //找出相关果树
+        List<FruitTree> fruitTreeList = fruitTreeDao.selectByTask(orchardId, empId);
+        List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
+        for (FruitTree fruitTree : fruitTreeList) {
+            FruitTreeVo fruitTreeVo = fruitTreeService.fruitToVo(fruitTree);
+            //查询相关任务
+            List<Task> taskList = fruitTreeDao.getByTask(fruitTree.getAreaId(), fruitTree.getId());
+            log.info(taskList.toString());
+            List<TaskVo> taskVoList = new ArrayList<>();
+            taskList.forEach(item -> {
+                TaskVo taskVo = taskToVo(item);
+                taskVoList.add(taskVo);
+            });
+            taskVos.addAll(taskVoList);
+        }
+
+//        //获取个人的所有任务
+//        R<List<TaskVo>> taskVos = getMyTask(employee.getOrchardId(), empId);
+//        List<TaskVo> taskVoList = taskVos.getData();
         //统计类型以及未完成的数量
         Map<String, Integer> map = new HashMap<>();
-        for (TaskVo taskVo : taskVoList) {
+        for (TaskVo taskVo : taskVos) {
             String type = taskVo.getTaskType();
             map.put(type, map.getOrDefault(type, 0) + 1);
         }

@@ -68,4 +68,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     Integer countDisasterTree();
 
     Integer getTotal();
+
+    List<FruitTree> selectByTask(Long orchardId, Long empId);
 }
