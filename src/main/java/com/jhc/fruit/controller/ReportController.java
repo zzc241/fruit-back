@@ -122,7 +122,7 @@ public class ReportController {
 
     @ApiOperation("查询任务报告")
     @GetMapping("/getTaskReport/{taskId}")
-    public R<ReportVo> getTaskReport(@RequestParam Long taskId) {
+    public R<ReportVo> getTaskReport(@PathVariable Long taskId) {
         return reportService.getTaskReport(taskId);
     }
 }

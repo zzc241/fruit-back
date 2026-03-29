@@ -61,7 +61,8 @@
     <select id="getTaskReport" resultType="com.jhc.fruit.entity.Report">
         SELECT report.*
         FROM fruit.report,fruit.task
-        WHERE task.report_id = report_id
+        WHERE task.id = #{taskId}
+        AND task.report_id = report.id
     </select>
 
 </mapper>
