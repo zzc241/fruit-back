@@ -89,7 +89,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     public R<String> addImg(Long id,
                           Long typeId,
                           MultipartFile img){
-
+        String url = null;
         if (id == null) {
             log.error("新增报告失败：id为空");
             return R.error("报告不能为空");
@@ -100,34 +100,37 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
 
         try {
             if (img != null && !img.isEmpty()) {
-                if (typeId.equals(1L)){
+                if (typeId.equals(1L) || typeId.equals(2L)){
                     // 水肥图片：修复判断逻辑 + 单个文件校验
-                    String url = fileService.save(img, "fertWater");
+                    url = fileService.save(img, "fertWater");
                     if (url == null || url.isEmpty()) {
                         log.error("水肥图片保存失败，URL为空，报告ID：{}", id);
                     }
                     reportDao.saveImg(url, id, 1);
-                }else if (typeId.equals(2L)){
+                }else if (typeId.equals(3L) || typeId.equals(4L)){
                     // 调用save并校验返回值
-                    String url = fileService.save(img, "bc");
+                    url = fileService.save(img, "bc");
                     if (url == null || url.isEmpty()) {
                         log.error("病虫害图片保存失败，URL为空，报告ID：{}", id);
                     }
                     reportDao.saveImg(url, id, 2);
-                }else if (typeId.equals(3L)){
-                    String url = fileService.save(img, "weeds");
+                }else if (typeId.equals(4L)){
+                    url = fileService.save(img, "weeds");
                     if (url == null || url.isEmpty()) {
                         log.error("杂草图片保存失败，URL为空，报告ID：{}", id);
                     }
                     reportDao.saveImg(url, id, 3);
-                }else if (typeId.equals(4L)){
-                    String url = fileService.save(img, "ripe");
+                }else if (typeId.equals(7L)){
+                    url = fileService.save(img, "ripe");
                     if (url == null || url.isEmpty()) {
                         log.error("果实成熟度图片保存失败，URL为空，报告ID：{}", id);
                     }
                     reportDao.saveImg(url, id, 4);
                 }else {
-                    return R.error("非法类型");
+                    url = fileService.save(img, "report");
+                    if (url == null || url.isEmpty()) {
+                        log.error("报告图片保存失败");
+                    }
                 }
             }
 
@@ -140,6 +143,8 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             }
             return R.error("上传失败：" + e.getMessage());
         }
+        reportDao.addUrl(url, id, typeId);
+        log.info("报告上报成功");
         return R.success("上传成功");
     }
 
