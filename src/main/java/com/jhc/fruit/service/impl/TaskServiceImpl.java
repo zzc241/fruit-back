@@ -385,57 +385,21 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     @Override
     public R<List<Map<String, Integer>>> getTaskType(Long empId) {
         Employee employee = employeeDao.selectById(empId);
-        Long orchardId = employeeDao.getOrchardId(empId);
-
-        // 使用 Set 自动去重，根据任务ID唯一
-        Set<TaskVo> taskSet = new HashSet<>();
-
-        List<FruitTree> fruitTreeList = fruitTreeDao.selectByTask(orchardId, empId);
-
-        for (FruitTree fruitTree : fruitTreeList) {
-            List<Task> taskList = fruitTreeDao.getByTask(fruitTree.getAreaId(), fruitTree.getId());
-            List<TaskVo> taskVoList = new ArrayList<>();
-            taskList.forEach(item -> {
-                TaskVo taskVo = taskToVo(item);
-                taskVoList.add(taskVo);
-            });
-            // 改用 addAll 加入 Set 自动去重
-            taskSet.addAll(taskVoList);
-        }
-
-        // 统计 → 从 Set 里取，不会重复
+//        Long orchardId = employeeDao.getOrchardId(empId);
+//        //获取个人的所有任务
+        R<List<TaskVo>> taskVos = getMyTask(employee.getOrchardId(), empId);
+        List<TaskVo> taskVoList = taskVos.getData();
+        //统计类型以及未完成的数量
         Map<String, Integer> map = new HashMap<>();
-        for (TaskVo taskVo : taskSet) {
+        for (TaskVo taskVo : taskVoList) {
             String type = taskVo.getTaskType();
             map.put(type, map.getOrDefault(type, 0) + 1);
         }
-
         List<Map<String, Integer>> resultList = new ArrayList<>();
-        map.forEach((key, value) -> resultList.add(Map.of(key, value)));
+        map.forEach((key, value) -> resultList.add((Map.of(key, value))));
         return R.success(resultList);
     }
 
-
-    private FruitTreeVo fruitToVo(FruitTree fruitTree){
-        FruitTreeVo fruitTreeVo = new FruitTreeVo();
-        BeanUtils.copyProperties(fruitTree,fruitTreeVo);
-        fruitTreeVo.setTypeId(fruitTree.getType());
-        fruitTreeVo.setType(fruitTreeDao.selectByType(fruitTree.getType()));
-        fruitTreeVo.setAreaName(fruitTreeDao.selectByAreaId(fruitTree.getAreaId()));
-        fruitTreeVo.setAreaManagerName(fruitTreeDao.getAreaManagerName(fruitTree.getAreaId()));
-        fruitTreeVo.setImg(fileService.getImageUrl(fruitTree.getImg()));
-        if(fruitTreeDao.selectQR(fruitTree.getId()) != null){
-
-            String url = fileService.getImageUrl(fruitTreeDao.selectQR(fruitTree.getId()));
-            if(fileService.isPresignedUrlExpired(url)){
-                fruitTreeVo.setUrl("URLExpired");
-            }else {
-                fruitTreeVo.setUrl(url);
-            }
-
-        }
-        return fruitTreeVo;
-    }
 
     @Override
     public R<List<TaskVo>> getReview(Long orchardId) {

@@ -75,7 +75,7 @@
         WHERE fruit_tree.`area_id` = area_info.`id` AND fruit_tree.`type` = fruit_type.`id` AND area_id = #{areaId} order by ripe_num desc
     </select>
     <select id="selectByAreaId" resultType="java.lang.String">
-        SELECT area_info.id from area_info where id = #{areaId}
+        SELECT area_info.name from area_info where id = #{areaId}
     </select>
     <select id="selectByType" resultType="java.lang.String">
         select  fruit_type.type from fruit_type where id = #{type}
@@ -125,20 +125,15 @@
           AND area_info.id = fruit_tree.area_id
     </select>
     <select id="selectByTaskType" resultType="com.jhc.fruit.entity.FruitTree">
-        SELECT DISTINCT task.id as taskId, fruit_tree.*
-        FROM task
-                 JOIN fruit_tree ON
-            -- 核心逻辑：动态匹配tree_id或area_id
-            (task.tree_id IS NOT NULL AND fruit_tree.id = task.tree_id)
-                OR
-            (task.tree_id IS NULL AND fruit_tree.area_id = task.area_id)
-            -- 关联area_info
-                 JOIN area_info ON fruit_tree.area_id = area_info.id
-                 JOIN employee ON emp_id = area_info.emp_id
-        WHERE task.orchard_id = #{orchardId}
-          AND employee.id = #{empId}
-          AND task.task_type = #{type}
-          AND task.status = 1
+        SELECT DISTINCT
+        ft.*
+        FROM fruit_tree ft
+        JOIN task t ON ft.id = t.tree_id  <!-- 只匹配果树ID，删除区域逻辑 -->
+        WHERE
+        t.orchard_id = #{orchardId}
+        AND t.task_type = #{type}
+        AND t.status = 1
+        LIMIT 2  <!-- 只返回前2条，从根源杜绝遍历！ -->
     </select>
     <select id="getRipeSum" resultType="java.lang.Integer">
         SELECT SUM(fruit_tree.ripe_num)
@@ -177,14 +172,15 @@
                  JOIN fruit_tree ON
             -- 核心逻辑：动态匹配tree_id或area_id
             (task.tree_id IS NOT NULL AND fruit_tree.id = task.tree_id)
-#                 OR
-#             (task.tree_id IS NULL AND fruit_tree.area_id = task.area_id)
-#             -- 关联area_info
-#                  JOIN area_info ON fruit_tree.area_id = area_info.id
+                OR
+            (task.tree_id IS NULL AND fruit_tree.area_id = task.area_id)
+            -- 关联area_info
+                 JOIN area_info ON fruit_tree.area_id = area_info.id
         WHERE task.area_id = #{areaId}
         AND (task.tree_id IS NULL OR task.tree_id = #{treeId})
         AND status = 1
         GROUP BY task.id
+        LIMIT 1
     </select>
     <select id="countDisasterTree" resultType="java.lang.Integer">
         SELECT COUNT(id)
@@ -201,13 +197,18 @@
                  JOIN fruit_tree ON
             -- 核心逻辑：动态匹配tree_id或area_id
             (task.tree_id IS NOT NULL AND fruit_tree.id = task.tree_id)
-                OR
-            (task.tree_id IS NULL AND fruit_tree.area_id = task.area_id)
-            -- 关联area_info
+            OR
+            (task.area_id is NOT NULL AND fruit_tree.area_id = task.area_id)
                  JOIN area_info ON fruit_tree.area_id = area_info.id
                  JOIN employee ON emp_id = area_info.emp_id
         WHERE task.orchard_id = #{orchardId}
           AND employee.id = #{empId}
           AND task.status = 1
+        LIMIT 20
+    </select>
+    <select id="getTask" resultType="com.jhc.fruit.entity.FruitTree">
+        SELECT fruit_tree.*
+        FROM fruit.fruit_tree
+        WHERE fruit_tree.id = #{treeId}
     </select>
 </mapper>

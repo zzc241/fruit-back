@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.QRCodeUtil;
 import com.jhc.fruit.common.R;
-import com.jhc.fruit.dao.AreaDao;
-import com.jhc.fruit.dao.DisasterDao;
-import com.jhc.fruit.dao.FertWaterDao;
-import com.jhc.fruit.dao.FruitTreeDao;
+import com.jhc.fruit.dao.*;
 import com.jhc.fruit.entity.*;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import com.jhc.fruit.entity.vo.HealthTreeVo;
@@ -50,6 +47,8 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
     private TaskService taskService;
     @Autowired
     private AreaDao areaDao;
+    @Autowired
+    private TaskDao taskDao;
 
     @Override
     public Page<FruitTreeVo> page(Page<FruitTreeVo> page) {
@@ -185,7 +184,11 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         fruitTreeVo.setType(fruitTreeDao.selectByType(fruitTree.getType()));
         fruitTreeVo.setAreaName(fruitTreeDao.selectByAreaId(fruitTree.getAreaId()));
         fruitTreeVo.setAreaManagerName(fruitTreeDao.getAreaManagerName(fruitTree.getAreaId()));
-        fruitTreeVo.setImg(fileService.getImageUrl(fruitTree.getImg()));
+        if (fruitTree.getImg() != null){
+            fruitTreeVo.setImg(fileService.getImageUrl(fruitTree.getImg()));
+        }else {
+            fruitTreeVo.setImg(fileService.getImageUrl("headImg/default.png"));
+        }
         if(fruitTreeDao.selectQR(fruitTree.getId()) != null){
 
             String url = fileService.getImageUrl(fruitTreeDao.selectQR(fruitTree.getId()));
@@ -245,7 +248,32 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
 
     @Override
     public R<List<FruitTreeVo>> getByTask(Long orchardId, String type, Long empId) {
-        //找出相关果树
+        //查询个人未完成的任务
+        List<Task> tasks = taskDao.getMyTask(orchardId, empId);
+        //提取相关类型
+        List<TaskVo> taskVoList = new ArrayList<>();
+        for (Task task : tasks) {
+            if(task.getTaskType() != null && task.getTaskType().equals(type)){
+                taskVoList.add(taskService.taskToVo(task));
+            }
+        }
+        if(taskVoList.isEmpty()){
+            return R.error("no task found");
+        }else {
+            List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
+            for (TaskVo taskVo : taskVoList) {
+                FruitTree fruitTree = fruitTreeDao.getTask(taskVo.getTreeId());
+                if(fruitTree == null){
+                    continue;
+                }
+                FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
+                fruitTreeVo.setTasks(taskVoList);
+                fruitTreeVoList.add(fruitTreeVo);
+            }
+            return R.success(fruitTreeVoList);
+        }
+
+/*        //找出相关果树
         List<FruitTree> fruitTreeList = fruitTreeDao.selectByTaskType(orchardId, type, empId);
         List<FruitTreeVo> fruitTreeVoList = new ArrayList<>();
         for (FruitTree fruitTree : fruitTreeList) {
@@ -262,7 +290,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
             fruitTreeVo.setTasks(taskVoList);
             fruitTreeVoList.add(fruitTreeVo);
         }
-        return R.success(fruitTreeVoList);
+        return R.success(fruitTreeVoList);*/
     }
 
     @Override

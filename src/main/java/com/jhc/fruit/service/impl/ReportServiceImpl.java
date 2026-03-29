@@ -188,16 +188,16 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         }
 
         reportDao.insert(report);
-        //新增任务
-        Task task = new Task();
-        task.setCreatorId(report.getUserId());
-        task.setCreateTime(report.getCreateTime());
-        task.setTaskType("浇水");
-        task.setTaskInfo("给该区域所有果树浇水，每株5L");
-        task.setOrchardId(reportDao.getOrchardId(report.getUserId()));
-        task.setTaskTitle("浇水");
-        task.setDeadline(LocalDateTime.now().plusDays(1));
-        taskDao.insert(task);
+//        //新增任务
+//        Task task = new Task();
+//        task.setCreatorId(report.getUserId());
+//        task.setCreateTime(report.getCreateTime());
+//        task.setTaskType("浇水");
+//        task.setTaskInfo("给该区域所有果树浇水，每株5L");
+//        task.setOrchardId(reportDao.getOrchardId(report.getUserId()));
+//        task.setTaskTitle("浇水");
+//        task.setDeadline(LocalDateTime.now().plusDays(1));
+//        taskDao.insert(task);
 
         Long id = report.getId();
         Long typeId = report.getTypeId();

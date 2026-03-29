@@ -7,6 +7,7 @@ import com.jhc.fruit.entity.FruitType;
 import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.entity.vo.FruitTreeVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -70,4 +71,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     Integer getTotal();
 
     List<FruitTree> selectByTask(Long orchardId, Long empId);
+
+    FruitTree getTask(Long treeId);
 }

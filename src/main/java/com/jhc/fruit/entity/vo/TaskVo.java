@@ -8,7 +8,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @ApiModel
@@ -64,19 +63,6 @@ public class TaskVo {
     private LocalDateTime postTime;
     @ApiModelProperty(value = "任务状态")
     private Integer status;
-//    @ApiModelProperty(value = "用户组id")
-//    private Long empgroupId;
-//    @ApiModelProperty(value = "用户组id列表")
-//    private List<Long> empIds;
-//    @ApiModelProperty(value = "员工姓名列表")
-//    private List<String> empNames;
-
-//    @ApiModelProperty(value = "员工组名称")
-//    private String groupName;
-//    @ApiModelProperty(value = "员工组描述")
-//    private String groupDescription;
-//    @ApiModelProperty(value = "员工组内容")
-//    private String groupContent;
 
     @ApiModelProperty(value = "接收者id")
     private Long receiverId;
@@ -87,16 +73,4 @@ public class TaskVo {
     private Double salary;
     private ReportVo reportVo;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TaskVo taskVo = (TaskVo) o;
-        return Objects.equals(id, taskVo.id); // 根据任务ID去重
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

@@ -74,6 +74,7 @@
           AND employee.id = #{empId}
           AND task_type = #{type}
           AND task.status = 1
+        LIMIT 20
     </select>
     <select id="getTreeByAreaId" resultType="com.jhc.fruit.entity.FruitTree">
         SELECT fruit_tree.*
