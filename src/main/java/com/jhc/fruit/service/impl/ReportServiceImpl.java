@@ -402,6 +402,8 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         }
 
         reportDao.insert(report);
+        //如果上报成功
+
         Task task = taskDao.selectById(taskId);
         task.setReportId(report.getId());
         taskDao.updateById(task);

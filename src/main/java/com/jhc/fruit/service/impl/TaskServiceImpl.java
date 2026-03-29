@@ -238,6 +238,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     private Task voToTask(TaskVo taskVo) {
         Task task = new Task();
         BeanUtils.copyProperties(taskVo, task);
+        task.setReportId(taskVo.getReportVo().getId());
     /*        //从taskVo获取创建人名字，从名字查询用户id
         task.setCreatorId(
                 employeeService.getEmpIdByName(
@@ -267,7 +268,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                 employeeService.getEmpNameById(
                         task.getCreatorId()));
         taskVo.setAreaName(areaDao.getAreaNameById(task.getAreaId()));
-        if (!(taskImgService.getImg(task.getId()) == null)){
+        if (! ((taskImgService.getImg(task.getId()) == null))){
             taskVo.setImgsURL(
                     taskImgService.getImg(task.getId())
             );
