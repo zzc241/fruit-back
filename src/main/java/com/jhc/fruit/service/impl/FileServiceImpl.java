@@ -323,6 +323,9 @@ public class FileServiceImpl implements FileService {
 
     //判断文件是否存在
     public Boolean exits(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return false;
+        }
         try {
             minioClient.statObject(
                     StatObjectArgs.builder()
