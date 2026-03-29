@@ -32,4 +32,6 @@ public interface ReportDao extends BaseMapper<Report> {
     List<Report> getOrchardReport(Long orchardId);
 
     String getUserName(Long userId);
+
+    Report getTaskReport(Long taskId);
 }
