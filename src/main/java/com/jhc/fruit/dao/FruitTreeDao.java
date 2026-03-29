@@ -73,4 +73,6 @@ public interface FruitTreeDao extends BaseMapper<FruitTree> {
     List<FruitTree> selectByTask(Long orchardId, Long empId);
 
     FruitTree getTask(Long treeId);
+
+    List<FruitTree> getTreeByArea(Long areaId);
 }

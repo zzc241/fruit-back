@@ -211,4 +211,10 @@
         FROM fruit.fruit_tree
         WHERE fruit_tree.id = #{treeId}
     </select>
+    <select id="getTreeByArea" resultType="com.jhc.fruit.entity.FruitTree">
+        SELECT fruit_tree.*
+        FROM fruit.fruit_tree
+        WHERE area_id = #{areaId}
+        LIMIT 3
+    </select>
 </mapper>

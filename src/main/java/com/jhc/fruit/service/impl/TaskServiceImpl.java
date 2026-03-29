@@ -50,8 +50,19 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     public Long addTask(TaskVo taskVo) {
         try {
             Task task = voToTask(taskVo);
-            //设置创建时间
-            this.save(task);
+            Long areaId = task.getAreaId();
+            if (areaId != null && task.getTreeId() == null) {
+                List<FruitTree> fruitTrees = fruitTreeDao.getTreeByArea(areaId);
+                //设置创建时间
+                task.setCreateTime(LocalDateTime.now());
+                task.setUpdateTime(LocalDateTime.now());
+                for (FruitTree fruitTree : fruitTrees) {
+                    task.setTreeId(fruitTree.getId());
+                    task.setReportId(taskVo.getReportVo().getId());
+                    taskDao.insert(task);
+                }
+            }
+
             Long id = task.getId();
             List<String> img = taskVo.getImgsURL();
             Iterator<String> iterator = img.iterator();
@@ -238,7 +249,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     private Task voToTask(TaskVo taskVo) {
         Task task = new Task();
         BeanUtils.copyProperties(taskVo, task);
-        task.setReportId(taskVo.getReportVo().getId());
+        if (taskVo.getReceiverId() != null) {
+            task.setReportId(taskVo.getReportVo().getId());
+        }
     /*        //从taskVo获取创建人名字，从名字查询用户id
         task.setCreatorId(
                 employeeService.getEmpIdByName(
