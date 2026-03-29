@@ -119,4 +119,10 @@ public class ReportController {
     public R<List<ReportVo>> getOrchardReport(@PathVariable Long orchardId) {
         return reportService.getOrchardReport(orchardId);
     }
+
+    @ApiOperation("查询任务报告")
+    @GetMapping("/getTaskReport/{taskId}")
+    public R<ReportVo> getTaskReport(@RequestParam Long taskId) {
+        return reportService.getTaskReport(taskId);
+    }
 }

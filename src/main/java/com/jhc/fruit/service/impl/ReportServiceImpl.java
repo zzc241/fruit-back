@@ -379,4 +379,15 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         }
         return R.success(reportVos);
     }
+
+    @Override
+    public R<ReportVo> getTaskReport(Long taskId) {
+        Report report = reportDao.selectById(taskId);
+        ReportVo reportVo = new ReportVo();
+        BeanUtils.copyProperties(report, reportVo);
+        List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
+        reportVo.setUrlList(urls);
+        reportVo.setUserName(reportDao.getUserName(report.getUserId()));
+        return R.success(reportVo);
+    }
 }

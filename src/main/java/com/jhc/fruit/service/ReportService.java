@@ -37,4 +37,6 @@ public interface ReportService extends IService<Report> {
     R<ReportVo> getOwnTaskReport(Long empId, Long treeId, Long typeId);
 
     R<List<ReportVo>> getOrchardReport(Long orchardId);
+
+    R<ReportVo> getTaskReport(Long taskId);
 }
