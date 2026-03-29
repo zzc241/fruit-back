@@ -390,4 +390,29 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         reportVo.setUserName(reportDao.getUserName(report.getUserId()));
         return R.success(reportVo);
     }
+
+    @Override
+    public R<List<Long>> addReport(Report report, Long taskId) {
+        //保存
+        if (report == null) {
+            return R.error("报告为空");
+        }
+        if (report.getContent() == null || report.getContent().isEmpty()) {
+            return R.error("内容为空");
+        }
+
+        reportDao.insert(report);
+        Task task = taskDao.selectById(taskId);
+        task.setReportId(report.getId());
+        taskDao.updateById(task);
+        Long id = report.getId();
+        Long typeId = report.getTypeId();
+        if (id == null) {
+            return R.error("上报失败");
+        }
+        if (!typeIds.contains(typeId) || typeId == null) {
+            return R.error("上报类型错误:" + report.getTypeId());
+        }
+        return R.success(List.of(id, typeId));
+    }
 }

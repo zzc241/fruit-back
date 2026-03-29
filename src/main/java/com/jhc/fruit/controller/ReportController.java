@@ -43,6 +43,13 @@ public class ReportController {
         return reportService.add(report);
     }
 
+    @ApiOperation("任务报告")
+    @PostMapping( "/addReport/{taskId}")
+    public R<List<Long>> addReport(
+            @RequestBody Report report, @PathVariable Long taskId) {
+        return reportService.addReport(report, taskId);
+    }
+
     @ApiOperation("修改")
     @PostMapping("/update")
     public R<String> update(@RequestBody ReportVo reportVo) {

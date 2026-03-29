@@ -50,8 +50,6 @@ public interface TaskService extends IService<Task> {
 
     R<String> reviewFaile(List<Long> taskIds);
 
-    R<List<TaskVo>> getTaskReport(Long taskId);
-
     R<Map<String, Double>> countTaskByType();
 
     R<TaskStatisticsVO> countByStatus();

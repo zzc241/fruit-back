@@ -440,11 +440,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         return R.success();
     }
 
-    @Override
-    public R<List<TaskVo>> getTaskReport(Long taskId) {
-        return null;
-    }
-
     /**
      * 根据任务类型统计完成率
      * @return 封装好的结果，key=任务类型，value=该类型任务完成率（0~1之间）
