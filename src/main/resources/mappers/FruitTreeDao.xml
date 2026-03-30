@@ -214,7 +214,11 @@
     <select id="getTreeByArea" resultType="com.jhc.fruit.entity.FruitTree">
         SELECT fruit_tree.*
         FROM fruit.fruit_tree
-        WHERE area_id = #{areaId}
+        JOIN fruit.area_info
+            ON area_info.id = fruit_tree.area_id
+        -- 条件：匹配区域
+        WHERE fruit_tree.area_id = #{areaId}
+        GROUP BY fruit_tree.id
         LIMIT 3
     </select>
 </mapper>
