@@ -56,9 +56,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                 //设置创建时间
                 task.setCreateTime(LocalDateTime.now());
                 task.setUpdateTime(LocalDateTime.now());
+                Long reportId = taskVo.getReportVo().getId();
                 for (FruitTree fruitTree : fruitTrees) {
                     task.setTreeId(fruitTree.getId());
-                    task.setReportId(taskVo.getReportVo().getId());
+                    task.setReportId(reportId);
                     taskDao.insert(task);
                 }
             }
