@@ -267,7 +267,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
                     continue;
                 }
                 FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
-                fruitTreeVo.setTasks(taskVoList);
+                fruitTreeVo.setTasks(List.of(taskVo));
                 fruitTreeVoList.add(fruitTreeVo);
             }
             return R.success(fruitTreeVoList);

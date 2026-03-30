@@ -219,6 +219,6 @@
         -- 条件：匹配区域
         WHERE fruit_tree.area_id = #{areaId}
         GROUP BY fruit_tree.id
-        LIMIT 3
+        LIMIT 1
     </select>
 </mapper>
