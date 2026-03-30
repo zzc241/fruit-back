@@ -383,6 +383,9 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     @Override
     public R<ReportVo> getTaskReport(Long taskId) {
         Report report = reportDao.getTaskReport(taskId);
+        if (report == null) {
+            return R.success(new ReportVo());
+        }
         ReportVo reportVo = new ReportVo();
         BeanUtils.copyProperties(report, reportVo);
         List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
