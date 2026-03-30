@@ -314,7 +314,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             ReportVo reportVo = new ReportVo();
             BeanUtils.copyProperties(report, reportVo);
             List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
-            reportVo.setUrlList(fileService.getImageUrls(urls));
+            reportVo.setUrlList(urls);
             reportVo.setUserName(reportDao.getUserName(report.getUserId()));
             reportVos.add(reportVo);
         }

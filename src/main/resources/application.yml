@@ -86,10 +86,14 @@ minio:
   secret-key: jhc210210
   bucket-name: fruit-bucket
 ai-api:
-  aiCzm: http://192.168.123.94:8000
-  aiZen: http://192.168.123.94:5002
-  aiAudio: http://192.168.123.94:5001
-  aiCbh: http://192.168.123.94:8003
+#  水肥分析与成熟度、AI聊天、天气预警
+  aiCzm: http://192.168.100.2:8000
+#  杂草识别
+  aiZen: http://192.168.100.2:5002
+#  语言识别
+  aiAudio: http://192.168.100.2:5001
+#  多光谱
+  aiCbh: http://192.168.100.2:8003
 txt:
   descriptionConfig:
     email: 1660985901@qq.com
