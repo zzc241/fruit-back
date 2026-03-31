@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jhc.fruit.dao.ImageDao">
+
+    <select id="getRawImage" resultType="java.lang.String">
+        SELECT * FROM raw_image
+    </select>
+    <select id="getHandledImage" resultType="java.lang.String">
+        SELECT * FROM handled_image
+    </select>
+</mapper>
