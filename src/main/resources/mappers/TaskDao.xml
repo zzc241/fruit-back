@@ -63,7 +63,7 @@
                  INNER JOIN employee ON area_info.emp_id = employee.id
         WHERE task.orchard_id = #{orchardId}
           AND employee.id = #{empId}
-          AND task.status = 1
+          AND task.status in (1, 0)
     </select>
     <select id="getTaskByType" resultType="com.jhc.fruit.entity.Task">
         SELECT task.*
