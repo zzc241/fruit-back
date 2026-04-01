@@ -28,9 +28,9 @@ spring:
       #      url: jdbc:mysql://127.0.0.1:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
       #      username: root
       #      password: zyrwl241/19548875171
-      url: jdbc:mysql://192.168.123.92:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+      url: jdbc:mysql://192.168.100.2:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
       username: root
-      password: tyzx99ty!
+      password: jhc210210
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss.SSS
     time-zone: GMT+8
@@ -81,14 +81,15 @@ mybatis-plus:
   mapper-locations: mappers/*.xml
 #Minio配置
 minio:
-  endpoint: http://192.168.123.92:9000
+  endpoint: http://192.168.100.2:9000
   access-key: fruit
   secret-key: jhc210210
-  bucket-name: fruit-bucket
+  bucket-name: fruit
 ai-api:
 #  水肥分析与成熟度、AI聊天、天气预警
   aiCzm: http://192.168.100.2:8000
 #  杂草识别
+
   aiZen: http://192.168.100.2:5002
 #  语言识别
   aiAudio: http://192.168.100.2:5001

@@ -14,6 +14,10 @@ public interface ReportService extends IService<Report> {
 
     R<String> addImg(Long id, Long typeId, MultipartFile img);
 
+    R<String> addReportImg(Long id,
+                           Long typeId,
+                           String url);
+
     R<List<ReportVo>> selectReport(List<Long> ids);
 
     R<List<Long>> add(Report report);

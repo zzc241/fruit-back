@@ -21,13 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -57,16 +54,18 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
      * @return 解析后的检测结果
      */
     public R<AIWeedVo> AIWeed(MultipartFile imageFile) {
+        //构建请求url
         StringBuffer sb = new StringBuffer();
         sb.append(aiConfig.getAiZen());
         sb.append("/predict");
         String url = sb.toString();
-        //保存原始图像
+        //保存前端传入的原始图像
         String originUrl = fileService.save(imageFile, originPrefix);
-
         try {
+            //调用网络通信工具类发送请求，调用杂草识别AI
             String responseData = httpUtil.doPostUpload(url, null, "file", imageFile);
 
+            //对响应数据处理
             // 校验响应数据非空（避免解析空字符串报错）
             if (responseData == null || responseData.isEmpty()) {
                 return R.error("检测失败：AI接口返回空结果");
@@ -75,7 +74,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             // 解析JSON响应为目标对象
             AIWeeds.WeedDetectionResponse detectionResponse =
                     objectMapper.readValue(responseData, AIWeeds.WeedDetectionResponse.class);
-            //处理图片
+            //根据返回的响应数据处理杂草图片，生成识别后的杂草图片
             String outputUrl = AIWeedImg(originUrl, outputPrefix, detectionResponse.getResult().getDetections());
             if (outputUrl.equals("err")) {
                 outputUrl = "ERROR.png";
@@ -91,6 +90,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
                 item.setOutputImg(fileService.getImageUrl(finalOutputUrl));
             });
 
+            //封装响应数据
             log.info("处理完成，识别结果图片路径:" + outputUrl);
             AIWeedVo aiWeedVo = new AIWeedVo();
             //杂草种类及其数量
@@ -102,7 +102,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             }
             //平均置信度
             aiWeedVo.setConfidence(confidence/detectionResponse.getResult().getDetections().size());
-            //处理图像路径
+            //处理后图像的访问url
             aiWeedVo.setOutputImg(fileService.getImageUrl(outputUrl));
 
             return R.success(aiWeedVo);
@@ -128,6 +128,20 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         map.forEach((key, value) -> resultList.add((Map.of(key, value))));
         return resultList;
     }
+
+
+    /**
+     * AIWeeds
+     * 调用AI接口检测杂草
+     *
+     * @param imageFile 待检测的图像文件
+     * @return 解析后的检测结果
+     */
+    public R<AIWeedVo> AIWeeds(MultipartFile imageFile) {
+
+        return AIWeed(imageFile);
+    }
+
 
     /**
      * 处理检测结果（核心业务逻辑）
@@ -195,27 +209,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         String disasterType = "";
         String adviceContent = "";
     
-        // 从content中提取预警信息
-        if (content.contains("干旱蓝色预警")) {
-            disasterType = "干旱蓝色预警";
-        } else if (content.contains("大风蓝色预警")) {
-            disasterType = "大风蓝色预警";
-        } else if (content.contains("高湿病害黄色预警")){
-            disasterType = "高湿病害黄色预警";
-        } else if ( content.contains("高温热害红色预警")){
-            disasterType = "高温热害红色预警";
-        } else if (content.contains("低温冻害橙色预警")){
-            disasterType = "低温冻害橙色预警";
-        } else {
-            disasterType = "气象条件适宜";
-        }
-        // 可以根据需要添加更多预警类型
-        // alerts.append(" 【低温冻害橙色预警】")
-        // alerts.append(" 【高温热害红色预警】")
-        // alerts.append(" 【高湿病害黄色预警】")
-        // alerts.append(" 【干旱蓝色预警】")
-        // alerts.append(" 【大风蓝色预警】")
-        // alerts.append(" 【气象条件适宜】")
+        // 从content中提取预警信息并保存
+        disasterType = content;
         
         // 提取管理建议部分
         if (content.contains("柑橘种植管理建议")) {
@@ -264,7 +259,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     public String analyzeWaterFertilizer(MultipartFile msFile, MultipartFile rgbFile) {
         String url = aiConfig.getAiCzm() + "/api/analyze-water-fertilizer";
 
-        // 添加文件验证
+        // 对文件进行校验,判断文件是否存在
         if (msFile == null || msFile.isEmpty()) {
             log.error("MS文件为空或不存在: ");
             return "错误：MS文件获取失败";
@@ -273,6 +268,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             log.error("RGB文件为空或不存在: ");
             return "错误：RGB文件获取失败";
         }
+        //确认文件数据没有问题后
         // 1. 构建请求头
         Map<String, String> headers = new HashMap<>();
         headers.put("accept", "multipart/form-data");
@@ -282,10 +278,11 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         fileParams.put("ms_file", msFile);
         fileParams.put("rgb_file", rgbFile);
         
-        // 3. 调用多文件上传方法
+        // 3. 调用HttpUtil工具类的多文件上传方法，向多光谱接口发送请求,并接收返回的响应数据
         String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
         
         log.info(response);
+        //解析响应数据
         String responseResult = extractResult(response);
         return responseResult;
     }
@@ -372,70 +369,33 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     //语音转文字
     @Override
     public R<AudioRecognitionSuccess> processAudio(MultipartFile file) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(aiConfig.getAiAudio());
-        sb.append("/process_audio");
-        String url = sb.toString();
-
+        String url = aiConfig.getAiAudio() + "/process_audio";
         ObjectMapper objectMapper = new ObjectMapper();
-        File tempWavFile = null;
-        File tempSourceFile = null;
 
         try {
-            // 1. 获取文件名和后缀
-            String originalFilename = file.getOriginalFilename();
-            if (originalFilename == null) {
+            if (file.isEmpty()) {
+                return R.error("上传文件不能为空");
+            }
+            if (file.getOriginalFilename() == null) {
                 return R.error("文件名为空");
             }
-            String suffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
 
-            // 2. 创建临时文件（MultipartFile 必须转成 File 才能给 JAVE 使用）
-            tempSourceFile = File.createTempFile("source_" + UUID.randomUUID(), "." + suffix);
-            file.transferTo(tempSourceFile);
+            // 直接上传原始文件，尽量减少数据失真
+            String responseData = httpUtil.doPostUpload(url, null, "audio", file);
 
-            // 3. 判断：如果是 MP4，先转换成 WAV
-            if ("mp4".equals(suffix)) {
-                tempWavFile = File.createTempFile("converted_" + UUID.randomUUID(), ".wav");
-                // 执行转换：44100采样率 + 单声道（通用语音识别标准）
-                nativeAudioUtils.convertMp4ToWav(tempSourceFile, tempWavFile, 44100.0f, 1);
-            }
-            // 如果是 WAV，直接使用
-            else if ("wav".equals(suffix)) {
-                tempWavFile = tempSourceFile;
-            }
-            // 不支持的格式
-            else {
-                return R.error("仅支持 MP4 和 WAV 格式");
-            }
-
-            // 4. 把转换后的 WAV 包装成 MultipartFile 传给接口
-            MultipartFile finalWavFile = new MockMultipartFile(
-                    "audio",
-                    tempWavFile.getName(),
-                    "audio/wav",
-                    Files.newInputStream(tempWavFile.toPath())
-            );
-
-            // 5. 调用语音转文字接口
-            String responseData = httpUtil.doPostUpload(url, null, "audio", finalWavFile);
-
-            // 6. 解析返回结果（原有逻辑不变）
             if (responseData == null || responseData.isEmpty()) {
-                return R.error("检测失败：AI接口返回空结果");
+                return R.error("AI接口返回空结果");
             }
 
+            //调用语言识别AI，提取识别后的文本，返回前端
             try {
                 AudioRecognitionSuccess successResp = objectMapper.readValue(responseData, AudioRecognitionSuccess.class);
                 if (successResp.isSuccess()) {
                     return R.success(successResp);
                 }
             } catch (JsonProcessingException e) {
-                try {
-                    AudioRecognitionError errorResp = objectMapper.readValue(responseData, AudioRecognitionError.class);
-                    return R.error("AI接口处理失败：" + errorResp.getError());
-                } catch (JsonProcessingException ex) {
-                    return R.error("AI接口响应格式异常：" + responseData);
-                }
+                AudioRecognitionError errorResp = objectMapper.readValue(responseData, AudioRecognitionError.class);
+                return R.error("识别失败：" + errorResp.getError());
             }
 
             return R.error("AI接口响应解析失败");
@@ -443,16 +403,6 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         } catch (Exception e) {
             log.error("音频处理失败", e);
             return R.error("音频处理报错：" + e.getMessage());
-        } finally {
-            // 7. 清理临时文件（必须删，否则占磁盘）
-            try {
-                if (tempWavFile != null && !tempWavFile.equals(tempSourceFile)) {
-                    tempWavFile.delete();
-                }
-                if (tempSourceFile != null) {
-                    tempSourceFile.delete();
-                }
-            } catch (Exception ignored) {}
         }
     }
 
@@ -465,7 +415,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         
         // 构建文件参数
         Map<String, MultipartFile> fileParams = new HashMap<>();
-        fileParams.put("file", maturityFile);  // 参数名根据接口文档调整
+        fileParams.put("file", maturityFile);
         
         // 调用接口
         String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
@@ -551,14 +501,14 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             throw new RuntimeException("第三方接口地址为空，请检查AIConfig配置");
         }
 
-        // 3. 映射文件参数（保留）
+        // 3. 映射文件参数
         Map<String, MultipartFile> fileParams = new HashMap<>();
         fileParams.put("nm555", images.get(0));
         fileParams.put("nm660", images.get(1));
         fileParams.put("nm720", images.get(2));
         fileParams.put("nm840", images.get(3));
 
-        // 4. 校验文件格式（保留）
+        // 4. 校验文件格式
         for (Map.Entry<String, MultipartFile> entry : fileParams.entrySet()) {
             String paramName = entry.getKey();
             MultipartFile file = entry.getValue();
@@ -580,15 +530,16 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             throw new RuntimeException("第三方接口调用失败：" + responseBody);
         }
 
-        // ==================== 7. 解析响应（已修复） ====================
+        // 解析响应数据
         MultiSpectralResponse spectralResponse;
         MultiSpectralResponse.PythonFertilizerAnalysis analysis = null;
         MultiSpectralResponse.PythonResponseData pythonData = null;
         String photoPrefix = null;
-        String imageUrl = null;  // 新增：保存图片URL
-        String actualFileName = null;  // 新增：保存实际文件名
+        String imageUrl = null;  // 保存图片URL
+        String actualFileName = null;  // 保存实际文件名
         String mergeUrl = null; //合并后的多光谱图片url
 
+        //处理数据
         try {
             JsonNode rootNode = objectMapper.readTree(responseBody);
             log.info("成功接收到响应，开始解析");
@@ -617,7 +568,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
                     log.info("合成图URL: {}", mergeUrl);
                 }
 
-                // 获取实际的分析数据 - 注意字段名是中文的
+                // 获取实际的分析数据
                 JsonNode analysisDataNode = dataNode.get("fertilizer_analysis_json全部数据");
                 if (analysisDataNode != null) {
                     log.info("找到分析数据节点");
@@ -631,7 +582,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
                     pythonData = new MultiSpectralResponse.PythonResponseData();
                     pythonData.setJson_file_path(getStringValue(analysisDataNode, "visual_save_path"));
 
-                    // 从block_position获取实际文件名（修复关键点）
+                    // 从block_position获取实际文件名
                     if(actualFileName == null){
                         
                     }
@@ -712,9 +663,9 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         spectralIndices.setEVI(analysis.getEvi() != null ? analysis.getEvi() : 0.0);
         spectralIndices.setLAI(analysis.getLai() != null ? analysis.getLai() : 0.0);
 
-        // ==================== 10. 赋值区块信息（修复文件名问题） ====================
+        // 赋值区块信息
         BlockPosition blockPosition = new BlockPosition();
-        // 修复：使用实际的文件名，而不是保存路径
+        // 使用实际的文件名
         if (actualFileName != null) {
             blockPosition.setFile_name(actualFileName);
         } else {
@@ -743,7 +694,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         blockPosition.setBig_block(analysis.getBigBlock() != null ? analysis.getBigBlock() : "default");
         blockPosition.setSub_block(analysis.getSubBlock() != null ? analysis.getSubBlock() : "default");
 
-        // ==================== 11. 组装返回数据 ====================
+        // 组装返回数据
         List<BlockPosition> blockPositions = new ArrayList<>();
         blockPositions.add(blockPosition);
 
@@ -755,33 +706,37 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         responseData.setAnalysisImage(imageUrl);
         responseData.setMergeImage(mergeUrl);
 
-        // 12. 组装最终响应
+        // 组装最终响应
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setCode(200);
         apiResponse.setMsg("分析成功");
         apiResponse.setData(responseData);
 
+        //返回数据
         log.info("分析完成，照片编号: {}, 营养状态: {}", photoPrefix, analysis.getFertilizer_level());
         return apiResponse;
     }
 
     @Override
     public ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images, Long orchardId, Long areaId) {
+        //创建响应数据实体类,用于保存处理完的数据
         ApiResponse apiResponse = new ApiResponse();
         try {
             //获取rgb图片
-            MultipartFile rgbFile = images.remove(4);
+            MultipartFile rgbFile = images.remove(images.size() - 1);
             //剩下4张tif用于分析
             images.forEach(img -> {
                 log.info(img.getOriginalFilename());
             });
+            //调用多光谱分析接口，分析多光谱图片，获取返回的分析数据
             apiResponse = analyzeMultiSpectralImages(images);
             log.info(apiResponse.getData().toString());
+            //从服务器读取目标图片流
             MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
                     apiResponse.getData().getMergeImage());
-
+            //处理数据
             apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
-            //保存数据
+            //保存处理后的响应数据
             Analyze analyze = new Analyze();
             analyze.setAreaId(areaId);
             analyze.setOrchardId(orchardId);
@@ -791,11 +746,12 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             analyze.setNutritionStatus(apiResponse.getData().getNutritionStatus());
             analyze.updateSpectralIndices(apiResponse.getData().getSpectralIndices());
             analyze.updateBlockPositions(apiResponse.getData().getBlockPositions().get(0));
-
+            //保存到数据库
             aiDao.saveAnalyze(analyze);
         }catch (Exception e){
             throw new RuntimeException(e);
         }
+        //最后返回给前端
         return apiResponse;
     }
 
@@ -819,6 +775,25 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         }
         return R.success(voList);
     }
+
+    @Override
+    public ApiResponse analyzeMultiSpectralImagePlus(List<MultipartFile> images, Long orchardId, Long areaId) {
+        //创建响应数据实体类，用于保存处理完的数据
+        ApiResponse apiResponse = new ApiResponse();
+        try{
+            //获取rgb图片
+            MultipartFile rgbFile = images.remove(images.size() - 1);
+            images.forEach(img -> {
+                log.info(img.getOriginalFilename());
+            });
+            apiResponse = analyzeMultiSpectralImages(images);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
 
     // 辅助方法：安全的获取double值
     private Double getDoubleValue(JsonNode node, String field) {

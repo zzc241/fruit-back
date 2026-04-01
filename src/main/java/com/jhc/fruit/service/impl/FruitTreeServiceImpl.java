@@ -187,7 +187,7 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         if (fruitTree.getImg() != null){
             fruitTreeVo.setImg(fileService.getImageUrl(fruitTree.getImg()));
         }else {
-            fruitTreeVo.setImg(fileService.getImageUrl("headImg/default.png"));
+            fruitTreeVo.setImg(fileService.getImageUrl("tree/bcfba3228763494c94a3530e098b2055.jpg"));
         }
         if(fruitTreeDao.selectQR(fruitTree.getId()) != null){
 

@@ -107,11 +107,15 @@ public class AIController {
     }
 
     @ApiOperation("多光谱照片分析并返回建议")
+    //路由
     @PostMapping(value = "/analyzePlus/{orchardId}/{areaId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    //接收参数：图片组、区域id
     public ApiResponse analyzePlus(@RequestParam("images") List<MultipartFile> images, @PathVariable Long orchardId, @PathVariable Long areaId) {
         try {
+            //调用接口实现类
             ApiResponse apiResponse = aiService.analyzeMultiSpectralImagesPlus(images, orchardId, areaId);
             return apiResponse;
+            //抛出异常
         } catch (IllegalArgumentException e) {
             ApiResponse response = new ApiResponse();
             response.setCode(400);

@@ -36,6 +36,16 @@ public class ReportController {
         return reportService.addImg(reportId, typeId, img);
     }
 
+    @ApiOperation("新增任务报告(图片文件)")
+    @PostMapping("/addReportImg/{reportId}/{typeId}")
+    public R<String> addReportImg(
+            @PathVariable Long reportId,
+            @PathVariable Long typeId,
+            @RequestParam String url
+    ) {
+        return reportService.addReportImg(reportId, typeId, url);
+    }
+
     @ApiOperation("新增")
     @PostMapping( "/add")
     public R<List<Long>> add(
@@ -102,7 +112,7 @@ public class ReportController {
         return R.success(reportList);
     }
 
-    @ApiOperation("根据果实id查询报告")
+    @ApiOperation("根据果树id查询报告")
     @GetMapping("/get/{treeId}")
     public R<List<ReportVo>> getByTree(@PathVariable Long treeId) {
         return reportService.getByTree(treeId);

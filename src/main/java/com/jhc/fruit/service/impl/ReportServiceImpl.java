@@ -1,7 +1,6 @@
 package com.jhc.fruit.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jhc.fruit.common.R;
 import com.jhc.fruit.dao.ReportDao;
@@ -15,9 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +99,70 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
 
         try {
             if (img != null && !img.isEmpty()) {
+                if (typeId.equals(1L) || typeId.equals(2L)){
+                    // 水肥图片：修复判断逻辑 + 单个文件校验
+                    url = fileService.save(img, "fertWater");
+                    if (url == null || url.isEmpty()) {
+                        log.error("水肥图片保存失败，URL为空，报告ID：{}", id);
+                    }
+                    reportDao.saveImg(url, id, 1);
+                }else if (typeId.equals(3L) || typeId.equals(4L)){
+                    // 调用save并校验返回值
+                    url = fileService.save(img, "bc");
+                    if (url == null || url.isEmpty()) {
+                        log.error("病虫害图片保存失败，URL为空，报告ID：{}", id);
+                    }
+                    reportDao.saveImg(url, id, 2);
+                }else if (typeId.equals(4L)){
+                    url = fileService.save(img, "weeds");
+                    if (url == null || url.isEmpty()) {
+                        log.error("杂草图片保存失败，URL为空，报告ID：{}", id);
+                    }
+                    reportDao.saveImg(url, id, 3);
+                }else if (typeId.equals(7L)){
+                    url = fileService.save(img, "ripe");
+                    if (url == null || url.isEmpty()) {
+                        log.error("果实成熟度图片保存失败，URL为空，报告ID：{}", id);
+                    }
+                    reportDao.saveImg(url, id, 4);
+                }else {
+                    url = fileService.save(img, "report");
+                    if (url == null || url.isEmpty()) {
+                        log.error("报告图片保存失败");
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            log.error("新增报告及图片失败，报告ID：{}，异常信息：{}", id, e.getMessage(), e);
+            // 回滚：删除新增的报告 + 关联图片
+            if (reportDao.selectById(id) != null) {
+                reportDao.deleteById(id);
+                reportDao.deleteImgs(id);
+            }
+            return R.error("上传失败：" + e.getMessage());
+        }
+        reportDao.addUrl(url, id, typeId);
+        log.info("报告上报成功");
+        return R.success("上传成功");
+    }
+
+    @Override
+    public R<String> addReportImg(Long id,
+                                  Long typeId,
+                                  String url){
+        if (id == null) {
+            log.error("新增报告失败：id为空");
+            return R.error("报告不能为空");
+        }
+        if (typeId == null || !typeIds.contains(typeId)) {
+            log.error("新增报告失败：类型错误 typeId={}", typeId);
+        }
+
+        try {
+            if (url != null && !url.isEmpty()) {
+                Map objectMap = fileService.parsePresignedUrl(url);
+                MultipartFile img = fileService.getMinioFileAsMultipartFile(objectMap.get("objectPath").toString());
                 if (typeId.equals(1L) || typeId.equals(2L)){
                     // 水肥图片：修复判断逻辑 + 单个文件校验
                     url = fileService.save(img, "fertWater");
@@ -313,7 +376,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         for (Report report : reports) {
             ReportVo reportVo = new ReportVo();
             BeanUtils.copyProperties(report, reportVo);
-            List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
+            List<String> urls = getUrlsByType(report.getId(), report.getTypeId());
             reportVo.setUrlList(urls);
             reportVo.setUserName(reportDao.getUserName(report.getUserId()));
             reportVos.add(reportVo);
@@ -394,6 +457,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         return R.success(reportVo);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public R<List<Long>> addReport(Report report, Long taskId) {
         //保存
@@ -403,8 +467,12 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         if (report.getContent() == null || report.getContent().isEmpty()) {
             return R.error("内容为空");
         }
-
-        reportDao.insert(report);
+        log.info("新增任务报告:{}", report.toString());
+        if(reportDao.selectById(report.getId()) == null){
+            reportDao.insert(report);
+        }else {
+            reportDao.updateById(report);
+        }
         //如果上报成功
         Task task = taskDao.selectById(taskId);
         task.setReportId(report.getId());
