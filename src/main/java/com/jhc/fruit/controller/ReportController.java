@@ -37,11 +37,11 @@ public class ReportController {
     }
 
     @ApiOperation("新增任务报告(图片文件)")
-    @PostMapping("/addReportImg/{reportId}/{typeId}")
+    @PostMapping("/addReportImg/{reportId}/{typeId}/{url}")
     public R<String> addReportImg(
             @PathVariable Long reportId,
             @PathVariable Long typeId,
-            @RequestParam String url
+            @PathVariable String url
     ) {
         return reportService.addReportImg(reportId, typeId, url);
     }
