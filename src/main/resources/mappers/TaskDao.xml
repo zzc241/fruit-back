@@ -145,4 +145,9 @@
         WHERE task.status not in (3)
           AND NOW() > task.deadline
     </select>
+    <select id="getByReportId" resultType="com.jhc.fruit.entity.Task">
+        SELECT task.*
+        FROM fruit.task
+        WHERE task.report_id = #{id}
+    </select>
 </mapper>

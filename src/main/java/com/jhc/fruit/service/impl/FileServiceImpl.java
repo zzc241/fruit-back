@@ -282,8 +282,16 @@ public class FileServiceImpl implements FileService {
             }
 
             // 设置存储对象名称
-            String extFileName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            String fileName = UUID.randomUUID().toString().replace("-" , "") + extFileName;
+            String originalFilename = file.getOriginalFilename();
+            String extFileName = "";
+
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extFileName = originalFilename.substring(originalFilename.lastIndexOf("."));
+            } else {
+                extFileName = ""; // 没有后缀就为空
+            }
+
+            String fileName = UUID.randomUUID().toString().replace("-", "") + extFileName;
             String minioPath;
             if (path != null) {
                 minioPath = path + "/" + fileName;

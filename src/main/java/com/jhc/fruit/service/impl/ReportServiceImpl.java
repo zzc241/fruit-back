@@ -10,9 +10,11 @@ import com.jhc.fruit.entity.Task;
 import com.jhc.fruit.entity.vo.ReportVo;
 import com.jhc.fruit.service.FileService;
 import com.jhc.fruit.service.ReportService;
+import com.jhc.fruit.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +33,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
     private final List<Long> typeIds = List.of(1L, 2L, 3L, 4L, 5L , 6L, 7L);
     @Autowired
     private TaskDao taskDao;
+    @Qualifier("taskService")
 
     @Override
     public void update(ReportVo reportVo) {
@@ -199,9 +202,8 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
 
         } catch (Exception e) {
             log.error("新增报告及图片失败，报告ID：{}，异常信息：{}", id, e.getMessage(), e);
-            // 回滚：删除新增的报告 + 关联图片
+            // 回滚：删除关联图片
             if (reportDao.selectById(id) != null) {
-                reportDao.deleteById(id);
                 reportDao.deleteImgs(id);
             }
             return R.error("上传失败：" + e.getMessage());

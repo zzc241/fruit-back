@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLDecoder;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -43,6 +45,13 @@ public class ReportController {
             @PathVariable Long typeId,
             @PathVariable String url
     ) {
+        try {
+            String decodeStr = URLDecoder.decode(url, "UTF-8");
+            url = new String(Base64.getDecoder().decode(decodeStr), "UTF-8");
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return R.error("解析失败");
+        }
         return reportService.addReportImg(reportId, typeId, url);
     }
 

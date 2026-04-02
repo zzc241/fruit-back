@@ -53,4 +53,6 @@ public interface TaskDao extends BaseMapper<Task> {
     Integer getByStatus(Long status);
 
     Integer getOverDue();
+
+    Task getByReportId(Long id);
 }
