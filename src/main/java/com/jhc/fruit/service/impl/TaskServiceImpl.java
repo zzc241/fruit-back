@@ -44,6 +44,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     private FruitTreeDao fruitTreeDao;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private ReportDao reportDao;
 
     /*新增任务*/
     @Override
@@ -522,6 +524,24 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         taskStatisticsVO.setCompletedCount(completedTasks);
 
         return R.success(taskStatisticsVO);
+    }
+
+    @Override
+    public boolean deleteTask(Long id) {
+        //关联删除任务报告，如果有任务报告的话
+        Task task = taskDao.selectById(id);
+        if (task == null) {
+            return false;
+        }
+        //关联删除任务报告
+        if (task.getReportId() != null) {
+            Report report = taskDao.getReviewReport(task.getReportId());
+            if (report != null) {
+                reportDao.deleteById(report.getId());
+            }
+        }
+        taskDao.deleteById(id);
+        return true;
     }
 
     public static Double roundDouble(Double value, int scale) {

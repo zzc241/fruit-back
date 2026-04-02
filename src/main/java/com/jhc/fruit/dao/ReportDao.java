@@ -34,4 +34,6 @@ public interface ReportDao extends BaseMapper<Report> {
     String getUserName(Long userId);
 
     Report getTaskReport(Long taskId);
+
+    void checkUrl(String url);
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
 
     @Override
     public void update(ReportVo reportVo) {
-        //情况：文本数据更新/图片更新
+        //情景：文本数据更新/图片更新
         //更新文本部分
         Report report = new Report();
         BeanUtils.copyProperties(reportVo, report);
@@ -66,13 +67,13 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
             Map<String, Object> map = fileService.parsePresignedUrl(url);
             oldFileNames.add(map.get("objectPath").toString());
         });
-        // 对比旧URL和新URL，找出待删除/待新增的URL ==========
-        // 待删除URL：旧有但新的没有
+        // 对比旧URL和新URL，找出待删除/待新增的URL
+        // 待删除URL：旧的有但新的没有
         List<String> toDeleteUrls = oldFileNames.stream()
                 .filter(url -> !newFileNames.contains(url) && url != null && !url.isEmpty())
                 .toList();
 
-        // 待新增URL：新的但旧有没有
+        // 待新增URL：新的有但旧有没有
         List<String> toAddUrls = newFileNames.stream()
                 .filter(url -> !oldFileNames.contains(url) && url != null && !url.isEmpty())
                 .toList();
@@ -202,8 +203,8 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
 
         } catch (Exception e) {
             log.error("新增报告及图片失败，报告ID：{}，异常信息：{}", id, e.getMessage(), e);
-            // 回滚：删除关联图片
             if (reportDao.selectById(id) != null) {
+
                 reportDao.deleteImgs(id);
             }
             return R.error("上传失败：" + e.getMessage());
@@ -212,6 +213,8 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
         log.info("报告上报成功");
         return R.success("上传成功");
     }
+
+
 
     @Override
     public R<List<ReportVo>> selectReport(List<Long> ids) {
@@ -231,6 +234,7 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
                 if (reportVo.getTypeId() == null || !typeIds.contains(reportVo.getTypeId())){
                     return R.error("类型非法");
                 }
+
                 List<String> urls = getUrlsByType(id, reportVo.getTypeId());
                 //保存url
                 reportVo.setUrlList(urls);

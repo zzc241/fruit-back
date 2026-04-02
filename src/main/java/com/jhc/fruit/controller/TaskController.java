@@ -47,8 +47,12 @@ public class TaskController {
     @ApiOperation(value = "根据id删除任务")
     @DeleteMapping("/delete/{id}")
     public R<String> deleteTask(@PathVariable Long id) {
-        taskService.removeById(id);
-        return R.success("删除成功");
+        if(taskService.deleteTask(id)){
+            return R.success("删除成功");
+        }else {
+            return  R.error("删除失败");
+        }
+
     }
 
     @ApiOperation(value = "批量删除任务")

@@ -269,22 +269,10 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             return "错误：RGB文件获取失败";
         }
         //确认文件数据没有问题后
-        // 1. 构建请求头
-        Map<String, String> headers = new HashMap<>();
-        headers.put("accept", "multipart/form-data");
-        
-        // 2. 构建文件参数映射
-        Map<String, MultipartFile> fileParams = new HashMap<>();
-        fileParams.put("ms_file", msFile);
-        fileParams.put("rgb_file", rgbFile);
-        
-        // 3. 调用HttpUtil工具类的多文件上传方法，向多光谱接口发送请求,并接收返回的响应数据
-        String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
-        
-        log.info(response);
-        //解析响应数据
-        String responseResult = extractResult(response);
-        return responseResult;
+        //构建请求头
+
+
+        return null;
     }
 
     /**
@@ -642,7 +630,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             throw new RuntimeException("解析后的analysis对象为空");
         }
 
-        // ==================== 9. 赋值光谱指数 ====================
+        //赋值光谱指数
         FullIndicesMean spectralIndices = new FullIndicesMean();
         spectralIndices.setNDVI(analysis.getNdvi() != null ? analysis.getNdvi() : 0.0);
         spectralIndices.setNDRE(analysis.getNdre() != null ? analysis.getNdre() : 0.0);
@@ -719,35 +707,42 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
     @Override
     public ApiResponse analyzeMultiSpectralImagesPlus(List<MultipartFile> images, Long orchardId, Long areaId) {
-        //创建响应数据实体类,用于保存处理完的数据
+        //创建响应数据实体类,用于保存分析结果
         ApiResponse apiResponse = new ApiResponse();
         try {
             //获取rgb图片
             MultipartFile rgbFile = images.remove(images.size() - 1);
-            //剩下4张tif用于分析
+            //提取4个波段的tif图片
             images.forEach(img -> {
                 log.info(img.getOriginalFilename());
             });
             //调用多光谱分析接口，分析多光谱图片，获取返回的分析数据
             apiResponse = analyzeMultiSpectralImages(images);
             log.info(apiResponse.getData().toString());
-            //从服务器读取目标图片流
             MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
                     apiResponse.getData().getMergeImage());
-            //处理数据
+            //这里调用多光谱接口处理数据
             apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
             //保存处理后的响应数据
             Analyze analyze = new Analyze();
+            //保存果园和区块编号
             analyze.setAreaId(areaId);
             analyze.setOrchardId(orchardId);
+            //保存分析建议
             analyze.setAnalyzeSuggestion(apiResponse.getData().getAnalyzeSuggestion());
+            //保存合成图片
             analyze.setMergeImage(apiResponse.getData().getMergeImage());
+            //保存分析结果图片
             analyze.setAnalysisImage(apiResponse.getData().getAnalysisImage());
+            //保存水肥分析指标
             analyze.setNutritionStatus(apiResponse.getData().getNutritionStatus());
+            //保存水肥分析指数
             analyze.updateSpectralIndices(apiResponse.getData().getSpectralIndices());
+            //保存经纬度信息
             analyze.updateBlockPositions(apiResponse.getData().getBlockPositions().get(0));
             //保存到数据库
             aiDao.saveAnalyze(analyze);
+            //抛出异常
         }catch (Exception e){
             throw new RuntimeException(e);
         }
@@ -776,22 +771,51 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         return R.success(voList);
     }
 
+    // TODO fw水肥分析接口
     @Override
     public ApiResponse analyzeMultiSpectralImagePlus(List<MultipartFile> images, Long orchardId, Long areaId) {
-        //创建响应数据实体类，用于保存处理完的数据
+        //创建响应数据实体类,用于保存分析结果
         ApiResponse apiResponse = new ApiResponse();
-        try{
+        try {
             //获取rgb图片
             MultipartFile rgbFile = images.remove(images.size() - 1);
+            //提取4个波段的tif图片
             images.forEach(img -> {
                 log.info(img.getOriginalFilename());
             });
+
+            //调用多光谱分析接口，分析多光谱图片
             apiResponse = analyzeMultiSpectralImages(images);
-        } catch (IOException e) {
+            log.info(apiResponse.getData().toString());
+
+            //从服务器读取图片数据流
+            MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
+                    apiResponse.getData().getMergeImage()
+            );
+            //调用水肥分析AI
+            log.info(apiResponse.getData().toString());
+            apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
+
+            //保存果园和区块编号
+            Analyze analyze = new Analyze();
+            analyze.setAreaId(areaId);
+            analyze.setOrchardId(orchardId);
+            //保存分析建议
+            analyze.setAnalyzeSuggestion(apiResponse.getData().getAnalyzeSuggestion());
+            //提起分析图片并保存
+            analyze.setAnalysisImage(apiResponse.getData().getAnalysisImage());
+            //提取多通道合成图片
+            analyze.setMergeImage(apiResponse.getData().getMergeImage());
+            //提取水肥分析指数
+            analyze.updateSpectralIndices(apiResponse.getData().getSpectralIndices());
+            aiDao.saveAnalyze(analyze);
+
+
+        }catch (Exception e){
             throw new RuntimeException(e);
         }
 
-        return null;
+        return apiResponse;
     }
 
 
@@ -811,6 +835,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         return null;
     }
 
+    //
     // 辅助方法：安全的获取string值
     private String getStringValue(JsonNode node, String field) {
         if (node.has(field) && !node.get(field).isNull()) {

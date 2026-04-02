@@ -53,4 +53,6 @@ public interface TaskService extends IService<Task> {
     R<Map<String, Double>> countTaskByType();
 
     R<TaskStatisticsVO> countByStatus();
+
+    boolean deleteTask(Long id);
 }
