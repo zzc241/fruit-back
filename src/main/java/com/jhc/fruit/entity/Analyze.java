@@ -27,6 +27,8 @@ public class Analyze {
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime createTime;
+    private String analyze;
+    private String analyzeAI;
 
     public void updateSpectralIndices(FullIndicesMean fullIndicesMean) {
         this.spectralIndices = toJsonByGson(fullIndicesMean);

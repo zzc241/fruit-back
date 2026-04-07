@@ -30,7 +30,7 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
 
     String analyzeWaterFertilizer(MultipartFile msFile, MultipartFile rgbFile);
 
-    String unanalyzeWaterFertilizer(String msFile, String rgbFile);
+    String unAnalyzeWaterFertilizer(MultipartFile rgbFile);
 
     R<AudioRecognitionSuccess> processAudio(MultipartFile wavFile);
 
@@ -41,4 +41,12 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
     R<List<AnalyzeVo>> getAnalyze(Long orchardId, Long areaId);
 
     ApiResponse analyzeMultiSpectralImagePlus(List<MultipartFile> images, Long orchardId, Long areaId);
+
+    R<List<AnalyzeVo>> getAnalyzeRegison(Long areaId);
+
+    String getWaterDeficit(String regionId, String orchardId);
+
+    String getSpectralData(String regionId, String orchardId);
+
+    String getPlotAnalyzeReport(String plotId);
 }

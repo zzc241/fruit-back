@@ -139,9 +139,8 @@ public class ReportServiceImpl extends ServiceImpl<ReportDao, Report> implements
 
         } catch (Exception e) {
             log.error("新增报告及图片失败，报告ID：{}，异常信息：{}", id, e.getMessage(), e);
-            // 回滚：删除新增的报告 + 关联图片
+            //删除关联图片
             if (reportDao.selectById(id) != null) {
-                reportDao.deleteById(id);
                 reportDao.deleteImgs(id);
             }
             return R.error("上传失败：" + e.getMessage());

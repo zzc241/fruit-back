@@ -77,8 +77,8 @@ public class AIController {
 
     @ApiOperation("小程序：分析水肥需求接口")
     @PostMapping("/unapp/analyze-water-fertilizer")
-    public R<String> unappanalyzeWaterFertilizer(@RequestParam String msFile, @RequestParam String rgbFile){
-        String result = aiService.unanalyzeWaterFertilizer(msFile , rgbFile);
+    public R<String> unappanalyzeWaterFertilizer(@RequestParam MultipartFile rgbFile){
+        String result = aiService.unAnalyzeWaterFertilizer(rgbFile);
         return R.success(result);
     }
 
@@ -135,6 +135,29 @@ public class AIController {
         return aiService.getAnalyze(orchardId, areaId);
     }
 
+    @ApiOperation("获取区域分析数据")
+    @GetMapping("/getAnalyzeRegion/{areaId}")
+    public R<List<AnalyzeVo>> getAnalyzeRegion(@PathVariable Long areaId) {
+        return  aiService.getAnalyzeRegison(areaId);
+    }
 
+    @GetMapping("/water/deficit")
+    public String getWaterDeficit(
+            @RequestParam(required = false) String regionId,
+            @RequestParam(required = false) String orchardId) {
+        return aiService.getWaterDeficit(regionId, orchardId);
+    }
+
+    @GetMapping("/water/spectral")
+    public String getSpectralData(
+            @RequestParam(required = false) String regionId,
+            @RequestParam(required = false) String orchardId) {
+        return aiService.getSpectralData(regionId, orchardId);
+    }
+
+    @GetMapping("/AI/analyzePlus/{plotId}")
+    public String getPlotAnalyzeReport(@PathVariable String plotId) {
+        return aiService.getPlotAnalyzeReport(plotId);
+    }
 
 }

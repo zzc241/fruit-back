@@ -1,5 +1,7 @@
 package com.jhc.fruit.service.impl;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,6 +37,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     private AIConfig aiConfig;
     @Autowired
     private FileService fileService;
+    private final String msFileName = "analysis/MS400_0001/20260403_101218_0cf33978_MS400_0001_merged.tif";
+    private final String prefix = "分析地区：金华";
     private final HttpUtil httpUtil = HttpUtil.getInstance();
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
@@ -45,6 +49,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     private ImageDrawUtil imageDrawUtil;
     private static final String originPrefix = "AIWeed/origin";
     private static final String outputPrefix = "AIWeed/output";
+    @Autowired
+    private ImageServiceImpl imageServiceImpl;
 
 
     /**
@@ -268,11 +274,24 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             log.error("RGB文件为空或不存在: ");
             return "错误：RGB文件获取失败";
         }
+        Map<String, MultipartFile> fileParams = new HashMap<>();
+        fileParams.put("ms_file", msFile);
         //确认文件数据没有问题后
-        //构建请求头
+        // 构建请求头
+        Map<String, String> headers = new HashMap<>();
+        headers.put("accept", "multipart/form-data");
+
+        // 构建文件参数映射
+        fileParams.put("rgb_file", rgbFile);
+        // 向ai水肥服务发送请求,并接收返回的响应数据
+        String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
 
 
-        return null;
+        log.info(response);
+        //调用解析方法，解析响应数据为分析报告并保存至数据库中
+        String responseResult = extractResult(response);
+        //返回分析报告给前端
+        return responseResult;
     }
 
     /**
@@ -313,9 +332,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     }
 
     @Override
-    public String unanalyzeWaterFertilizer(String msFileName, String rgbFileName) {
+    public String unAnalyzeWaterFertilizer(MultipartFile rgbFile) {
         MultipartFile msFile = fileService.getMinioFileAsMultipartFile(msFileName);
-        MultipartFile rgbFile = fileService.getMinioFileAsMultipartFile(rgbFileName);
         String url = aiConfig.getAiCzm() + "/api/analyze-water-fertilizer";
 
         // 添加文件验证
@@ -324,23 +342,47 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             return "错误：MS文件获取失败";
         }
         if (rgbFile == null || rgbFile.isEmpty()) {
-            log.error("RGB文件为空或不存在: {}", rgbFileName);
+            log.error("RGB文件为空或不存在: {}", rgbFile);
             return "错误：RGB文件获取失败";
         }
         // 1. 构建请求头
         Map<String, String> headers = new HashMap<>();
-        headers.put("accept", "multipart/form-data");
+        headers.put("accept", "application/json"); // 这里也修正，不要写form-data
 
-        // 2. 构建文件参数映射
+
         Map<String, MultipartFile> fileParams = new HashMap<>();
         fileParams.put("ms_file", msFile);
-        fileParams.put("rgb_file", rgbFile);
 
-        // 3. 调用多文件上传方法
+
+        //构建文件参数映射
+        fileParams.put("rgb_file", rgbFile);
+        //调用多文件上传方法
         String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
 
-        log.info(response);
-        return response;
+
+        log.info("AI接口返回: {}", response);
+
+        final String prefix = "分析地区：金华";
+        String finalText = "";
+
+        try {
+            JSONObject json = JSONUtil.parseObj(response);
+            String resultStr = json.getStr("result");
+
+            // 截取
+            if (resultStr != null) {
+                int index = resultStr.indexOf(prefix);
+                if (index != -1) {
+                    finalText = resultStr.substring(index + prefix.length()).trim();
+                }
+            }
+
+        } catch (Exception e) {
+            log.error("解析截取失败", e);
+        }
+
+        log.info("截取后结果: \n{}", finalText);
+        return finalText;
     }
 
     /**
@@ -710,19 +752,20 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         //创建响应数据实体类,用于保存分析结果
         ApiResponse apiResponse = new ApiResponse();
         try {
-            //获取rgb图片
-            MultipartFile rgbFile = images.remove(images.size() - 1);
-            //提取4个波段的tif图片
-            images.forEach(img -> {
-                log.info(img.getOriginalFilename());
-            });
-            //调用多光谱分析接口，分析多光谱图片，获取返回的分析数据
+            //提取4个波段的tif图片和rgb图片
+            MultipartFile rgbFile = images.remove( images.size() - 1);
+            //调用多光谱分析服务，获取分析数据
             apiResponse = analyzeMultiSpectralImages(images);
+
             log.info(apiResponse.getData().toString());
+            //从服务器里获取对应的多通道合成图片
             MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
                     apiResponse.getData().getMergeImage());
-            //这里调用多光谱接口处理数据
-            apiResponse.getData().setAnalyzeSuggestion(analyzeWaterFertilizer(msFile , rgbFile));
+            //调用水肥报告接口分析水肥指数，通过分析数据和rgb图片获取水肥指数分析报告
+            String originalSuggestion = analyzeWaterFertilizer(msFile , rgbFile);
+            //校准分析报告格式,保证返回前端标注格式
+            String cleanSuggestion = cleanAnalyzeSuggestion(originalSuggestion);
+            apiResponse.getData().setAnalyzeSuggestion(cleanSuggestion);
             //保存处理后的响应数据
             Analyze analyze = new Analyze();
             //保存果园和区块编号
@@ -750,6 +793,35 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         return apiResponse;
     }
 
+    /**
+     * 清理分析建议文本
+     * @param originalSuggestion 原始建议字符串
+     * @return 清理后的建议（保留水肥指数分析及之后内容）
+     */
+    private String cleanAnalyzeSuggestion(String originalSuggestion) {
+        if (originalSuggestion == null || originalSuggestion.isBlank()) {
+            return originalSuggestion;
+        }
+        // 匹配关键词：水肥指数分析
+        String keyWord = "水肥指数分析";
+        int index = originalSuggestion.indexOf(keyWord);
+
+        // 找到关键词，从关键词位置开始截取（包含关键词本身）
+        if (index != -1) {
+            return originalSuggestion.substring(index);
+        }
+        // 没找到则返回原内容
+        return originalSuggestion;
+    }
+
+
+
+
+
+    /*            //分别提取4个波段的tif图片和rgb图片
+            MultipartFile rgbFile = images.remove(images.size() - 1);
+            //调用多光谱分析服务，获取多光谱分析数据
+            apiResponse = analyzeMultiSpectralImages(images);*/
     @Override
     public R<List<AnalyzeVo>> getAnalyze(Long orchardId, Long areaId) {
         List<Analyze> analyzeList = aiDao.getAnalyze(orchardId,areaId);
@@ -771,7 +843,11 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         return R.success(voList);
     }
 
-    // TODO fw水肥分析接口
+    //test@ test code is run what
+    /*pub
+    */
+
+    // 水肥分析接口
     @Override
     public ApiResponse analyzeMultiSpectralImagePlus(List<MultipartFile> images, Long orchardId, Long areaId) {
         //创建响应数据实体类,用于保存分析结果
@@ -817,6 +893,14 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
         return apiResponse;
     }
+
+    @Override
+    public R<List<AnalyzeVo>> getAnalyzeRegison(Long areaId) {
+        return null;
+    }
+
+    /*d*/
+
 
 
     // 辅助方法：安全的获取double值
@@ -905,5 +989,20 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     }
 
 
+    @Override
+    public String getWaterDeficit(String regionId, String orchardId) {
+        return "{\"code\":200,\"data\":[{\"label\":\"缺氮\",\"count\":120,\"unit\":\"株\",\"percentage\":\"12%\",\"type\":\"n\"}]}";
+    }
+
+    @Override
+    public String getSpectralData(String regionId, String orchardId) {
+        return "{\"code\":200,\"data\":{\"viChartData\":[{\"label\":\"NDVI\",\"value\":0.72}],\"totalSamples\":989,\"saveCost\":4260}}";
+    }
+
+    @Override
+    public String getPlotAnalyzeReport(String plotId) {
+        return "{\"code\":200,\"data\":{\"ndvi\":0.65,\"ndre\":0.42,\"ndwi\":0.30,\"suggestion\":\"补充钾肥\",\"nutrientStatus\":\"缺钾\",\"growthStatus\":\"一般\"}}";
+    }
 
 }
+

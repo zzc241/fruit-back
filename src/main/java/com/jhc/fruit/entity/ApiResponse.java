@@ -1,7 +1,6 @@
 package com.jhc.fruit.entity;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Data
@@ -22,6 +21,7 @@ public class ApiResponse {
         private FullIndicesMean spectralIndices;
         // 可上传MinIO的分析图（MultipartFile）
         private String analysisImage;
+        //合成图片地址
         private String mergeImage;
     }
 }
