@@ -26,8 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.plaf.multi.MultiButtonUI;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -241,6 +243,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         log.info(response);
         return disasterVo;
     }
+    /*
+    * */
 
     @Override
     public String chat(String query) {
@@ -283,9 +287,8 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
         // 构建文件参数映射
         fileParams.put("rgb_file", rgbFile);
-        // 向ai水肥服务发送请求,并接收返回的响应数据
+        // 向ai分析水肥接口发送请求,并接收返回的响应数据
         String response = httpUtil.doPostUploadMulti(url, headers, fileParams);
-
 
         log.info(response);
         //调用解析方法，解析响应数据为分析报告并保存至数据库中
@@ -303,7 +306,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         try {
             log.info("开始解析水肥分析结果: {}", jsonResponse);
 
-            // 直接解析JSON（现在是单层结构）
+            // 解析JSON
             JsonObject root = JsonParser.parseString(jsonResponse).getAsJsonObject();
 
             // 检查返回码
@@ -329,7 +332,9 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             log.error("解析水肥分析结果失败: {}", e.getMessage(), e);
             return null;
         }
+
     }
+
 
     @Override
     public String unAnalyzeWaterFertilizer(MultipartFile rgbFile) {
@@ -753,36 +758,37 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         ApiResponse apiResponse = new ApiResponse();
         try {
             //提取4个波段的tif图片和rgb图片
-            MultipartFile rgbFile = images.remove( images.size() - 1);
-            //调用多光谱分析服务，获取分析数据
+            MultipartFile rgbFile = checkImages( images);
+            //调用多光谱分析接口，获取分析数据
             apiResponse = analyzeMultiSpectralImages(images);
 
             log.info(apiResponse.getData().toString());
-            //从服务器里获取对应的多通道合成图片
             MultipartFile msFile = fileService.getMinioFileAsMultipartFile(
                     apiResponse.getData().getMergeImage());
-            //调用水肥报告接口分析水肥指数，通过分析数据和rgb图片获取水肥指数分析报告
+            //提取多光谱水肥指数分析报告
             String originalSuggestion = analyzeWaterFertilizer(msFile , rgbFile);
-            //校准分析报告格式,保证返回前端标注格式
+            // 清洗并标准化水肥分析建议，确保返回前端统一规范格式
             String cleanSuggestion = cleanAnalyzeSuggestion(originalSuggestion);
             apiResponse.getData().setAnalyzeSuggestion(cleanSuggestion);
             //保存处理后的响应数据
             Analyze analyze = new Analyze();
-            //保存果园和区块编号
+            //果园和区块编号
             analyze.setAreaId(areaId);
             analyze.setOrchardId(orchardId);
-            //保存分析建议
+            //分析建议
             analyze.setAnalyzeSuggestion(apiResponse.getData().getAnalyzeSuggestion());
-            //保存合成图片
+            analyze.setAnalyzePath(fileService.uploadJsonToMinio(analyze.getAnalyzeSuggestion(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"))));
+            //合成图片
             analyze.setMergeImage(apiResponse.getData().getMergeImage());
-            //保存分析结果图片
+            //分析结果图片
             analyze.setAnalysisImage(apiResponse.getData().getAnalysisImage());
-            //保存水肥分析指标
+            //健康状态
             analyze.setNutritionStatus(apiResponse.getData().getNutritionStatus());
-            //保存水肥分析指数
+            //水肥分析指数
             analyze.updateSpectralIndices(apiResponse.getData().getSpectralIndices());
-            //保存经纬度信息
+            //经纬度信息
             analyze.updateBlockPositions(apiResponse.getData().getBlockPositions().get(0));
+            analyze.setCreateTime(LocalDateTime.now());
             //保存到数据库
             aiDao.saveAnalyze(analyze);
             //抛出异常
@@ -792,6 +798,15 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         //最后返回给前端
         return apiResponse;
     }
+
+    private MultipartFile checkImages(List<MultipartFile> images) {
+        MultipartFile rgbFile = images.remove(images.size() - 1);
+        return rgbFile;
+    }
+
+    /*dis
+    * dkdis*/
+
 
     /**
      * 清理分析建议文本
@@ -878,12 +893,15 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
             analyze.setOrchardId(orchardId);
             //保存分析建议
             analyze.setAnalyzeSuggestion(apiResponse.getData().getAnalyzeSuggestion());
+            analyze.setAnalyzePath(fileService.uploadJsonToMinio(analyze.getAnalyze(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"))));
+            log.info("\n-----------------------\n{}\n-----------------------\n", analyze.getAnalyzePath());
             //提起分析图片并保存
             analyze.setAnalysisImage(apiResponse.getData().getAnalysisImage());
             //提取多通道合成图片
             analyze.setMergeImage(apiResponse.getData().getMergeImage());
             //提取水肥分析指数
             analyze.updateSpectralIndices(apiResponse.getData().getSpectralIndices());
+            analyze.setCreateTime(LocalDateTime.now());
             aiDao.saveAnalyze(analyze);
 
 
@@ -995,7 +1013,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
     }
 
     @Override
-    public String getSpectralData(String regionId, String orchardId) {
+    public String getSpectralData(String regionId) {
         return "{\"code\":200,\"data\":{\"viChartData\":[{\"label\":\"NDVI\",\"value\":0.72}],\"totalSamples\":989,\"saveCost\":4260}}";
     }
 

@@ -470,5 +470,12 @@ public class FruitTreeServiceImpl extends ServiceImpl<FruitTreeDao, FruitTree> i
         return R.success(healthTreeVo);
     }
 
+    @Override
+    public R<FruitTreeVo> getTree(Long treeId) {
+        FruitTree fruitTree = fruitTreeDao.selectById(treeId);
+        FruitTreeVo fruitTreeVo = fruitToVo(fruitTree);
+        return R.success(fruitTreeVo);
+    }
+
 
 }

@@ -35,12 +35,6 @@ public class FruitTreeController {
     private FruitTreeService fruitTreeService;
 
     @Autowired
-    private FruitGrowService fruitGrowService;
-
-    @Autowired
-    private FruitTypeService fruitTypeService;
-
-    @Autowired
     private FileService fileService;
 
 
@@ -288,5 +282,11 @@ public class FruitTreeController {
     @GetMapping("/countIllness")
     public R<HealthTreeVo> countIllness(){
         return fruitTreeService.countIllness();
+    }
+
+    @ApiOperation("根据id查询果树")
+    @GetMapping("/get/{treeId}")
+    public R<FruitTreeVo> get(@PathVariable Long treeId){
+        return fruitTreeService.getTree(treeId);
     }
 }

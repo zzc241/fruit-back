@@ -43,9 +43,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
     @Autowired
     private FruitTreeDao fruitTreeDao;
     @Autowired
-    private FileService fileService;
-    @Autowired
     private ReportDao reportDao;
+    @Autowired
+    private FileService fileService;
 
     /*新增任务*/
     @Override
@@ -294,8 +294,41 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
                     taskImgService.getImg(task.getId())
             );
         }
+        if (task.getReportId() != null){
+            Report report = taskDao.getReport(task.getReportId());
+            ReportVo reportVo = new ReportVo();
+            //获取对应图片的临时访问url
+            BeanUtils.copyProperties(report, reportVo);
+            List<String> urls = getUrlsByType(report.getId(), reportVo.getTypeId());
+            //保存url
+            reportVo.setUrlList(urls);
+            reportVo.setUserName(reportDao.getUserName(report.getUserId()));
+            taskVo.setReportVo(reportVo);
+            taskVo.setImgsURL(reportVo.getUrlList());
+        }
 
         return taskVo;
+    }
+
+    public List<String> getUrlsByType(Long reportId, Long typeId){
+        try{
+            List<String> urls = new ArrayList<>();
+            //获取相对路径
+            List<String> fileNames = reportDao.selectImgs(reportId, typeId);
+            //获取临时访问url
+            //判断文件是否存在
+            for (String fileName : fileNames) {
+                if (fileService.exits(fileName)){
+                    urls.add(fileService.getImageUrl(fileName));
+                }else {
+                    urls.add("文件不存在");
+                }
+            }
+            return urls;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
 
     public List<TaskVo> queryTasksBackend(TaskVo taskVo){
@@ -542,6 +575,19 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, Task> implements TaskS
         }
         taskDao.deleteById(id);
         return true;
+    }
+
+    @Override
+    public R<List<TaskVo>> getTreeTask(Long treeId) {
+        LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper();
+        queryWrapper.eq(Task::getTreeId, treeId);
+        List<Task> tasks = taskDao.selectList(queryWrapper);
+        List<TaskVo> taskVos = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskVo taskVo = taskToVo(task);
+            taskVos.add(taskVo);
+        }
+        return R.success(taskVos);
     }
 
     public static Double roundDouble(Double value, int scale) {

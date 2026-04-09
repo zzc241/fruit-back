@@ -150,4 +150,9 @@
         FROM fruit.task
         WHERE task.report_id = #{id}
     </select>
+    <select id="getReport" resultType="com.jhc.fruit.entity.Report">
+        SELECT report.*
+        FROM fruit.report
+        WHERE report.id = #{reportId}
+    </select>
 </mapper>

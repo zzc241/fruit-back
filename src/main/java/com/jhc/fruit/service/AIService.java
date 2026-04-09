@@ -46,7 +46,7 @@ public interface AIService extends IService<AIWeeds.WeedDetection> {
 
     String getWaterDeficit(String regionId, String orchardId);
 
-    String getSpectralData(String regionId, String orchardId);
+    String getSpectralData(String regionId);
 
     String getPlotAnalyzeReport(String plotId);
 }

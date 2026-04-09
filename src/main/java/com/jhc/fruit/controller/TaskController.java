@@ -152,4 +152,10 @@ public class TaskController {
     public R<TaskStatisticsVO> countByStatus() {
         return taskService.countByStatus();
     }
+
+    @ApiOperation("根据果树id查询")
+    @GetMapping("/getTreeTask/{treeId}")
+    public R<List<TaskVo>> getTreeTask(@PathVariable Long treeId) {
+        return taskService.getTreeTask(treeId);
+    }
 }

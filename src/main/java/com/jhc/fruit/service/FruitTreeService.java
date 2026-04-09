@@ -58,4 +58,6 @@ public interface FruitTreeService extends IService<FruitTree> {
     Long selectOrchardIdByTreeId(Long treeId);
 
     R<HealthTreeVo> countIllness();
+
+    R<FruitTreeVo> getTree(Long treeId);
 }

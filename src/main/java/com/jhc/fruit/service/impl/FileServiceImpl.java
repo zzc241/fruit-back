@@ -3,6 +3,7 @@ package com.jhc.fruit.service.impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jhc.fruit.config.MinioConfig;
 import com.jhc.fruit.service.FileService;
 import io.minio.*;
@@ -60,7 +61,57 @@ public class FileServiceImpl implements FileService {
         log.info("MinioClient 单例初始化完成，Endpoint：{}", minioProperties.getEndpoint());
     }
 
-    // ========== 新增：忽略SSL证书验证的OkHttpClient构建方法 ==========
+    /**
+     * 把对象转成JSON并上传到MinIO
+     * @param data 要保存的JSON数据
+     * @param fileName 文件名
+     * @return minio文件路径
+     */
+    @Override
+    public String uploadJsonToMinio(Object data, String fileName) {
+        try {
+            // 1. 强制给文件名加上 .json 后缀
+            if (!fileName.endsWith(".json")) {
+                fileName = fileName + ".json";
+            }
+
+            // 2. 转JSON字符串
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonStr = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(data);
+
+            // 3. 转成MinIO可以上传的流
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(jsonStr.getBytes(StandardCharsets.UTF_8));
+
+            // 4. 构建文件
+            MultipartFile file = new MockMultipartFile(
+                    fileName,
+                    fileName,
+                    "application/json",
+                    inputStream
+            );
+
+            // 5. 拼接路径（最终一定带 .json）
+            String path = "fertWaterAnalyze/analyze/" + fileName;
+
+            // 6. 上传MinIO
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(minioProperties.getBucketName())
+                    .stream(file.getInputStream(), file.getSize(), -1)
+                    .object(path)
+                    .contentType("application/json")
+                    .build();
+            minioClient.putObject(putObjectArgs);
+
+            return path;
+
+        } catch (Exception e) {
+            log.error("JSON上传MinIO失败", e);
+            throw new RuntimeException("JSON报告上传失败");
+        }
+    }
+
+
+
     private OkHttpClient getIgnoreSslOkHttpClient() {
         try {
             // 1. 创建信任所有证书的TrustManager

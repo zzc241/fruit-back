@@ -14,8 +14,8 @@
         </if>
     </insert>
     <insert id="saveAnalyze">
-        INSERT INTO `analyze` (orchard_id,nutrition_status, areaId, block_positions, spectral_indices, analysis_image, merge_image, analyze_suggestion)
-        VALUES (#{orchardId}, #{nutritionStatus}, #{areaId}, #{blockPositions}, #{spectralIndices}, #{analysisImage}, #{mergeImage}, #{analyzeSuggestion})
+        INSERT INTO `analyze` (orchard_id,nutrition_status, areaId, block_positions, spectral_indices, analysis_image, merge_image, analyze_suggestion, fruit.`analyze`.create_time, analyze_path)
+        VALUES (#{orchardId}, #{nutritionStatus}, #{areaId}, #{blockPositions}, #{spectralIndices}, #{analysisImage}, #{mergeImage}, #{analyzeSuggestion}, #{createTime}, #{analyzePath})
     </insert>
     <select id="getCityByOrchardId" parameterType="java.lang.Long" resultType="java.lang.String">
         SELECT city

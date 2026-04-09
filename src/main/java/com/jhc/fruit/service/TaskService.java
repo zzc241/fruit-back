@@ -55,4 +55,6 @@ public interface TaskService extends IService<Task> {
     R<TaskStatisticsVO> countByStatus();
 
     boolean deleteTask(Long id);
+
+    R<List<TaskVo>> getTreeTask(Long treeId);
 }

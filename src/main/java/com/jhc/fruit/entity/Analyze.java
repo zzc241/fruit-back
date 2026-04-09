@@ -28,7 +28,7 @@ public class Analyze {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
     private LocalDateTime createTime;
     private String analyze;
-    private String analyzeAI;
+    private String analyzePath;
 
     public void updateSpectralIndices(FullIndicesMean fullIndicesMean) {
         this.spectralIndices = toJsonByGson(fullIndicesMean);

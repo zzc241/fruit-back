@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface FileService {
+    String uploadJsonToMinio(Object data, String fileName);
+
     String upload(MultipartFile file);
 
     void preview(String fileName, HttpServletResponse response);

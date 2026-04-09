@@ -136,11 +136,12 @@ public class AIController {
     }
 
     @ApiOperation("获取区域分析数据")
-    @GetMapping("/getAnalyzeRegion/{areaId}")
-    public R<List<AnalyzeVo>> getAnalyzeRegion(@PathVariable Long areaId) {
-        return  aiService.getAnalyzeRegison(areaId);
+    @GetMapping("/getAnalyzeRegion/{BlockId}")
+    public R<List<AnalyzeVo>> getAnalyzeRegion(@PathVariable Long blockId) {
+        return  aiService.getAnalyzeRegison(blockId);
     }
 
+    @ApiOperation("获取水肥缺失统计")
     @GetMapping("/water/deficit")
     public String getWaterDeficit(
             @RequestParam(required = false) String regionId,
@@ -148,13 +149,14 @@ public class AIController {
         return aiService.getWaterDeficit(regionId, orchardId);
     }
 
+    @ApiOperation("获取合作社多光谱+地块数据")
     @GetMapping("/water/spectral")
     public String getSpectralData(
-            @RequestParam(required = false) String regionId,
-            @RequestParam(required = false) String orchardId) {
-        return aiService.getSpectralData(regionId, orchardId);
+            @RequestParam(required = false) String regionId) {
+        return aiService.getSpectralData(regionId);
     }
 
+    @ApiOperation("获取单地块水肥分析数据")
     @GetMapping("/AI/analyzePlus/{plotId}")
     public String getPlotAnalyzeReport(@PathVariable String plotId) {
         return aiService.getPlotAnalyzeReport(plotId);

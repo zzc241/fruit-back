@@ -92,7 +92,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, Comment> impleme
                 log.info("用户信息: name={}, img={}", userName, userImg);
 
                 commentVo.setCreateUserName(userName);
-                commentVo.setCreateUserImg(userImg);
+                commentVo.setCreateUserImg(fileService.getImageUrl(userImg));
 
                 commentVos.add(commentVo);
                 log.info("成功添加第 {} 条评论Vo", i+1);

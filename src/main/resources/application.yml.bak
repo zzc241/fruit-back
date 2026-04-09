@@ -1,0 +1,113 @@
+server:
+  port: 3388
+#  ssl:
+#    key-store: classpath:private.jks
+#    key-store-password: changeit
+#    key-store-type: JKS
+#    key-alias: private-cert               # 别名不变（只要生成时没改）
+#    enabled: true
+spring:
+  # Tomcat文件上传大小限制（核心）
+  tomcat:
+    max-swallow-size: 50MB  # 允许Tomcat接收的最大请求体大小
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      enabled: true  # 开启文件上传
+      max-request-size: 1024MB  # 整个请求体的最大大小（多文件总和，需大于max-file-size）
+      file-size-threshold: 1MB  # 文件大小超过此值时，写入临时文件（可选）
+  application:
+    name: fruit
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      #      url: jdbc:mysql://127.0.0.1:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+      #      username: root
+      #      password: zyrwl241/19548875171
+      url: jdbc:mysql://47.99.217.195:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+      username: root
+      password: 123456
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss.SSS
+    time-zone: GMT+8
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+#   RabbitMQ 核心配置
+
+#  rabbitmq:
+#    host: 192.168.123.92  # RabbitMQ 服务器地址（默认localhost）
+#    port: 5672       # 默认端口
+#    username: rc  # 默认用户名（本地开发用guest即可）
+#    password: 123456  # 默认密码
+#    virtual-host: /  # 虚拟主机（默认/）
+#    # 可选：连接池配置（提升性能）
+#    connection-timeout: 15000  # 连接超时时间
+#    cache:
+#      channel:
+#        size: 50  # 通道缓存大小
+#      connection:
+#        size: 10  # 连接池大小
+#        mode: CONNECTION
+#    publisher-confirm-type: correlated  # 开启生产者确认（correlated：异步回调）
+#    publisher-returns: true             # 开启消息返回（路由失败时回调）
+#  # Redis 配置
+#  redis:
+#    host: 192.168.123.92
+#    port: 6379
+#    password: 123456 # 本地Redis默认无密码
+#    database: 0
+#    timeout: 10000
+
+#  web:
+#    resources:
+#      static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
+#        classpath:/static/,classpath:/public/,classpath:/backend/,classpath:/front/
+#  mvc:
+#    static-path-pattern: /**
+
+mybatis-plus:
+  configuration:
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射；
+    map-underscore-to-camel-case: true
+    #标准日志输出格式
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: AUTO
+  mapper-locations: mappers/*.xml
+#Minio配置
+minio:
+  endpoint: http://47.99.217.195:9000
+  access-key: fruit
+  secret-key: jhc210210
+  bucket-name: fruit
+ai-api:
+#  水肥分析与成熟度、AI聊天、天气预警
+  aiCzm: http://47.99.217.195:8000
+#  杂草识别
+  aiZen: http://47.99.217.195:5002
+#  语言识别
+  aiAudio: http://47.99.217.195:5001
+#  多光谱
+  aiCbh: http://47.99.217.195:8003
+txt:
+  descriptionConfig:
+    email: ""
+    title: 接口文档
+    version: 1.0
+    description: 后端API接口文档
+    name: 一树一码全域感知单株精准智能决策体系
+    url: 47.99.217.195
+  filter:
+    flag: true
+wx:
+  miniapp:
+    appid: wx857c079ab13764e8
+    secret: e0178501e5e6c91229d4ec8aa570ed88
+    grant-type: authorization_code
+    api-url: https://api.weixin.qq.com/sns/jscode2session
+

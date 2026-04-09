@@ -96,11 +96,11 @@ ai-api:
   aiCbh: http://192.168.100.2:8003
 txt:
   descriptionConfig:
-    email: 1660985901@qq.com
-    title: 果园项目后端API接口文档
+    email: ""
+    title: 接口文档
     version: 1.0
-    description: 果园项目后端API接口文档
-    name: 果园开放
+    description: 后端API接口文档
+    name: 一树一码全域感知单株精准智能决策体系
     url: 192.168.100.2
   filter:
     flag: true
