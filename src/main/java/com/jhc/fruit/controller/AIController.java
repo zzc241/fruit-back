@@ -135,6 +135,10 @@ public class AIController {
         return aiService.getAnalyze(orchardId, areaId);
     }
 
+    //提取4个波段的的tif图片和rgb图片
+    //MultipartFile rgbFile = checkImages(images)'
+    //调用多光谱分析接口，获取分析上课i
+
     @ApiOperation("获取区域分析数据")
     @GetMapping("/getAnalyzeRegion/{BlockId}")
     public R<List<AnalyzeVo>> getAnalyzeRegion(@PathVariable Long blockId) {

@@ -243,7 +243,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         log.info(response);
         return disasterVo;
     }
-    /*
+    /*analyzeMutilpartFile rgbFile = analyzeMutiaprtFile
     * */
 
     @Override
@@ -758,7 +758,7 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
         ApiResponse apiResponse = new ApiResponse();
         try {
             //提取4个波段的tif图片和rgb图片
-            MultipartFile rgbFile = checkImages( images);
+            MultipartFile rgbFile = checkImages(images);
             //调用多光谱分析接口，获取分析数据
             apiResponse = analyzeMultiSpectralImages(images);
 
@@ -833,9 +833,9 @@ public class AIServiceImpl extends ServiceImpl<AIDao, AIWeeds.WeedDetection> imp
 
 
 
-    /*            //分别提取4个波段的tif图片和rgb图片
-            MultipartFile rgbFile = images.remove(images.size() - 1);
-            //调用多光谱分析服务，获取多光谱分析数据
+    /*      //提取4个波段的tif图片和rgb图片
+            MultipartFile rgbFile = checkImages(images);
+            //调用多光谱分析接口，获取分析数据
             apiResponse = analyzeMultiSpectralImages(images);*/
     @Override
     public R<List<AnalyzeVo>> getAnalyze(Long orchardId, Long areaId) {
