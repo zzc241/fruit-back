@@ -15,20 +15,20 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/Image")
-@Api(tags = "获取图片接口")
+@Api(tags = "????????")
 public class ImageController {
     @Autowired
     private ImageService imageService;
 
     @GetMapping("/getRawImage")
-    @ApiOperation("获取原始图片")
+    @ApiOperation("???????")
     public List<String> getRawImage() {
         List<String> list = imageService.getRawImage();
         return list;
     }
 
     @GetMapping("/getHandledImage")
-    @ApiOperation("获取处理图片")
+    @ApiOperation("?????????")
     public List<String> getHandledImage() {
         List<String> list = imageService.getHandledImage();
         return list;

@@ -25,12 +25,12 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      #      url: jdbc:mysql://127.0.0.1:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
-      #      username: root
-      #      password: zyrwl241/19548875171
-      url: jdbc:mysql://192.168.100.2:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+      url: jdbc:mysql://192.168.123.100:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
       username: root
       password: jhc210210
+#      url: jdbc:mysql://192.168.100.2:3306/fruit?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true&useSSL=false
+#      username: root
+#      password: jhc210210
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss.SSS
     time-zone: GMT+8
@@ -81,7 +81,7 @@ mybatis-plus:
   mapper-locations: mappers/*.xml
 #Minio配置
 minio:
-  endpoint: http://192.168.100.2:9000
+  endpoint: http://192.168.123.100:9000
   access-key: fruit
   secret-key: jhc210210
   bucket-name: fruit

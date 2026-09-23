@@ -25,14 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping("/comment")
 @RestController
-@Api(tags = "评论管理接口")
+@Api(tags = "??????")
 public class CommentController {
     @Autowired
     private CommentService commentService;
     @Autowired
     private FruitTreeDao fruitTreeDao;
-    //实现评论添加功能
-    @ApiOperation(value = "添加评论接口")
+    //????????
+    @ApiOperation(value = "??????")
     @PostMapping("/add")
     public R<Long> add(@RequestBody Comment comment) {
         comment.setOrchardId(fruitTreeDao.selectOrchardIdByTreeId(comment.getTreeId()));
@@ -40,38 +40,39 @@ public class CommentController {
         Long id = comment.getId();
         return R.success(id);
     }
-    @ApiOperation(value = "添加评论图片接口")
+    @ApiOperation(value = "????????")
     @PostMapping("/addImg/{commentId}")
     public R<String> addImg(@PathVariable Long commentId,
-            @RequestParam MultipartFile img) {
+                            @RequestParam MultipartFile img) {
         return commentService.addImg(commentId, img);
     }
-    //实现查询功能
-    @ApiOperation(value = "查询评论接口")
+    //??????
+    @ApiOperation(value = "??????")
     @GetMapping("/query/{treeId}")
     public R<List<CommentVo>> selectCommentByTreeId(@PathVariable Long treeId) {
         List<CommentVo> comments = commentService.selectCommentsByTreeId(treeId);
         if(comments.size() == 0){
-            return R.error("没有找到任何评论");
+            return R.error("????????");
         }
         return R.success(comments);
     }
-    //实现删除功能
-    @ApiOperation(value = "删除评论接口")
+    //??????
+    @ApiOperation(value = "??????")
     @DeleteMapping("/delete/{id}")
-    //利用前端给id实现删除评论
+    //?????id??????
     public R<String> deleteById(@PathVariable Long id) {
         commentService.removeById(id);
-        return R.success("删除成功");
+        return R.success("????");
     }
-    //实现修改功能
-    // @ApiOperation(value = "修改评论接口")
+    //??????
+    // @ApiOperation(value = "??????")
     @PostMapping("/update")
     public R<String> update(@RequestBody Comment comment) {
         boolean result = commentService.updateById(comment);
         if (result) {
-            return R.success("修改成功");
+            return R.success("????");
         }
-        return R.error("修改失败");
+        return R.error("????");
     }
 }
+

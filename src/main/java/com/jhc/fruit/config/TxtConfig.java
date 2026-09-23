@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(value = "txt")//Х╞╩Е▐√Х┼┌Г┌╧
+@ConfigurationProperties(value = "txt")//╤ах║╫з╣Ц
 @Data
 public class TxtConfig {
 

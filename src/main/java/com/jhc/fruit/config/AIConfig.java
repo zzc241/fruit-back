@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix="ai-api") //读取节点
+@ConfigurationProperties(prefix="ai-api") //??????
 @Data
 public class AIConfig {
     private String aiCzm;

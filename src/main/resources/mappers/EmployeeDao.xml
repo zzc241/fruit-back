@@ -20,6 +20,7 @@
         SELECT area_info.id
         FROM area_info
         WHERE area_info.emp_id = #{id}
+        LIMIT 1
     </select>
     <select id="getOrchardId" resultType="java.lang.Long">
         SELECT employee.orchard_id

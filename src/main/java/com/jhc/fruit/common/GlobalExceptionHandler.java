@@ -11,9 +11,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 
 /**
- * @author ：lcy
  * @description：全局异常处理器
- * @date ：2022/4/29 0029 11:27
  */
 @Slf4j
 @ResponseBody
