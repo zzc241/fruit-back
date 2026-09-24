@@ -39,3 +39,8 @@ src/main/resources/application-txt.yml
 src/main/resources/logback-spring.xml
 src/main/resources/static/
 src/main/resources/pfx-password.txt
+
+# 其他文件
+fruit.sql
+fruit.sql.bak
+FRUIT_TECHNICAL_DOCUMENTATION.md
