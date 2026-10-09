@@ -6,10 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class QRTreeVo {
-//    @ApiModelProperty("�û�id")
+//    @ApiModelProperty("用户id")
 //    private Long id;
-//    @ApiModelProperty("ͼƬ·��")
+//    @ApiModelProperty("图片路径")
 //    private String fileName;
-    @ApiModelProperty("ͼƬ")
+    @ApiModelProperty("图片")
     private MultipartFile imgFile;
 }

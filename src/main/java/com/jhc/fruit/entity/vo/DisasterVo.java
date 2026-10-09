@@ -11,30 +11,30 @@ import lombok.Data;
 public class DisasterVo {
     @ApiModelProperty
     private Long id;
-    @ApiModelProperty(value = "灾害内容")
+    @ApiModelProperty(value = "鐏惧鍐呭")
     @JsonProperty("content")
     private String content;
-    @ApiModelProperty(value = "灾害类型")
+    @ApiModelProperty(value = "鐏惧绫诲瀷")
     @JsonProperty("disaster_type")
     private String disasterType;
     @JsonProperty("area_id")
-    @ApiModelProperty(value = "区域id")
+    @ApiModelProperty(value = "鍖哄煙id")
     private Long areaId;
-    @ApiModelProperty(value = "区域名称")
+    @ApiModelProperty(value = "鍖哄煙鍚嶇О")
     private String areaName;
     @JsonProperty("orchard_id")
-    @ApiModelProperty(value = "果园id")
+    @ApiModelProperty(value = "鏋滃洯id")
     private Long orchardId;
-    @ApiModelProperty(value = "果园名称")
+    @ApiModelProperty(value = "鏋滃洯鍚嶇О")
     private String orchardName;
     @JsonProperty("user_id")
-    @ApiModelProperty(value = "用户id")
+    @ApiModelProperty(value = "鐢ㄦ埛id")
     private Long userId;
-    @ApiModelProperty(value = "用户名称")
+    @ApiModelProperty(value = "鐢ㄦ埛鍚嶇О")
     private String userName;
-    @ApiModelProperty(value = "发现时间")
+    @ApiModelProperty(value = "鍙戠幇鏃堕棿")
     private LocalDateTime findTime;
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "鍒涘缓鏃堕棿")
     private LocalDateTime createTime;
 }
 
