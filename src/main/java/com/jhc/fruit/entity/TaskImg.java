@@ -5,12 +5,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "浠诲姟鍥剧墖")
+@ApiModel(value = "任务图片")
 public class TaskImg {
-    @ApiModelProperty(value = "浠诲姟id")
+    @ApiModelProperty(value = "任务id")
     private Long id;
-    @ApiModelProperty(value = "鍥剧墖id")
+    @ApiModelProperty(value = "图片id")
     private String img;
-    @ApiModelProperty(value = "浠诲姟id")
+    @ApiModelProperty(value = "任务id")
     private Long taskId;
 }

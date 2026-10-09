@@ -5,12 +5,12 @@ import lombok.Data;
 
 @Data
 public class MultiSpectralData {
-    @JsonProperty("照片编号")
+    @JsonProperty("??????")
     private String photoNo;
 
-    @JsonProperty("fertilizer_analysis_json全部数据")
+    @JsonProperty("fertilizer_analysis_json???????")
     private FertilizerAnalysis fertilizerAnalysis;
 
-    @JsonProperty("全维度多光谱分析图_base64")
+    @JsonProperty("????????????_base64")
     private String analysisImageBase64;
 }

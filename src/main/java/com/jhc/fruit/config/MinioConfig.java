@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix="minio") //è¯»å–èŠ‚ç‚¹
+@ConfigurationProperties(prefix="minio") //¶ÁÈ¡½Úµã
 @Data
 public class MinioConfig {
 

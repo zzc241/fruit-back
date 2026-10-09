@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true) // 蹇界暐鏈煡瀛楁锛堥槻姝㈡墿灞曞瓧娈垫姤閿欙級
+@JsonIgnoreProperties(ignoreUnknown = true) // 忽略未知字段（防止扩展字段报错）
 public class AudioRecognitionSuccess {
-    private boolean success; // Flask杩斿洖鐨剆uccess瀛楁
-    private String recognized_text; // 璇煶璇嗗埆缁撴灉
-    private String ai_response; // AI鍥炲鍐呭
+    private boolean success; // Flask返回的success字段
+    private String recognized_text; // 语音识别结果
+    private String ai_response; // AI回复内容
 }

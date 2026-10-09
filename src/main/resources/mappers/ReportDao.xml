@@ -65,7 +65,7 @@
         SELECT report.*
         FROM fruit.report,fruit.task
         WHERE task.id = #{taskId}
-        AND task.report_id = report.id
+        Limit 1
     </select>
 
 </mapper>
